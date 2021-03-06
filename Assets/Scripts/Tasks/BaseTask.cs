@@ -1,6 +1,3 @@
-using System.Collections;
-using UnityEngine;
-
 namespace Tasks
 {
     public abstract class BaseTask
