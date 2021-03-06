@@ -12,7 +12,7 @@ namespace Networking.Http
     
         private static Action<string, bool> _currentCallback;
     
-        public static async void SendRequest(WebRequest request)
+        public static async void SendRequestAsync(WebRequest request)
         {
             _currentCallback = request.Callback;
         
