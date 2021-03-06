@@ -1,0 +1,13 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/contentModel.xml
+/projectSettingsUpdater.xml
+/.idea.Skilly Source Client V2.iml
+/modules.xml
+# Datasource local storage ignored files
+/../../../../../../:\Unity Projects\Skilly Source Client V2\.idea\.idea.Skilly Source Client V2\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
