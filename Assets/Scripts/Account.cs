@@ -7,22 +7,24 @@ using UnityEngine;
 public static class Account
 {
     public const string USERNAME_KEY = "username";
+    public static bool Exists => !string.IsNullOrEmpty(Username);
+    
     public static string Username { get; private set; }
     public static int MaxCharacters { get; private set; }
     public static GuildInfo Guild { get; private set; }
     public static int CurrentFame { get; private set; }
     public static int CurrentGold { get; private set; }
 
-    private static readonly Dictionary<int, ClassStats> _classStats =
+    private static readonly Dictionary<int, ClassStats> _ClassStats =
         new Dictionary<int, ClassStats>();
 
     public static readonly ReadOnlyDictionary<int, ClassStats> ClassStats =
-        new ReadOnlyDictionary<int, ClassStats>(_classStats);
+        new ReadOnlyDictionary<int, ClassStats>(_ClassStats);
 
-    private static readonly List<CharacterStats> _characters = new List<CharacterStats>();
+    private static readonly List<CharacterStats> _Characters = new List<CharacterStats>();
 
     public static readonly ReadOnlyCollection<CharacterStats> Characters =
-        new ReadOnlyCollection<CharacterStats>(_characters);
+        new ReadOnlyCollection<CharacterStats>(_Characters);
 
     public static void Login(string username, bool rememberUsername)
     {
@@ -42,8 +44,8 @@ public static class Account
         Guild = GuildInfo.None;
         CurrentFame = 0;
         CurrentGold = 0;
-        _classStats.Clear();
-        _characters.Clear();
+        _ClassStats.Clear();
+        _Characters.Clear();
         PlayerPrefs.DeleteKey(USERNAME_KEY);
     }
 
@@ -54,7 +56,7 @@ public static class Account
 
         foreach (var charXml in xml.Elements("Char"))
         {
-            _characters.Add(new CharacterStats(charXml));
+            _Characters.Add(new CharacterStats(charXml));
         }
     }
 
@@ -73,7 +75,7 @@ public static class Account
         foreach (var classStatXml in xml.Elements("ClassStats"))
         {
             var classType = classStatXml.ParseInt("@objectType");
-            _classStats[classType] = new ClassStats(classStatXml);
+            _ClassStats[classType] = new ClassStats(classStatXml);
         }
     }
 }

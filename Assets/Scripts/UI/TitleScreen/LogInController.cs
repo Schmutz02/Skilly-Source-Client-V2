@@ -43,8 +43,16 @@ namespace UI.TitleScreen
             _errorTextField.text = "";
 
             if (ValidUsername() && ValidPassword())
+            {
                 await SendLoginAsync();
 
+                if (Account.Exists)
+                {
+                    // screen manager switch -> CharacterSelect
+                }
+            }
+                
+            ScreenManager.Instance.ChangeScreen(Screen.Character);
             _playButton.enabled = true;
         }
 
