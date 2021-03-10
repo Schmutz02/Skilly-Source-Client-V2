@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sheets>
+    <Sheet id="players">
+        <AnimationSize>56x24</AnimationSize>
+        <StartDirection>Right</StartDirection>
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiEnvironment">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+</Sheets>

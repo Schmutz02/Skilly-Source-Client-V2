@@ -63,6 +63,13 @@
             return (ushort)(value.StartsWith("0x") ? int.Parse(value.Substring(2), NumberStyles.HexNumber) : int.Parse(value));
         }
 
+        public static T ParseEnum<T>(this XElement element, string name, T undefined) where T : Enum
+        {
+            var value = name[0].Equals('@') ? element.Attribute(name.Remove(0, 1))?.Value : element.Element(name)?.Value;
+            if (string.IsNullOrWhiteSpace(value)) return undefined;
+            return (T)Enum.Parse(typeof(T), value.Replace(" ", ""));
+        }
+
 //         public static ConditionEffectIndex ParseConditionEffect(this XElement element, string name, ConditionEffectIndex undefined = ConditionEffectIndex.Nothing)
 //         {
 //             var value = name[0].Equals('@') ? element.Attribute(name.Remove(0, 1))?.Value : element.Element(name)?.Value;
