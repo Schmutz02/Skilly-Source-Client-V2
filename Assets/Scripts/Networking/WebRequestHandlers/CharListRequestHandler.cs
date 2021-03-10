@@ -25,7 +25,7 @@ namespace Networking.WebRequestHandlers
         {
             if (result.Success)
             {
-                Debug.Log(result.Response);
+                Account.LoadFromCharList(result.Response);
             }
         }
     }
