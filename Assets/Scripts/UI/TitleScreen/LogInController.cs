@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Models;
 using Networking.WebRequestHandlers;
 using TMPro;
 using UnityEngine;
@@ -48,11 +49,10 @@ namespace UI.TitleScreen
 
                 if (Account.Exists)
                 {
-                    // screen manager switch -> CharacterSelect
+                    ScreenManager.Instance.ChangeScreen(Screen.Character);
                 }
             }
-                
-            ScreenManager.Instance.ChangeScreen(Screen.Character);
+            
             _playButton.enabled = true;
         }
 

@@ -1,10 +1,12 @@
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Xml.Linq;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
+namespace Utils
+{
     public static class ParseUtils
     {
         public static string ParseString(this XElement element, string name, string undefined = null)
@@ -124,3 +126,4 @@
             return ParseStringArray(element, name, separator).Select(uint.Parse).ToList();
         }
     }
+}
