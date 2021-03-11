@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace UI.TitleScreen
 {
-    public class LogInController : MonoBehaviour
+    public class LogInScreenController : UIController
     {
         [SerializeField]
         private TMP_InputField _usernameField;
@@ -27,7 +27,6 @@ namespace UI.TitleScreen
         private void Awake()
         {
             _playButton.onClick.AddListener(async () => await OnPlayButtonClick());
-            SetUsernameField();
         }
 
         private void SetUsernameField()
@@ -36,6 +35,18 @@ namespace UI.TitleScreen
             {
                 _usernameField.text = PlayerPrefs.GetString(Account.USERNAME_KEY);
             }
+            else
+            {
+                _usernameField.text = "";
+            }
+        }
+        
+        protected override void Reset()
+        {
+            SetUsernameField();
+            _passwordField.text = "";
+            _rememberUsernameToggle.isOn = false;
+            _errorTextField.text = "";
         }
 
         private async Task OnPlayButtonClick()
@@ -52,7 +63,7 @@ namespace UI.TitleScreen
                     ScreenManager.Instance.ChangeScreen(Screen.Character);
                 }
             }
-            
+
             _playButton.enabled = true;
         }
 

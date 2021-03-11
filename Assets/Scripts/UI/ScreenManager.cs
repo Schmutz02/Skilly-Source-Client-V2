@@ -20,28 +20,25 @@ namespace UI
             Instance = this;
             DontDestroyOnLoad(this);
 
-            _activeScreen = Instantiate(_menuScreen);
+            ChangeScreen(Screen.Menu);
         }
 
         public void ChangeScreen(Screen screen)
         {
-            GameObject newScreenPrefab = null;
+            GameObject newScreen = null;
             switch (screen)
             {
                 case Screen.Menu:
-                    newScreenPrefab = _menuScreen;
+                    newScreen = _menuScreen;
                     break;
                 case Screen.Character:
-                    newScreenPrefab = _characterScreen;
+                    newScreen = _characterScreen;
                     break;
             }
 
-            _activeScreen.SetActive(false);
-            var newScreenObject = Instantiate(newScreenPrefab);
-            
-            //maybe do some saving?
-            Destroy(_activeScreen);
-            _activeScreen = newScreenObject;
+            _activeScreen?.SetActive(false);
+            _activeScreen = newScreen;
+            _activeScreen?.SetActive(true);
         }
     }
 
