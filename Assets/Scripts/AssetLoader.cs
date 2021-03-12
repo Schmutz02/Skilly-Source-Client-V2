@@ -36,11 +36,8 @@ public class AssetLoader : MonoBehaviour
 
         foreach (var xmlAsset in xmlAssets)
         {
-            var objectsXml = XElement.Parse(xmlAsset.text);
-            foreach (var objectXml in objectsXml.Elements("Object"))
-            {
-                AssetLibrary.AddObjectXml(objectXml);
-            }
+            var xml = XElement.Parse(xmlAsset.text);
+            AssetLibrary.ParseXml(xml);
         }
     }
 }

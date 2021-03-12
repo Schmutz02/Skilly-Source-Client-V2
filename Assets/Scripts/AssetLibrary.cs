@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Models;
+using Models.Static;
 using UnityEngine;
 using Utils;
 
@@ -24,7 +25,8 @@ public static class AssetLibrary
             for (var x = 0; x < data.AnimationWidth; x += data.AnimationWidth)
             {
                 var rect = new Rect(x, y, data.AnimationWidth, data.AnimationHeight);
-                var animation = new CharacterAnimation(texture, rect, data.ImageWidth, data.ImageHeight, data.StartDirection);
+                var frames = SpriteUtils.GetSprites(texture, rect, data.ImageWidth, data.ImageHeight);
+                var animation = new CharacterAnimation(frames, data.StartDirection);
                 
                 _Animations[data.Id].Add(animation);
             }
@@ -35,25 +37,18 @@ public static class AssetLibrary
     {
         if (!_Images.ContainsKey(data.Id))
             _Images[data.Id] = new List<Sprite>();
-        
-        for (var y = texture.height - data.ImageHeight; y >= 0; y -= data.ImageHeight)
-        {
-            for (var x = 0; x < texture.width; x += data.ImageWidth)
-            {
-                var spriteRect = new Rect(x, y, data.ImageWidth, data.ImageHeight);
-                var pivot = new Vector2(0.5f, 0);
-                var sprite = Sprite.Create(texture, spriteRect, pivot, 8);
-                
-                _Images[data.Id].Add(sprite);
-            }
-        }
+
+        var rect = new Rect(0, 0, texture.width, texture.height);
+        _Images[data.Id] = SpriteUtils.GetSprites(texture, rect, data.ImageWidth, data.ImageHeight);
     }
     
-    public static void AddObjectXml(XElement xml)
+    public static void ParseXml(XElement xml)
     {
-        var objectDesc = new ObjectDesc(xml);
-
-        _Type2ObjectDesc[objectDesc.Type] = objectDesc;
+        foreach (var objectXml in xml.Elements("Object"))
+        {
+            var objectDesc = new ObjectDesc(objectXml);
+            _Type2ObjectDesc[objectDesc.Type] = objectDesc;
+        }
     }
 
     public static Sprite GetImage(string sheetName, int index)

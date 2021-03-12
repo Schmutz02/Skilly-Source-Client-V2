@@ -1,4 +1,5 @@
 using Models;
+using Models.Static;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,7 +22,7 @@ namespace UI.CharacterScreen
                 {
                     var desc = AssetLibrary.GetObjectDesc(Account.Characters[i].ClassType);
                     child.GetComponent<Image>().sprite =
-                        desc.TextureData.Animation.GetImage(Direction.Right, Action.Stand, 0);
+                        desc.TextureData.Animation.GetFrame(Direction.Right, Action.Stand, 0);
                     i++;
                     continue;
                 }
@@ -33,7 +34,7 @@ namespace UI.CharacterScreen
             {
                 var desc = AssetLibrary.GetObjectDesc(Account.Characters[i].ClassType);
                 var characterImage = Instantiate(_characterRectPrefab, _characterGroup).GetComponent<Image>();
-                characterImage.sprite = desc.TextureData.Animation.GetImage(Direction.Right, Action.Stand, 0);
+                characterImage.sprite = desc.TextureData.Animation.GetFrame(Direction.Right, Action.Stand, 0);
                 i++;
             }
         }

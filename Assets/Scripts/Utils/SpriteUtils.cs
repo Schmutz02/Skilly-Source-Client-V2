@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Utils
@@ -38,6 +39,24 @@ namespace Utils
             var pivot = Vector2.right - sprite.pivot / sprite.rect.width;
             var mirroredSprite = Sprite.Create(mirrored, rect, pivot, 8);
             return mirroredSprite;
+        }
+        
+        public static List<Sprite> GetSprites(Texture2D texture, Rect targetRect, int imageWidth, int imageHeight)
+        {
+            List<Sprite> images = new List<Sprite>();
+            for (var y = targetRect.y - imageHeight; y >= targetRect.y - targetRect.height; y -= imageHeight)
+            {
+                for (var x = targetRect.x; x < targetRect.x + targetRect.width; x += imageWidth)
+                {
+                    var rect = new Rect(x, y, imageWidth, imageHeight);
+                    var pivot = new Vector2(0.5f, 0);
+                    var sprite = Sprite.Create(texture, rect, pivot, 8);
+
+                    images.Add(sprite);
+                }
+            }
+
+            return images;
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Xml.Linq;
 using Utils;
 
-namespace Models
+namespace Models.Static
 {
     public enum ItemType : byte
     {

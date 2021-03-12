@@ -2,7 +2,7 @@ using System.Xml.Linq;
 using UnityEngine;
 using Utils;
 
-namespace Models
+namespace Models.Static
 {
     public class TextureData
     {
