@@ -58,5 +58,13 @@ namespace Utils
 
             return images;
         }
+        
+        public static Sprite MergeSprites(Sprite first, Sprite second)
+        {
+            var rect = first.rect;
+            rect.width += second.rect.width;
+            var pivot = new Vector2(0.25f, 0);
+            return Sprite.Create(first.texture, rect, pivot, 8);
+        }
     }
 }

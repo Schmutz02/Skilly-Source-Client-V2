@@ -82,7 +82,7 @@ namespace Models.Static
             
                 if (!attackBit.IsTransparent())
                 {
-                    attack2 = MergeSprites(attack2, attackBit);
+                    attack2 = SpriteUtils.MergeSprites(attack2, attackBit);
                 }
             
                 attackAnim.Add(mirror ? attack2.Mirror() : attack2);
@@ -90,14 +90,6 @@ namespace Models.Static
             ret[Action.Attack] = attackAnim;
         
             return ret;
-        }
-
-        private static Sprite MergeSprites(Sprite first, Sprite second)
-        {
-            var rect = first.rect;
-            rect.width += second.rect.width;
-            var pivot = new Vector2(0.25f, 0);
-            return Sprite.Create(first.texture, rect, pivot, 8);
         }
     }
 

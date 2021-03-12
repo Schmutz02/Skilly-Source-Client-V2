@@ -33,8 +33,8 @@ namespace UI.CharacterScreen
             while (i < Account.Characters.Count)
             {
                 var desc = AssetLibrary.GetObjectDesc(Account.Characters[i].ClassType);
-                var characterImage = Instantiate(_characterRectPrefab, _characterGroup).GetComponent<Image>();
-                characterImage.sprite = desc.TextureData.Animation.GetFrame(Direction.Right, Action.Stand, 0);
+                var characterImage = Instantiate(_characterRectPrefab, _characterGroup).GetComponent<SpriteRenderer>();
+                characterImage.sprite = desc.TextureData.Animation.GetFrame(Direction.Left, Action.Attack, 1);
                 i++;
             }
         }
