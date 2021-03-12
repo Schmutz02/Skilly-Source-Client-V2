@@ -22,6 +22,7 @@ namespace Utils
 
         public static Sprite Mirror(this Sprite sprite)
         {
+            //TODO could possibly be replaced
             var width = (int)sprite.rect.width;
             var mirrored = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height, sprite.texture.format, false);
             mirrored.filterMode = FilterMode.Point;
@@ -41,7 +42,7 @@ namespace Utils
             return mirroredSprite;
         }
         
-        public static List<Sprite> GetSprites(Texture2D texture, Rect targetRect, int imageWidth, int imageHeight)
+        public static List<Sprite> CreateSprites(Texture2D texture, Rect targetRect, int imageWidth, int imageHeight)
         {
             List<Sprite> images = new List<Sprite>();
             for (var y = targetRect.y - imageHeight; y >= targetRect.y - targetRect.height; y -= imageHeight)

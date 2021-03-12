@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using System;
 using UnityEngine;
 
 namespace UI
@@ -12,6 +12,9 @@ namespace UI
 
         [SerializeField]
         private GameObject _characterScreen;
+        
+        [SerializeField]
+        private GameObject _gameScreen;
 
         private GameObject _activeScreen;
 
@@ -25,7 +28,7 @@ namespace UI
 
         public void ChangeScreen(Screen screen)
         {
-            GameObject newScreen = null;
+            GameObject newScreen;
             switch (screen)
             {
                 case Screen.Menu:
@@ -34,6 +37,15 @@ namespace UI
                 case Screen.Character:
                     newScreen = _characterScreen;
                     break;
+                case Screen.Game:
+                    if (_activeScreen != _characterScreen)
+                    {
+                        throw new Exception($"Unable to go from {_activeScreen.name} to {Screen.Game}");
+                    }
+                    newScreen = _gameScreen;
+                    break;
+                default:
+                    throw new Exception($"{screen} not yet implemented");
             }
 
             _activeScreen?.SetActive(false);
@@ -45,6 +57,7 @@ namespace UI
     public enum Screen
     {
         Menu,
-        Character
+        Character,
+        Game
     }
 }

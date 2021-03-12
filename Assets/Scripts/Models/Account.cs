@@ -12,6 +12,7 @@ namespace Models
         public static bool Exists => !string.IsNullOrEmpty(Username);
     
         public static string Username { get; private set; }
+        public static string Password { get; private set; }
         public static int MaxCharacters { get; private set; }
         public static GuildInfo Guild { get; private set; }
         public static int CurrentFame { get; private set; }
@@ -28,10 +29,11 @@ namespace Models
         public static readonly ReadOnlyCollection<CharacterStats> Characters =
             new ReadOnlyCollection<CharacterStats>(_Characters);
 
-        public static void Login(string username, bool rememberUsername)
+        public static void Login(string username, string password, bool rememberUsername)
         {
             Reset();
             Username = username;
+            Password = password;
 
             if (rememberUsername)
             {
@@ -42,6 +44,7 @@ namespace Models
         private static void Reset()
         {
             Username = null;
+            Password = null;
             MaxCharacters = 1;
             Guild = GuildInfo.None;
             CurrentFame = 0;

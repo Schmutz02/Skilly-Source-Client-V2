@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using Models;
 using Models.Static;
 using UnityEngine;
 using Utils;
@@ -25,7 +23,7 @@ public static class AssetLibrary
             for (var x = 0; x < data.AnimationWidth; x += data.AnimationWidth)
             {
                 var rect = new Rect(x, y, data.AnimationWidth, data.AnimationHeight);
-                var frames = SpriteUtils.GetSprites(texture, rect, data.ImageWidth, data.ImageHeight);
+                var frames = SpriteUtils.CreateSprites(texture, rect, data.ImageWidth, data.ImageHeight);
                 var animation = new CharacterAnimation(frames, data.StartDirection);
                 
                 _Animations[data.Id].Add(animation);
@@ -39,7 +37,7 @@ public static class AssetLibrary
             _Images[data.Id] = new List<Sprite>();
 
         var rect = new Rect(0, 0, texture.width, texture.height);
-        _Images[data.Id] = SpriteUtils.GetSprites(texture, rect, data.ImageWidth, data.ImageHeight);
+        _Images[data.Id] = SpriteUtils.CreateSprites(texture, rect, data.ImageWidth, data.ImageHeight);
     }
     
     public static void ParseXml(XElement xml)

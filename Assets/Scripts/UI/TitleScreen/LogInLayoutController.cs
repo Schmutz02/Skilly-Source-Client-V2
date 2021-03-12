@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace UI.TitleScreen
 {
-    public class LogInScreenController : UIController
+    public class LogInLayoutController : UIController
     {
         [SerializeField]
         private TMP_InputField _usernameField;

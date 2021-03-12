@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +10,7 @@ namespace UI.CharacterScreen
         
         private void Awake()
         {
-            _frameButton.onClick.AddListener(() => ScreenManager.Instance.ChangeScreen(Screen.Menu));
+            _frameButton.onClick.AddListener(() => ScreenManager.Instance.ChangeScreen(Screen.Game));
         }
     }
 }

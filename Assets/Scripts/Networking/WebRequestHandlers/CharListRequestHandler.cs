@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Models;
-using UnityEngine;
 
 namespace Networking.WebRequestHandlers
 {

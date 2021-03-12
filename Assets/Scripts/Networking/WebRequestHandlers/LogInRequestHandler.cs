@@ -30,7 +30,7 @@ namespace Networking.WebRequestHandlers
         {
             if (result.Success)
             {
-                Account.Login(_username, _rememberUsername);
+                Account.Login(_username, _password, _rememberUsername);
 
                 var charListRequest = new CharListRequestHandler(_username, _password);
                 await charListRequest.SendRequestAsync();
