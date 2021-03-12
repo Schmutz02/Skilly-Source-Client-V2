@@ -19,7 +19,9 @@ namespace UI.CharacterScreen
             {
                 if (i < Account.Characters.Count)
                 {
-                    child.GetComponent<Image>().sprite = AssetLibrary.GetImage("lofiEnvironment", 2, 2);
+                    var desc = AssetLibrary.GetObjectDesc(Account.Characters[i].ClassType);
+                    child.GetComponent<Image>().sprite =
+                        desc.TextureData.Animation.GetImage(Direction.Right, Action.Stand, 0);
                     i++;
                     continue;
                 }
@@ -29,8 +31,9 @@ namespace UI.CharacterScreen
             
             while (i < Account.Characters.Count)
             {
+                var desc = AssetLibrary.GetObjectDesc(Account.Characters[i].ClassType);
                 var characterImage = Instantiate(_characterRectPrefab, _characterGroup).GetComponent<Image>();
-                characterImage.sprite = AssetLibrary.GetImage("lofiEnvironment", 3, 3);
+                characterImage.sprite = desc.TextureData.Animation.GetImage(Direction.Right, Action.Stand, 0);
                 i++;
             }
         }

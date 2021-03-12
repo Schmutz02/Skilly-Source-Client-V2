@@ -6,6 +6,7 @@ public class AssetLoader : MonoBehaviour
     private void Awake()
     {
         LoadSpriteSheets();
+        LoadXmls();
         Destroy(gameObject);
     }
 
@@ -25,6 +26,20 @@ public class AssetLoader : MonoBehaviour
             else
             {
                 AssetLibrary.AddImages(texture, sheetData);
+            }
+        }
+    }
+
+    private void LoadXmls()
+    {
+        var xmlAssets = Resources.LoadAll<TextAsset>("Xmls");
+
+        foreach (var xmlAsset in xmlAssets)
+        {
+            var objectsXml = XElement.Parse(xmlAsset.text);
+            foreach (var objectXml in objectsXml.Elements("Object"))
+            {
+                AssetLibrary.AddObjectXml(objectXml);
             }
         }
     }

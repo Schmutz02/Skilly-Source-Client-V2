@@ -70,15 +70,15 @@ public readonly struct CharacterStats
 
     public CharacterStats(XElement xml)
     {
-        ClassType = xml.ParseInt("ClassType");
+        ClassType = xml.ParseInt("ObjectType");
         Level = xml.ParseInt("Level");
-        Experience = xml.ParseInt("Experience");
-        HP = xml.ParseInt("HP");
-        MP = xml.ParseInt("MP");
+        Experience = xml.ParseInt("Exp");
+        HP = xml.ParseInt("HitPoints");
+        MP = xml.ParseInt("MagicPoints");
         Stats = xml.ParseIntArray("Stats", ",");
         Inventory = xml.ParseIntArray("Equipment", ",");
         ItemDatas = xml.ParseIntArray("ItemDatas", ",");
-        Fame = xml.ParseInt("Fame");
+        Fame = xml.ParseInt("CurrentFame");
         Tex1 = xml.ParseInt("Tex1");
         Tex2 = xml.ParseInt("Tex2");
         SkinType = xml.ParseInt("SkinType");

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using Models;
 using UnityEngine;
 using Utils;
 
@@ -10,6 +11,8 @@ public static class AssetLibrary
         new Dictionary<string, List<CharacterAnimation>>();
     
     private static readonly Dictionary<string, List<Sprite>> _Images = new Dictionary<string, List<Sprite>>();
+
+    private static readonly Dictionary<int, ObjectDesc> _Type2ObjectDesc = new Dictionary<int, ObjectDesc>();
     
     public static void AddAnimations(Texture2D texture, SpriteSheetData data)
     {
@@ -45,15 +48,27 @@ public static class AssetLibrary
             }
         }
     }
-
-    public static Sprite GetImage(string sheetName, int x, int y)
+    
+    public static void AddObjectXml(XElement xml)
     {
-        return _Images[sheetName][y * 16 + x];
+        var objectDesc = new ObjectDesc(xml);
+
+        _Type2ObjectDesc[objectDesc.Type] = objectDesc;
     }
 
-    public static Sprite GetAnimationFrame(string sheetName, int index, Direction direction, Action action, int frame)
+    public static Sprite GetImage(string sheetName, int index)
     {
-        return _Animations[sheetName][index].GetImage(direction, action, frame);
+        return _Images[sheetName][index];
+    }
+
+    public static CharacterAnimation GetAnimation(string sheetName, int index)
+    {
+        return _Animations[sheetName][index];
+    }
+
+    public static ObjectDesc GetObjectDesc(int type)
+    {
+        return _Type2ObjectDesc[type];
     }
 }
 
