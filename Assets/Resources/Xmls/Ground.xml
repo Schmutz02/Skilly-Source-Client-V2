@@ -1,0 +1,32 @@
+<GroundTypes>
+    <Ground type="0x04" id="Grey Open">
+        <Texture>
+            <File>lofiEnvironment</File>
+            <Index>0x04</Index>
+        </Texture>
+    </Ground>
+    <Ground type="0x05" id="Grey Closed">
+        <Texture>
+            <File>lofiEnvironment</File>
+            <Index>0x05</Index>
+        </Texture>
+    </Ground>
+    <Ground type="0x06" id="Grey Quad">
+        <Texture>
+            <File>lofiEnvironment</File>
+            <Index>0x06</Index>
+        </Texture>
+    </Ground>
+    <Ground type="0x0c" id="Brown Lines">
+        <Texture>
+            <File>lofiEnvironment</File>
+            <Index>0x0c</Index>
+        </Texture>
+        <BlendPriority>14</BlendPriority>
+    </Ground>
+    <Ground type="0xff" id="Empty">
+        <Texture><File>lofiEnvironment</File><Index>0xff</Index></Texture>
+        <NoWalk/>
+        <CompositePriority>-1</CompositePriority>
+    </Ground>
+</GroundTypes>

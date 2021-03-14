@@ -1,0 +1,15 @@
+<Objects>
+	<Object type="0x0100" id="Tree A">
+		<Class>GameObject</Class>
+		<Texture><File>lofiEnvironment</File><Index>0x49</Index></Texture>
+		<HitSound>monster/trees_hit</HitSound>
+		<DeathSound>monster/tress_death</DeathSound>
+		<MaxHitPoints>1000</MaxHitPoints>
+		<MinSize>130</MinSize>
+		<MaxSize>160</MaxSize>
+		<SizeStep>5</SizeStep>
+		<Static/>
+		<XpMult>0.0</XpMult>
+		<OccupySquare/>
+	</Object>
+</Objects>

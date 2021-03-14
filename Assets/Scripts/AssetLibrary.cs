@@ -12,6 +12,7 @@ public static class AssetLibrary
     private static readonly Dictionary<string, List<Sprite>> _Images = new Dictionary<string, List<Sprite>>();
 
     private static readonly Dictionary<int, ObjectDesc> _Type2ObjectDesc = new Dictionary<int, ObjectDesc>();
+    private static readonly Dictionary<int, TileDesc> _Type2TileDesc = new Dictionary<int, TileDesc>();
     
     public static void AddAnimations(Texture2D texture, SpriteSheetData data)
     {
@@ -36,7 +37,7 @@ public static class AssetLibrary
         if (!_Images.ContainsKey(data.Id))
             _Images[data.Id] = new List<Sprite>();
 
-        var rect = new Rect(0, 0, texture.width, texture.height);
+        var rect = new Rect(0, texture.height, texture.width, texture.height);
         _Images[data.Id] = SpriteUtils.CreateSprites(texture, rect, data.ImageWidth, data.ImageHeight);
     }
     
@@ -46,6 +47,12 @@ public static class AssetLibrary
         {
             var objectDesc = new ObjectDesc(objectXml);
             _Type2ObjectDesc[objectDesc.Type] = objectDesc;
+        }
+
+        foreach (var groundXml in xml.Elements("Ground"))
+        {
+            var tileDesc = new TileDesc(groundXml);
+            _Type2TileDesc[tileDesc.Type] = tileDesc;
         }
     }
 
@@ -62,6 +69,11 @@ public static class AssetLibrary
     public static ObjectDesc GetObjectDesc(int type)
     {
         return _Type2ObjectDesc[type];
+    }
+
+    public static TileDesc GetTileDesc(int type)
+    {
+        return _Type2TileDesc[type];
     }
 }
 

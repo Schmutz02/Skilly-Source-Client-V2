@@ -9,7 +9,7 @@ namespace UI.CharacterScreen
     {
         [SerializeField]
         private Image _image;
-        
+
         [SerializeField]
         private Button _frameButton;
 

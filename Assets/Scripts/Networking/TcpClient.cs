@@ -72,38 +72,37 @@ namespace Networking
         }
     }
 
-    public readonly struct Packet
-    {
-        public readonly PacketId Id;
-        public readonly byte[] Body;
-
-        public Packet(PacketId id, byte[] body)
-        {
-            Id = id;
-            Body = body;
-        }
-    }
-    
-    public static partial class TcpClient
+    public partial class TcpClient : MonoBehaviour
     {
         public const int BUFFER_SIZE = 0x50000;
         public const int PREFIX_LENGTH = 5;
         public const int PREFIX_LENGTH_WITH_ID = PREFIX_LENGTH - 1;
 
-        private static Socket _socket;
+        private Socket _socket;
         
         private static readonly ConcurrentQueue<byte[]> _Pending = new ConcurrentQueue<byte[]>();
 
-        private static Task _tickingTask;
-        private static bool _running;
+        private Task _tickingTask;
+        private bool _running;
 
-        private static readonly SendState _Send = new SendState();
-        private static readonly ReceiveState _Receive = new ReceiveState();
-
-        public static async Task InitAsync()
+        private readonly SendState _send = new SendState();
+        private readonly ReceiveState _receive = new ReceiveState();
+        
+        private async void OnEnable()
         {
-            _Send.Reset();
-            _Receive.Reset();
+            await InitAsync();
+            SendHello(Account.GameInitData.GameId, Account.Username, Account.Password);
+        }
+
+        private async void OnDisable()
+        {
+            await StopAsync();
+        }
+
+        private async Task InitAsync()
+        {
+            _send.Reset();
+            _receive.Reset();
             try
             {
                 _socket = new Socket(SocketType.Stream, ProtocolType.Tcp)
@@ -125,7 +124,7 @@ namespace Networking
             _running = true;
         }
 
-        public static async Task StopAsync()
+        private async Task StopAsync()
         {
             lock (_Pending)
             {
@@ -152,7 +151,7 @@ namespace Networking
             Debug.Log(Thread.CurrentThread.Name);
         }
 
-        private static async void NetworkTick()
+        private async void NetworkTick()
         {
             try
             {
@@ -168,60 +167,58 @@ namespace Networking
             }
         }
         
-        private static void StartSend()
+        private void StartSend()
         {
-            switch (_Send.State)
+            switch (_send.State)
             {
                 case SocketEventState.Awaiting:
                     if (_Pending.TryDequeue(out var packet))
                     {
-                        _Send.PacketBytes = packet;
-                        _Send.PacketLength = packet.Length;
-                        _Send.State = SocketEventState.InProgress;
+                        _send.PacketBytes = packet;
+                        _send.PacketLength = packet.Length;
+                        _send.State = SocketEventState.InProgress;
                         StartSend();
                     }
                     break;
                 case SocketEventState.InProgress:
-                    Buffer.BlockCopy(_Send.PacketBytes, 0, _Send.Data, PREFIX_LENGTH_WITH_ID, _Send.PacketLength);
-                    Buffer.BlockCopy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(_Send.PacketLength + PREFIX_LENGTH_WITH_ID)), 0, _Send.Data, 0, PREFIX_LENGTH_WITH_ID);
-                    var written = _socket.Send(_Send.Data, _Send.BytesWritten, _Send.PacketLength + PREFIX_LENGTH_WITH_ID - _Send.BytesWritten, SocketFlags.None);
-                    if (written < _Send.PacketLength + PREFIX_LENGTH_WITH_ID)
-                        _Send.BytesWritten += written;
+                    Buffer.BlockCopy(_send.PacketBytes, 0, _send.Data, PREFIX_LENGTH_WITH_ID, _send.PacketLength);
+                    Buffer.BlockCopy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(_send.PacketLength + PREFIX_LENGTH_WITH_ID)), 0, _send.Data, 0, PREFIX_LENGTH_WITH_ID);
+                    var written = _socket.Send(_send.Data, _send.BytesWritten, _send.PacketLength + PREFIX_LENGTH_WITH_ID - _send.BytesWritten, SocketFlags.None);
+                    if (written < _send.PacketLength + PREFIX_LENGTH_WITH_ID)
+                        _send.BytesWritten += written;
                     else
-                        _Send.Reset();
+                        _send.Reset();
                     StartSend();
                     break;
             }
         }
         
-        private static void StartReceive()
+        private void StartReceive()
         {
-            switch (_Receive.State)
+            switch (_receive.State)
             {
                 case SocketEventState.Awaiting:
                     if (_socket.Available >= PREFIX_LENGTH)
                     {
-                        _socket.Receive(_Receive.PacketBytes, PREFIX_LENGTH, SocketFlags.None);
-                        _Receive.PacketLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_Receive.PacketBytes, 0));
-                        _Receive.State = SocketEventState.InProgress;
+                        _socket.Receive(_receive.PacketBytes, PREFIX_LENGTH, SocketFlags.None);
+                        _receive.PacketLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_receive.PacketBytes, 0));
+                        _receive.State = SocketEventState.InProgress;
                         StartReceive();
                     }
                     break;
                 case SocketEventState.InProgress:
-                    if (_Receive.PacketLength < PREFIX_LENGTH ||
-                        _Receive.PacketLength > BUFFER_SIZE)
+                    if (_receive.PacketLength < PREFIX_LENGTH ||
+                        _receive.PacketLength > BUFFER_SIZE)
                     {
-                        //TODO will probably cause problems if this happens
-                        StopAsync().RunSynchronously();
-                        return;
+                        throw new Exception($"Unable to process packet of size {_receive.PacketLength}");
                     }
 
-                    if (_socket.Available + PREFIX_LENGTH >= _Receive.PacketLength) //Full packet now arrived. Time to process it.
+                    if (_socket.Available + PREFIX_LENGTH >= _receive.PacketLength) //Full packet now arrived. Time to process it.
                     {
                         if (_socket.Available != 0)
-                            _socket.Receive(_Receive.PacketBytes, PREFIX_LENGTH, _Receive.PacketLength - PREFIX_LENGTH, SocketFlags.None);
-                        PacketHandler.Read(new Packet((PacketId)_Receive.GetPacketId(), _Receive.GetPacketBody()));
-                        _Receive.Reset();
+                            _socket.Receive(_receive.PacketBytes, PREFIX_LENGTH, _receive.PacketLength - PREFIX_LENGTH, SocketFlags.None);
+                        _ToBeHandled.Enqueue(new Packet((PacketId)_receive.GetPacketId(), _receive.GetPacketBody()));
+                        _receive.Reset();
                     }
 
                     StartReceive();
