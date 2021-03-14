@@ -18,5 +18,15 @@ namespace Networking
                 _Pending.Enqueue((wtr.BaseStream as MemoryStream).ToArray());
             }
         }
+
+        public static void SendLoad(int charId)
+        {
+            using (var wtr = new PacketWriter(new MemoryStream()))
+            {
+                wtr.Write((byte)PacketId.Load);
+                wtr.Write(charId);
+                _Pending.Enqueue((wtr.BaseStream as MemoryStream).ToArray());
+            }
+        }
     }
 }

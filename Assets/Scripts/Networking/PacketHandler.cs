@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using Models;
+using UI;
 using UnityEngine;
+using Screen = UI.Screen;
 
 namespace Networking
 {
@@ -70,38 +72,54 @@ namespace Networking
     
     public class PacketHandler : MonoBehaviour
     {
-        public static PacketHandler Instance { get; private set; }
-        
         private static readonly ConcurrentQueue<Packet> _ToBeHandled = new ConcurrentQueue<Packet>();
-
-        private void Awake()
-        {
-            Instance = this;
-        }
 
         private void Update()
         {
             while (_ToBeHandled.TryDequeue(out var packet))
             {
-                Debug.Log(packet.Id);
-                Debug.Log(packet.Body);
+                Handle(packet);
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                ScreenManager.Instance.ChangeScreen(Screen.Character);
             }
         }
 
-        public void Read(Packet packet)
+        public static void Read(Packet packet)
         {
             _ToBeHandled.Enqueue(packet);
         }
 
-        private void OnEnable()
+        private async void OnEnable()
         {
-            TcpClient.Init();
-            TcpClient.SendHello(-1, Account.Username, Account.Password);
+            await TcpClient.InitAsync();
+            TcpClient.SendHello(Account.GameInitData.GameId, Account.Username, Account.Password);
         }
 
         private async void OnDisable()
         {
             await TcpClient.StopAsync();
+        }
+
+        private void Handle(Packet packet)
+        {
+            Debug.Log(packet.Id);
+            
+            switch (packet.Id)
+            {
+                case PacketId.MapInfo:
+                    if (Account.GameInitData.NewCharacter)
+                    {
+                        
+                    }
+                    else
+                    {
+                        TcpClient.SendLoad(Account.GameInitData.CharId); 
+                    }
+                    break;
+            }
         }
     }
 }

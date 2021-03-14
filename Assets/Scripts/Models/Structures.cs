@@ -55,6 +55,7 @@ public readonly struct ClassStats
 
 public readonly struct CharacterStats
 {
+    public readonly int Id;
     public readonly int ClassType;
     public readonly int Level;
     public readonly int Experience;
@@ -70,6 +71,7 @@ public readonly struct CharacterStats
 
     public CharacterStats(XElement xml)
     {
+        Id = xml.ParseInt("@id");
         ClassType = xml.ParseInt("ObjectType");
         Level = xml.ParseInt("Level");
         Experience = xml.ParseInt("Exp");
@@ -82,6 +84,20 @@ public readonly struct CharacterStats
         Tex1 = xml.ParseInt("Tex1");
         Tex2 = xml.ParseInt("Tex2");
         SkinType = xml.ParseInt("SkinType");
+    }
+}
+
+public readonly struct GameInitData
+{
+    public readonly int GameId;
+    public readonly int CharId;
+    public readonly bool NewCharacter;
+
+    public GameInitData(int gameId, int charId, bool newCharacter)
+    {
+        GameId = gameId;
+        CharId = charId;
+        NewCharacter = newCharacter;
     }
 }
 }

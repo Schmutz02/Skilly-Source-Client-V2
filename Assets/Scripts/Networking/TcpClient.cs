@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using Models;
 using UI;
@@ -89,7 +90,8 @@ namespace Networking
         public const int PREFIX_LENGTH = 5;
         public const int PREFIX_LENGTH_WITH_ID = PREFIX_LENGTH - 1;
 
-        private static readonly Socket _Socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private static Socket _socket;
+        
         private static readonly ConcurrentQueue<byte[]> _Pending = new ConcurrentQueue<byte[]>();
 
         private static Task _tickingTask;
@@ -98,28 +100,26 @@ namespace Networking
         private static readonly SendState _Send = new SendState();
         private static readonly ReceiveState _Receive = new ReceiveState();
 
-        public static void Init()
+        public static async Task InitAsync()
         {
             _Send.Reset();
             _Receive.Reset();
             try
             {
-                _Socket.Connect(Settings.IP_ADDRESS, Settings.GAME_PORT);
+                _socket = new Socket(SocketType.Stream, ProtocolType.Tcp)
+                {
+                    Blocking = false
+                };
+                
+                await _socket.ConnectAsync(Settings.IP_ADDRESS, Settings.GAME_PORT);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Debug.LogError("Unable to connect to game server");
                 ScreenManager.Instance.ChangeScreen(Screen.Character);
                 return;
             }
-            
-            if (!_Socket.Connected)
-            {
-                Debug.LogError("Unable to connect to game server");
-                ScreenManager.Instance.ChangeScreen(Screen.Character);
-                return;
-            }
-            
+
             Debug.Log("Connected!");
             _tickingTask = Task.Run(NetworkTick);
             _running = true;
@@ -140,17 +140,19 @@ namespace Networking
             await _tickingTask;
             try
             {
-                _Socket.Disconnect(true);
+                _socket.Shutdown(SocketShutdown.Both);
+                _socket.Close();
             }
-            catch
+            catch (Exception e)
             {
                 
             }
 
             Debug.Log("Disconnected!");
+            Debug.Log(Thread.CurrentThread.Name);
         }
 
-        private static void NetworkTick()
+        private static async void NetworkTick()
         {
             try
             {
@@ -162,7 +164,7 @@ namespace Networking
             }
             catch (Exception)
             {
-                StopAsync();
+                await StopAsync();
             }
         }
         
@@ -182,7 +184,7 @@ namespace Networking
                 case SocketEventState.InProgress:
                     Buffer.BlockCopy(_Send.PacketBytes, 0, _Send.Data, PREFIX_LENGTH_WITH_ID, _Send.PacketLength);
                     Buffer.BlockCopy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(_Send.PacketLength + PREFIX_LENGTH_WITH_ID)), 0, _Send.Data, 0, PREFIX_LENGTH_WITH_ID);
-                    var written = _Socket.Send(_Send.Data, _Send.BytesWritten, _Send.PacketLength + PREFIX_LENGTH_WITH_ID - _Send.BytesWritten, SocketFlags.None);
+                    var written = _socket.Send(_Send.Data, _Send.BytesWritten, _Send.PacketLength + PREFIX_LENGTH_WITH_ID - _Send.BytesWritten, SocketFlags.None);
                     if (written < _Send.PacketLength + PREFIX_LENGTH_WITH_ID)
                         _Send.BytesWritten += written;
                     else
@@ -197,9 +199,9 @@ namespace Networking
             switch (_Receive.State)
             {
                 case SocketEventState.Awaiting:
-                    if (_Socket.Available >= PREFIX_LENGTH)
+                    if (_socket.Available >= PREFIX_LENGTH)
                     {
-                        _Socket.Receive(_Receive.PacketBytes, PREFIX_LENGTH, SocketFlags.None);
+                        _socket.Receive(_Receive.PacketBytes, PREFIX_LENGTH, SocketFlags.None);
                         _Receive.PacketLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_Receive.PacketBytes, 0));
                         _Receive.State = SocketEventState.InProgress;
                         StartReceive();
@@ -214,11 +216,11 @@ namespace Networking
                         return;
                     }
 
-                    if (_Socket.Available + PREFIX_LENGTH >= _Receive.PacketLength) //Full packet now arrived. Time to process it.
+                    if (_socket.Available + PREFIX_LENGTH >= _Receive.PacketLength) //Full packet now arrived. Time to process it.
                     {
-                        if (_Socket.Available != 0)
-                            _Socket.Receive(_Receive.PacketBytes, PREFIX_LENGTH, _Receive.PacketLength - PREFIX_LENGTH, SocketFlags.None);
-                        PacketHandler.Instance.Read(new Packet((PacketId)_Receive.GetPacketId(), _Receive.GetPacketBody()));
+                        if (_socket.Available != 0)
+                            _socket.Receive(_Receive.PacketBytes, PREFIX_LENGTH, _Receive.PacketLength - PREFIX_LENGTH, SocketFlags.None);
+                        PacketHandler.Read(new Packet((PacketId)_Receive.GetPacketId(), _Receive.GetPacketBody()));
                         _Receive.Reset();
                     }
 

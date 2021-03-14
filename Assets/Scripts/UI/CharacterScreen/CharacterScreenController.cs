@@ -22,9 +22,7 @@ namespace UI.CharacterScreen
             {
                 if (i < Account.Characters.Count)
                 {
-                    var desc = AssetLibrary.GetObjectDesc(Account.Characters[i].ClassType);
-                    child.GetComponent<Image>().sprite =
-                        desc.TextureData.Animation.GetFrame(Direction.Right, Action.Stand, 0);
+                    child.GetComponent<CharacterRect>().Init(Account.Characters[i]);
                     i++;
                     continue;
                 }
@@ -34,9 +32,8 @@ namespace UI.CharacterScreen
             
             while (i < Account.Characters.Count)
             {
-                var desc = AssetLibrary.GetObjectDesc(Account.Characters[i].ClassType);
-                var characterImage = Instantiate(_characterRectPrefab, _characterGroup).GetComponent<Image>();
-                characterImage.sprite = desc.TextureData.Animation.GetFrame(Direction.Right, Action.Stand, 0);
+                var characterRect = Instantiate(_characterRectPrefab, _characterGroup).GetComponent<CharacterRect>();
+                characterRect.Init(Account.Characters[i]);
                 i++;
             }
         }
