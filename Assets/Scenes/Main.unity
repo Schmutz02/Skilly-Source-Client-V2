@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 49128059}
   - component: {fileID: 49128060}
   m_Layer: 0
-  m_Name: Tcp Client
+  m_Name: Packet Handler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 49128058}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 706e426745aa474f8d28dcf6ef72e0e9, type: 3}
+  m_Script: {fileID: 11500000, guid: 08350c3600f74ffe9ab1c16f99a85dc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _map: {fileID: 1349212827}
@@ -553,9 +553,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1fd0f5bf774410e9a8cfac6adf84223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _menuScreen: {fileID: 110219354998469472}
-  _characterScreen: {fileID: 9151608960849163615}
-  _gameScreen: {fileID: 437305920}
+  _menuView: {fileID: 110219354998469472}
+  _characterView: {fileID: 9151608960849163615}
+  _gameView: {fileID: 437305920}
 --- !u!4 &1042259956
 Transform:
   m_ObjectHideFlags: 0
@@ -1270,7 +1270,7 @@ GameObject:
   - component: {fileID: 4567926717179962091}
   - component: {fileID: 110219354998469473}
   m_Layer: 0
-  m_Name: '[Menu Screen]'
+  m_Name: '[Menu View]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3458,7 +3458,7 @@ GameObject:
   - component: {fileID: 5209023366680753278}
   - component: {fileID: 9151608960849163616}
   m_Layer: 0
-  m_Name: '[Character Screen]'
+  m_Name: '[Character View]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

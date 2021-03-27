@@ -60,7 +60,7 @@ namespace UI.TitleScreen
 
                 if (Account.Exists)
                 {
-                    ScreenManager.Instance.ChangeScreen(Screen.Character);
+                    ViewManager.Instance.ChangeView(View.Character);
                 }
             }
 

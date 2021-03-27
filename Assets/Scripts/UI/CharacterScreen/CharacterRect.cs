@@ -31,7 +31,7 @@ namespace UI.CharacterScreen
         private void OnFrameClick()
         {
             Account.SetGameInitData(-1, _charId, false); // probably not a good way to do this
-            ScreenManager.Instance.ChangeScreen(Screen.Game);
+            ViewManager.Instance.ChangeView(View.Game);
         }
     }
 }
