@@ -1,5 +1,6 @@
 using Game;
 using Game.Entities;
+using Game.MovementControllers;
 using Models;
 using UnityEngine;
 
@@ -45,14 +46,20 @@ namespace Networking.Packets.Incoming
             foreach (var add in _adds)
             {
                 var desc = AssetLibrary.GetObjectDesc(add.ObjectType);
-                var prefab = Resources.Load<GameObject>($"Entities/{desc.Class}");
-                var entity = map.AddObject(prefab, add.ObjectStatus);
-                entity.Init(add);
+                var prefab = Resources.Load<Entity>($"Entities/{desc.Class}");
+                var entity = map.CreateEntity(prefab); //TODO add pooling class
+                entity.Init(add, map);
                 
+                map.AddObject(entity, add.ObjectStatus.Position);
+
+                var isMyPlayer = false;
                 if (entity.ObjectId == handler.PlayerId)
                 {
                     handler.Player = entity as Player;
+                    isMyPlayer = true;
                 }
+                
+                entity.AddMovementController(isMyPlayer);
             }
 
             foreach (var drop in _drops)

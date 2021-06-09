@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Linq;
 using Utils;
 
@@ -99,6 +100,38 @@ namespace Models.Static
         OwnerAccountId
     }
     
+    [Flags]
+    public enum ConditionEffect : ulong
+    {
+        Nothing = 1 << 0,
+        Quiet = 1 << 1,
+        Weak = 1 << 2,
+        Slowed = 1 << 3,
+        Sick = 1 << 4,
+        Dazed = 1 << 5,
+        Stunned = 1 << 6,
+        Blind = 1 << 7,
+        Hallucinating = 1 << 8,
+        Drunk = 1 << 9,
+        Confused = 1 << 10,
+        StunImmune = 1 << 11,
+        Invisible = 1 << 12,
+        Paralyzed = 1 << 13,
+        Speedy = 1 << 14,
+        Bleeding = 1 << 15,
+        Healing = 1 << 16,
+        Damaging = 1 << 17,
+        Berserk = 1 << 18,
+        Stasis = 1 << 19,
+        StasisImmune = 1 << 20,
+        Invincible = 1 << 21,
+        Invulnerable = 1 << 23,
+        Armored = 1 << 24,
+        ArmorBroken = 1 << 25,
+        Hexed = 1 << 26,
+        NinjaSpeedy = 1 << 27,
+    }
+    
     public enum ItemType : byte
     {
         All,
@@ -136,7 +169,12 @@ namespace Models.Static
 
         public readonly string DisplayId;
 
+        public readonly bool Static;
         public readonly string Class;
+        
+        public readonly bool OccupySquare;
+        public readonly bool FullOccupy;
+        public readonly bool EnemyOccupySquare;
 
         public readonly TextureData TextureData;
 
@@ -152,7 +190,12 @@ namespace Models.Static
 
             DisplayId = xml.ParseString("DisplayId", Id);
 
+            Static = xml.ParseBool("Static");
             Class = xml.ParseString("Class");
+            
+            OccupySquare = xml.ParseBool("OccupySquare");
+            FullOccupy = xml.ParseBool("FullOccupy");
+            EnemyOccupySquare = xml.ParseBool("EnemyOccupySquare");
 
             TextureData = new TextureData(xml);
 

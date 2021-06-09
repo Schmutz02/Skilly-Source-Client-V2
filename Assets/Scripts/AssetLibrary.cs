@@ -25,7 +25,7 @@ public static class AssetLibrary
             {
                 var rect = new Rect(x, y, data.AnimationWidth, data.AnimationHeight);
                 var frames = SpriteUtils.CreateSprites(texture, rect, data.ImageWidth, data.ImageHeight);
-                var animation = new CharacterAnimation(frames, data.StartDirection);
+                var animation = new CharacterAnimation(frames, data.StartFacing);
                 
                 _Animations[data.Id].Add(animation);
             }
@@ -83,7 +83,7 @@ public readonly struct SpriteSheetData
     public readonly string SheetName;
     public readonly int AnimationWidth;
     public readonly int AnimationHeight;
-    public readonly Direction StartDirection;
+    public readonly Facing StartFacing;
     public readonly int ImageWidth;
     public readonly int ImageHeight;
 
@@ -95,7 +95,7 @@ public readonly struct SpriteSheetData
         var animationSize = xml.ParseIntArray("AnimationSize", "x", new [] {0, 0});
         AnimationWidth = animationSize[0];
         AnimationHeight = animationSize[1];
-        StartDirection = xml.ParseEnum("StartDirection", Direction.Right);
+        StartFacing = xml.ParseEnum("StartDirection", Facing.Right);
 
         var imageSize = xml.ParseIntArray("ImageSize", "x", new [] {0, 0});
         ImageWidth = imageSize[0];
@@ -108,7 +108,7 @@ public readonly struct SpriteSheetData
     }
 }
 
-public enum Direction
+public enum Facing
 {
     Up,
     Down,

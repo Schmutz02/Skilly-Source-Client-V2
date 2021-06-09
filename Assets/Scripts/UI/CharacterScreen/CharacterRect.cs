@@ -23,7 +23,7 @@ namespace UI.CharacterScreen
         public void Init(CharacterStats stats)
         {
             var desc = AssetLibrary.GetObjectDesc(stats.ClassType);
-            _image.sprite = desc.TextureData.Animation.GetFrame(Direction.Right, Action.Stand, 0);
+            _image.sprite = desc.TextureData.Animation.GetFrame(Facing.Right, Action.Stand, 0);
 
             _charId = stats.Id;
         }

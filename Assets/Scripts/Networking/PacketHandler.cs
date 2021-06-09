@@ -105,6 +105,7 @@ namespace Networking
         private void OnDisable()
         {
             TcpTicker.Stop();
+            _map.Clear();
         }
 
         private void Update()

@@ -6,42 +6,42 @@ namespace Models.Static
 {
     public class CharacterAnimation
     {
-        private readonly Dictionary<Direction, Dictionary<Action, List<Sprite>>> _directionToAnimation =
-            new Dictionary<Direction, Dictionary<Action, List<Sprite>>>();
+        private readonly Dictionary<Facing, Dictionary<Action, List<Sprite>>> _directionToAnimation =
+            new Dictionary<Facing, Dictionary<Action, List<Sprite>>>();
     
-        public CharacterAnimation(List<Sprite> frames, Direction startDirection)
+        public CharacterAnimation(List<Sprite> frames, Facing startFacing)
         {
-            if (startDirection == Direction.Right)
+            if (startFacing == Facing.Right)
             {
-                _directionToAnimation[Direction.Right] = GetDirection(frames, 0, false);
-                _directionToAnimation[Direction.Left] = GetDirection(frames, 0, true);
+                _directionToAnimation[Facing.Right] = GetDirection(frames, 0, false);
+                _directionToAnimation[Facing.Left] = GetDirection(frames, 0, true);
                 if (frames.Count >= 14)
                 {
-                    _directionToAnimation[Direction.Down] = GetDirection(frames, 7, false);
+                    _directionToAnimation[Facing.Down] = GetDirection(frames, 7, false);
                     if (frames.Count >= 21)
                     {
-                        _directionToAnimation[Direction.Up] = GetDirection(frames, 14, false);
+                        _directionToAnimation[Facing.Up] = GetDirection(frames, 14, false);
                     }
                 }
             }
             else
             {
-                _directionToAnimation[Direction.Down] = GetDirection(frames, 0, false);
+                _directionToAnimation[Facing.Down] = GetDirection(frames, 0, false);
                 if (frames.Count >= 14)
                 {
-                    _directionToAnimation[Direction.Right] = GetDirection(frames, 7, false);
-                    _directionToAnimation[Direction.Left] = GetDirection(frames, 7, true);
+                    _directionToAnimation[Facing.Right] = GetDirection(frames, 7, false);
+                    _directionToAnimation[Facing.Left] = GetDirection(frames, 7, true);
                     if (frames.Count >= 21)
                     {
-                        _directionToAnimation[Direction.Up] = GetDirection(frames, 14, false);
+                        _directionToAnimation[Facing.Up] = GetDirection(frames, 14, false);
                     }
                 }
             }
         }
 
-        public Sprite GetFrame(Direction direction, Action action, int frame)
+        public Sprite GetFrame(Facing facing, Action action, int frame)
         {
-            return _directionToAnimation[direction][action][frame];
+            return _directionToAnimation[facing][action][frame];
         }
 
         private static Dictionary<Action, List<Sprite>> GetDirection(List<Sprite> frames, int offset, bool mirror)

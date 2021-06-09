@@ -62,9 +62,9 @@ namespace Networking.Packets.Incoming
             var isMyPlayer = objectStatus.Id == playerId;
             if (!isMyPlayer)
             {
-                //TODO change to verify??
-                entity.transform.position = objectStatus.Position;
+                entity.OnNewTick(objectStatus.Position);    
             }
+            
             entity.UpdateObjectStats(objectStatus.Stats);
 
             if (!(entity is Player player))
