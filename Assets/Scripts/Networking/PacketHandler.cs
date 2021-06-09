@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Game;
+using Game.Entities;
 using Models;
 using Networking.Packets;
 using Networking.Packets.Outgoing;
@@ -79,6 +80,15 @@ namespace Networking
     {
         private ConcurrentQueue<IncomingPacket> _toBeHandled;
 
+        [HideInInspector]
+        public int PlayerId;
+
+        [HideInInspector]
+        public int CharId;
+
+        [HideInInspector]
+        public Player Player;
+
         [SerializeField]
         private Map _map;
 
@@ -107,12 +117,6 @@ namespace Networking
             while (_toBeHandled.TryDequeue(out var packet))
             {
                 packet.Handle(this, _map);
-            }
-
-            //TODO remove
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                ViewManager.Instance.ChangeView(View.Character);
             }
         }
         

@@ -30,7 +30,7 @@ namespace UI.CharacterScreen
 
         private void OnFrameClick()
         {
-            Account.SetGameInitData(-1, _charId, false); // probably not a good way to do this
+            Account.SetGameInitData(-1, _charId, false); // TODO probably not a good way to do this
             ViewManager.Instance.ChangeView(View.Game);
         }
     }

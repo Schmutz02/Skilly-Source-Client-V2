@@ -167,6 +167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08350c3600f74ffe9ab1c16f99a85dc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerId: 0
+  CharId: 0
+  Player: {fileID: 0}
   _map: {fileID: 1349212827}
 --- !u!1 &50060063
 GameObject:
@@ -772,7 +775,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tilemap: {fileID: 1776870506}
-  _entity: {fileID: 1067565278717044372, guid: a4fa260802ae5804f9f0e0d69d8eaf6a, type: 3}
   _entityParentTransform: {fileID: 1252946165}
 --- !u!156049354 &1349212828
 Grid:
@@ -996,7 +998,7 @@ Tilemap:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: 0, y: 0, z: 0}
   m_Size: {x: 0, y: 0, z: 1}
-  m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
+  m_TileAnchor: {x: 0, y: 0, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
     e00: 1

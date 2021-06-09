@@ -1,17 +1,18 @@
 using Game;
+using Game.Entities;
 using Models;
+using UnityEngine;
 
 namespace Networking.Packets.Incoming
 {
     public class Update : IncomingPacket
     {
         public override PacketId Id => PacketId.Update;
+        public override IncomingPacket CreateInstance() => new Update();
         
         private TileData[] _tiles;
         private ObjectDefinition[] _adds;
         private ObjectDrop[] _drops;
-
-        public override IncomingPacket CreateInstance() => new Update();
 
         public override void Read(PacketReader rdr)
         {
@@ -43,7 +44,15 @@ namespace Networking.Packets.Incoming
 
             foreach (var add in _adds)
             {
-                map.AddObject(add);
+                var desc = AssetLibrary.GetObjectDesc(add.ObjectType);
+                var prefab = Resources.Load<GameObject>($"Entities/{desc.Class}");
+                var entity = map.AddObject(prefab, add.ObjectStatus);
+                entity.Init(add);
+                
+                if (entity.ObjectId == handler.PlayerId)
+                {
+                    handler.Player = entity as Player;
+                }
             }
 
             foreach (var drop in _drops)
