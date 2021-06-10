@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Entities;
+using Game.EntityWrappers;
 using Models;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -18,8 +19,7 @@ namespace Game
 
         private Dictionary<int, Entity> _entities;
         private List<Projectile> _projectiles;
-        private ProjectileWrapper _projectileWrapper;
-        
+
         //TODO probably extract out
         public int NextProjectileId;
 
@@ -27,7 +27,6 @@ namespace Game
         {
             _entities = new Dictionary<int, Entity>();
             _projectiles = new List<Projectile>();
-            _projectileWrapper = Resources.Load<ProjectileWrapper>("Entities/Projectile");
         }
 
         public void Clear()
@@ -60,18 +59,13 @@ namespace Game
             _tilemap.SetTile(new Vector3Int(tileData.X, tileData.Y, 0), tile);
         }
 
-        public Entity CreateEntity(Entity entityPrefab)
-        {
-            return Instantiate(entityPrefab, _entityParentTransform);
-        }
-
-        public void AddProjectile(Projectile projectile, Vector2 position)
-        {
-            var wrapper = Instantiate(_projectileWrapper, _entityParentTransform);
-            wrapper.transform.position = position;
-            wrapper.Init(projectile);
-            _projectiles.Add(projectile);
-        }
+        // private void AddProjectile(Projectile projectile, Vector2 position)
+        // {
+        //     var wrapper = Instantiate(_projectileWrapper, _entityParentTransform);
+        //     wrapper.transform.position = position;
+        //     wrapper.Init(projectile);
+        //     
+        // }
 
         public void RemoveProjectile(Projectile projectile)
         {
@@ -97,8 +91,15 @@ namespace Game
             //     var type = defaultEntity.GetComponent<Entity>();
             //     return child.gameObject.AddComponent(type.GetType()) as Entity;
             // }
+            var wrapperPrefab = Resources.Load<EntityWrapper>($"Entities/{entity.Desc.Class}");
+            var wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
+            wrapper.transform.position = position;
+            wrapper.Init(entity);
             
-            entity.transform.position = position;
+            if (entity is Projectile projectile)
+                _projectiles.Add(projectile);
+            
+            entity.Position = position;
 
             if (entity.Desc.Static)
             {
@@ -123,7 +124,7 @@ namespace Game
         public void MoveEntity(Entity entity, Vector2 position)
         {
             var tile = GetTile(position);
-            entity.transform.position = position;
+            entity.Position = position;
 
             if (entity.Desc.Static)
             {

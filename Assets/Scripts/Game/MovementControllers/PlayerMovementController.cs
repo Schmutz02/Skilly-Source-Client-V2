@@ -11,16 +11,10 @@ namespace Game.MovementControllers
         private const float _MOVE_THRESHOLD = 0.4f;
         
         private readonly Player _player;
-        private readonly Transform _entityTransform;
 
-        private readonly Camera _camera;
-        
-        public PlayerMovementController(Player player, Camera camera)
+        public PlayerMovementController(Player player)
         {
             _player = player;
-            _entityTransform = player.transform;
-
-            _camera = camera;
         }
         
         public void Tick(float deltaTime)
@@ -36,12 +30,12 @@ namespace Game.MovementControllers
                 yVelocity = -temp;
                 rotate = -rotate;
             }
-            
-            var playerAngle = _camera.transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+
+            var cameraAngle = Settings.CameraAngle;
             if (rotate != 0)
             {
-                playerAngle += deltaTime * Settings.PLAYER_ROTATE_SPEED * rotate;
-                _camera.transform.rotation = Quaternion.Euler(0, 0, playerAngle * Mathf.Rad2Deg);
+                cameraAngle += deltaTime * Settings.PLAYER_ROTATE_SPEED * rotate;
+                Settings.CameraAngle = cameraAngle;
             }
 
             var direction = Vector2.zero;
@@ -49,8 +43,8 @@ namespace Game.MovementControllers
             {
                 var moveSpeed = _player.GetMovementSpeed();
                 var moveVecAngle = Mathf.Atan2(yVelocity, xVelocity);
-                direction.x = moveSpeed * Mathf.Cos(playerAngle + moveVecAngle);
-                direction.y = moveSpeed * Mathf.Sin(playerAngle + moveVecAngle);
+                direction.x = moveSpeed * Mathf.Cos(cameraAngle + moveVecAngle);
+                direction.y = moveSpeed * Mathf.Sin(cameraAngle + moveVecAngle);
             }
 
             if (_player.PushX != 0 || _player.PushY != 0)
@@ -59,7 +53,7 @@ namespace Game.MovementControllers
                 direction.y -= _player.PushY;
             }
 
-            ValidateAndMove((Vector2)_entityTransform.position + deltaTime * direction);
+            ValidateAndMove(_player.Position + deltaTime * direction);
         }
 
         private void ValidateAndMove(Vector2 pos)
@@ -73,8 +67,8 @@ namespace Game.MovementControllers
             if (_player.HasConditionEffect(ConditionEffect.Paralyzed))
                 return pos;
 
-            var dx = pos.x - _entityTransform.position.x;
-            var dy = pos.y - _entityTransform.position.y;
+            var dx = pos.x - _player.Position.x;
+            var dy = pos.y - _player.Position.y;
 
             if (dx < _MOVE_THRESHOLD && 
                 dx > -_MOVE_THRESHOLD && 
@@ -87,7 +81,7 @@ namespace Game.MovementControllers
             var ds = _MOVE_THRESHOLD / Math.Max(Math.Abs(dx), Math.Abs(dy));
             var tds = 0f;
 
-            pos = _entityTransform.position;
+            pos = _player.Position;
             var done = false;
             while (!done)
             {
@@ -109,25 +103,25 @@ namespace Game.MovementControllers
             var fx = 0f;
             var fy = 0f;
 
-            var isFarX = _entityTransform.position.x % .5f == 0 && pos.x != _entityTransform.position.x || (int)(_entityTransform.position.x / .5f) != (int)(pos.x / .5f);
-            var isFarY = _entityTransform.position.y % .5f == 0 && pos.y != _entityTransform.position.y || (int)(_entityTransform.position.y / .5f) != (int)(pos.y / .5f);
+            var isFarX = _player.Position.x % .5f == 0 && pos.x != _player.Position.x || (int)(_player.Position.x / .5f) != (int)(pos.x / .5f);
+            var isFarY = _player.Position.y % .5f == 0 && pos.y != _player.Position.y || (int)(_player.Position.y / .5f) != (int)(pos.y / .5f);
 
-            if (!isFarX && !isFarY || _player.Owner.RegionUnblocked(pos.x, pos.y))
+            if (!isFarX && !isFarY || _player.Map.RegionUnblocked(pos.x, pos.y))
             {
                 return pos;
             }
 
             if (isFarX)
             {
-                fx = pos.x > _entityTransform.position.x ? (int)(pos.x * 2) / 2f : (int)(_entityTransform.position.x * 2) / 2f;
-                if ((int)fx > (int)_entityTransform.position.x)
+                fx = pos.x > _player.Position.x ? (int)(pos.x * 2) / 2f : (int)(_player.Position.x * 2) / 2f;
+                if ((int)fx > (int)_player.Position.x)
                     fx -= 0.01f;
             }
 
             if (isFarY)
             {
-                fy = pos.y > _entityTransform.position.y ? (int)(pos.y * 2) / 2f : (int)(_entityTransform.position.y * 2) / 2f;
-                if ((int)fy > (int)_entityTransform.position.y)
+                fy = pos.y > _player.Position.y ? (int)(pos.y * 2) / 2f : (int)(_player.Position.y * 2) / 2f;
+                if ((int)fy > (int)_player.Position.y)
                     fy -= 0.01f;
             }
 
@@ -143,17 +137,17 @@ namespace Game.MovementControllers
                 return pos;
             }
 
-            var ax = pos.x > _entityTransform.position.x ? pos.x - fx : fx - pos.x;
-            var ay = pos.y > _entityTransform.position.y ? pos.y - fy : fy - pos.y;
+            var ax = pos.x > _player.Position.x ? pos.x - fx : fx - pos.x;
+            var ay = pos.y > _player.Position.y ? pos.y - fy : fy - pos.y;
             if (ax > ay)
             {
-                if (_player.Owner.RegionUnblocked(pos.x, fy))
+                if (_player.Map.RegionUnblocked(pos.x, fy))
                 {
                     pos.y = fy;
                     return pos;
                 }
 
-                if (_player.Owner.RegionUnblocked(fx, pos.y))
+                if (_player.Map.RegionUnblocked(fx, pos.y))
                 {
                     pos.x = fx;
                     return pos;
@@ -161,13 +155,13 @@ namespace Game.MovementControllers
             }
             else
             {
-                if (_player.Owner.RegionUnblocked(fx, pos.y))
+                if (_player.Map.RegionUnblocked(fx, pos.y))
                 {
                     pos.x = fx;
                     return pos;
                 }
                
-                if (_player.Owner.RegionUnblocked(pos.x, fy))
+                if (_player.Map.RegionUnblocked(pos.x, fy))
                 {
                     pos.y = fy;
                     return pos;

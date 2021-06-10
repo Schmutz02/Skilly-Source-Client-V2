@@ -51,10 +51,7 @@ namespace Networking.Packets.Incoming
             }
             
             //TODO might need to moves requested
-            TcpTicker.Send(new Move(
-                    (int)(Time.time * 1000), 
-                    handler.Player.transform.position)
-            );
+            TcpTicker.Send(new Move(GameTime.Time, handler.Player.Position));
         }
 
         private void ProcessObjectStatus(ObjectStatus objectStatus, int playerId, Entity entity)

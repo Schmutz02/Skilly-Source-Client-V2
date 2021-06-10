@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
 using Game.MovementControllers;
-using Models;
 using Models.Static;
 using UnityEngine;
-using Action = Models.Static.Action;
 
 namespace Game.Entities
 {
-    [RequireComponent(typeof(SpriteRenderer))]
-    public class Entity : MonoBehaviour
+    public partial class Entity
     {
-        [NonSerialized]
+        private static int _nextFakeObjectId;
+        
         private ConditionEffect _conditionEffects;
         public int Hp { get; private set; }
         public int MaxHp { get; private set; }
@@ -19,92 +15,38 @@ namespace Game.Entities
         public string Name { get; private set; }
         public int AltTextureIndex { get; private set; }
 
-        public Map Owner { get; private set; }
+        public readonly Map Map;
         public Square Square;
-        public int ObjectId { get; private set; }
-        public ObjectDesc Desc { get; private set; }
+        public readonly int ObjectId;
+        public readonly ObjectDesc Desc;
+        public Vector2 Position;
+        public float Rotation; // in radians
+        public readonly bool IsMyPlayer;
 
-        private IMovementController _movementController;
-        private PlayerShootController _shootController;
+        private readonly IMovementController _movementController;
 
-        private SpriteRenderer _renderer;
-        public MainCameraManager CameraManager { get; private set; }
-
-        private void Awake()
+        public Entity(ObjectDesc desc, int objectId, bool isMyPlayer, Map map)
         {
-            _renderer = GetComponent<SpriteRenderer>();
-            CameraManager = Camera.main.GetComponent<MainCameraManager>();
-        }
-
-        public virtual void Init(ObjectDefinition def, Map map)
-        {
-            var desc = AssetLibrary.GetObjectDesc(def.ObjectType);
             Desc = desc;
-            
-            _renderer.sprite = desc.TextureData.Texture ??
-                               desc.TextureData.Animation.GetFrame(Facing.Down, Action.Stand, 0);
+            Map = map;
+            ObjectId = objectId;
+            Position = Vector2.zero;
+            IsMyPlayer = isMyPlayer;
 
-            Owner = map;
-            ObjectId = def.ObjectStatus.Id;
-            CameraManager.AddRotatingEntity(this);
-        }
-
-        public void AddControllers(bool isMyPlayer)
-        {
-            if (isMyPlayer && this is Player player)
-            {
-                _movementController = new PlayerMovementController(player, CameraManager.Camera);
-                _shootController = new PlayerShootController(player, CameraManager.Camera);
-            }
+            if (isMyPlayer)
+                _movementController = new PlayerMovementController(this as Player);
             else
                 _movementController = new EntityMovementController(this);
         }
 
-        public void UpdateObjectStats(Dictionary<StatType, object> stats)
+        public static int GetNextFakeObjectId()
         {
-            foreach (var stat in stats)
-            {
-                var key = stat.Key;
-                var value = stat.Value;
-
-                switch (key)
-                {
-                    case StatType.Condition:
-                        _conditionEffects = (ConditionEffect) (int) value;
-                        continue;
-                    case StatType.MaxHp:
-                        MaxHp = (int) value;
-                        continue;
-                    case StatType.Hp:
-                        Hp = (int) value;
-                        continue;
-                    case StatType.Size:
-                        Size = (int) value;
-                        continue;
-                    case StatType.Name:
-                        Name = (string) value;
-                        name = (string) value;
-                        continue;
-                    case StatType.AltTexture:
-                        AltTextureIndex = (int) value;
-                        continue;
-                }
-
-                if (this is Player player)
-                {
-                    player.UpdateStat(key, value);
-                }
-            }
-        }
-        
-        protected virtual void UpdateStat(StatType stat, object value)
-        {
-            //TODO probably change
+            return 2130706432 | _nextFakeObjectId++;
         }
 
         public void MoveTo(Vector2 position)
         {
-            Owner.MoveEntity(this, position);
+            Map.MoveEntity(this, position);
         }
 
         public void OnNewTick(Vector2 position)
@@ -115,18 +57,33 @@ namespace Game.Entities
                 return;
 
             movement.TargetPosition = position;
-            movement.Direction = (movement.TargetPosition - (Vector2)transform.position) / 127f;
+            movement.Direction = (movement.TargetPosition - Position) / 127f;
         }
 
-        private void Update()
+        public virtual bool Tick(int time, int dt, Camera camera)
         {
-            _movementController?.Tick(Time.deltaTime * 1000);
-            _shootController?.Tick(Time.time * 1000);
+            _movementController?.Tick(dt);
+            return true;
         }
 
         public bool HasConditionEffect(ConditionEffect conditionEffect)
         {
             return (_conditionEffects & conditionEffect) != 0;
+        }
+
+        public static Entity Resolve(ushort type, int objectId, bool isMyPlayer, Map map)
+        {
+            var desc = AssetLibrary.GetObjectDesc(type);
+            
+            Debug.Log($"Resolving entity with class {desc.Class}");
+
+            switch (desc.Class)
+            {
+                case "Player":
+                    return new Player(AssetLibrary.GetPlayerDesc(type), objectId, isMyPlayer, map);
+            }
+
+            return new Entity(desc, objectId, isMyPlayer, map);
         }
     }
 }

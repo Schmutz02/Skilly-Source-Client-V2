@@ -1,8 +1,6 @@
 using Game;
 using Game.Entities;
-using Game.MovementControllers;
 using Models;
-using UnityEngine;
 
 namespace Networking.Packets.Incoming
 {
@@ -45,23 +43,19 @@ namespace Networking.Packets.Incoming
 
             foreach (var add in _adds)
             {
-                var desc = AssetLibrary.GetObjectDesc(add.ObjectType);
-                var prefab = Resources.Load<Entity>($"Entities/{desc.Class}"); //TODO should probably cache these
-                var entity = map.CreateEntity(prefab); //TODO add pooling class
-                entity.Init(add, map);
+                // var prefab = Resources.Load<Entity>($"Entities/{desc.Class}"); //TODO should probably cache these
+                // var entity = map.CreateEntity(prefab); //TODO add pooling class
+                // entity.Init(add, map);
+                var isMyPlayer = add.ObjectStatus.Id == handler.PlayerId;
+                var entity = Entity.Resolve(add.ObjectType, add.ObjectStatus.Id, isMyPlayer, map);
                 
                 map.AddObject(entity, add.ObjectStatus.Position);
 
-                var isMyPlayer = false;
                 if (entity.ObjectId == handler.PlayerId)
                 {
                     handler.Player = entity as Player;
                     handler.Player!.Random = handler.Random;
-                    entity.CameraManager.SetFocus(entity.gameObject);
-                    isMyPlayer = true;
                 }
-                
-                entity.AddControllers(isMyPlayer);
             }
 
             foreach (var drop in _drops)

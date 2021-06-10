@@ -1,4 +1,3 @@
-using Game.MovementControllers;
 using Models;
 using Models.Static;
 using UnityEngine;
@@ -17,7 +16,7 @@ namespace Game.Entities
 
         public float MoveMultiplier = 1f;
 
-        public new PlayerDesc Desc { get; private set; }
+        public new PlayerDesc Desc { get; }
         public int AccountId { get; private set; }
         public int Exp { get; private set; }
         public int NextLevelExp { get; private set; }
@@ -45,17 +44,19 @@ namespace Game.Entities
         public int Wisdom { get; private set; }
         public float PushX { get; private set; }
         public float PushY { get; private set; }
-        public ItemType[] SlotTypes { get; private set; }
-        public int[] Equipment { get; private set; }
-        public int[] ItemDatas { get; private set; }
+        public ItemType[] SlotTypes { get; }
+        public int[] Equipment { get; }
+        public int[] ItemDatas { get; }
         public wRandom Random;
+        private readonly PlayerShootController _shootController;
 
-        public override void Init(ObjectDefinition def, Map map)
+        public Player(PlayerDesc desc, int objectId, bool isMyPlayer, Map map) : base(desc, objectId, isMyPlayer, map)
         {
-            base.Init(def, map);
-
-            Desc = AssetLibrary.GetPlayerDesc(def.ObjectType);
-
+            Desc = desc;
+            
+            if (isMyPlayer)
+                _shootController = new PlayerShootController(this);
+            
             SlotTypes = Desc.SlotTypes;
             Equipment = new int[SlotTypes.Length];
             ItemDatas = new int[SlotTypes.Length];
@@ -66,85 +67,96 @@ namespace Game.Entities
             }
         }
 
+        public override bool Tick(int time, int dt, Camera camera)
+        {
+            base.Tick(time, dt, camera);
+            
+            _shootController?.Tick(time, camera);
+
+            return true;
+        }
+
         protected override void UpdateStat(StatType statType, object value)
         {
+            base.UpdateStat(statType, value);
+            
             switch (statType)
             {
                 case StatType.AccountId:
                     AccountId = (int) value;
-                    break;
+                    return;
                 case StatType.Exp:
                     Exp = (int) value;
-                    break;
+                    return;
                 case StatType.NextLevelExp:
                     NextLevelExp = (int) value;
-                    break;
+                    return;
                 case StatType.Level:
                     Level = (int) value;
-                    break;
+                    return;
                 case StatType.Fame:
                     Fame = (int) value;
-                    break;
+                    return;
                 case StatType.NextClassQuestFame:
                     NextClassQuestFame = (int) value;
-                    break;
+                    return;
                 case StatType.NumStars:
                     NumStars = (int) value;
-                    break;
+                    return;
                 case StatType.GuildName:
                     GuildName = (string) value;
-                    break;
+                    return;
                 case StatType.GuildRank:
                     GuildRank = (GuildRank) value;
-                    break;
+                    return;
                 case StatType.Credits:
                     Credits = (int) value;
-                    break;
+                    return;
                 case StatType.DyeLarge:
                     DyeLarge = (int) value;
-                    break;
+                    return;
                 case StatType.DyeSmall:
                     DyeSmall = (int) value;
-                    break;
+                    return;
                 case StatType.HasBackpack:
                     HasBackpack = (bool) value;
-                    break;
+                    return;
                 case StatType.Mp:
                     Mp = (int) value;
-                    break;
+                    return;
                 case StatType.MaxMp:
                     MaxMp = (int) value;
-                    break;
+                    return;
                 case StatType.Oxygen:
                     Oxygen = (int) value;
-                    break;
+                    return;
                 case StatType.HealthPotionStack:
                     HealthPotions = (int) value;
-                    break;
+                    return;
                 case StatType.MagicPotionStack:
                     MagicPotions = (int) value;
-                    break;
+                    return;
                 case StatType.SinkLevel:
                     SinkLevel = (int) value;
-                    break;
+                    return;
                 case StatType.Attack:
                     Attack = (int) value;
-                    break;
+                    return;
                 case StatType.Defense:
                     Defense = (int) value;
-                    break;
+                    return;
                 case StatType.Speed:
                     Speed = (int) value;
-                    break;
+                    return;
                 case StatType.Dexterity:
                     Dexterity = (int) value;
-                    break;
+                    return;
                 case StatType.Vitality:
                     Vitality = (int) value;
-                    break;
+                    return;
                 case StatType.Wisdom:
                     Wisdom = (int) value;
-                    break;
+                    return;
                 case StatType.Inventory0:
                 case StatType.Inventory1:
                 case StatType.Inventory2:
@@ -158,7 +170,7 @@ namespace Game.Entities
                 case StatType.Inventory10:
                 case StatType.Inventory11:
                     Equipment[statType - StatType.Inventory0] = (int) value;
-                    break;
+                    return;
                 case StatType.ItemData0:
                 case StatType.ItemData1:
                 case StatType.ItemData2:
@@ -180,7 +192,7 @@ namespace Game.Entities
                 case StatType.ItemData18:
                 case StatType.ItemData19:
                     ItemDatas[statType - StatType.ItemData0] = (int) value;
-                    break;
+                    return;
             }
         }
 

@@ -24,8 +24,8 @@ namespace Game.MovementControllers
 
             var dx = Direction.x * deltaTime;
             var dy = Direction.y * deltaTime;
-            var nextX = _entity.transform.position.x + dx;
-            var nextY = _entity.transform.position.y + dy;
+            var nextX = _entity.Position.x + dx;
+            var nextY = _entity.Position.y + dy;
 
             if (Direction.x > 0 && nextX > TargetPosition.x ||
                 Direction.x < 0 && nextX < TargetPosition.x)

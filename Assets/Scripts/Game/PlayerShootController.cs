@@ -1,6 +1,5 @@
 using Game.Entities;
 using Models.Static;
-using Networking;
 using UnityEngine;
 
 namespace Game
@@ -8,28 +7,26 @@ namespace Game
     public class PlayerShootController
     {
         private readonly Player _player;
-        private readonly Camera _camera;
 
         private float _attackPeriod;
         private float _attackStart;
         private float _time;
 
-        public PlayerShootController(Player player, Camera camera)
+        public PlayerShootController(Player player)
         {
             _player = player;
-            _camera = camera;
         }
 
-        public void Tick(float time)
+        public void Tick(float time, Camera camera)
         {
             _time = time;
             
             if (Input.GetMouseButton(0))
             {
                 var mousePosition = Input.mousePosition;
-                var playerPosition = _camera.WorldToScreenPoint(_player.transform.position);
+                var playerPosition = camera.WorldToScreenPoint(_player.Position);
                 var angle = Mathf.Atan2(mousePosition.y - playerPosition.y, mousePosition.x - playerPosition.x);
-                TryShoot(angle + _player.transform.rotation.eulerAngles.z * Mathf.Deg2Rad);
+                TryShoot(angle + _player.Rotation);
             }
         }
 
@@ -64,8 +61,8 @@ namespace Game
             var totalArc = arcGap * (numShots - 1);
             var angle = attackAngle - totalArc / 2;
             var damageMod = ItemDesc.GetStat(itemData, ItemData.Damage, ItemDesc.DAMAGE_MULTIPLIER);
-            var startId = _player.Owner.NextProjectileId;
-            _player.Owner.NextProjectileId -= numShots;
+            var startId = _player.Map.NextProjectileId;
+            _player.Map.NextProjectileId -= numShots;
             
             for (var i = 0; i < numShots; i++)
             {
@@ -74,9 +71,9 @@ namespace Game
                 var damage = (int)(_player.Random.NextIntRange((uint) minDamage, (uint) maxDamage) *
                              _player.GetAttackMultiplier());
                 var projectile = new Projectile(_player, weaponXml.Projectile, startId - i, time, angle,
-                    _player.transform.position, damage);
+                    _player.Position, damage, _player.Map);
 
-                _player.Owner.AddProjectile(projectile, projectile.StartPosition);
+                _player.Map.AddObject(projectile, projectile.StartPosition);
                 angle += arcGap;
             }
             

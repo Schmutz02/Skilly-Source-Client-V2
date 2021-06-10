@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Entities;
+using Models;
 using UnityEngine;
 
 namespace Game
@@ -34,6 +35,7 @@ namespace Game
         {
             CheckForInputs();
 
+            transform.rotation = Quaternion.Euler(0, 0, Settings.CameraAngle * Mathf.Rad2Deg);
             if (!(_focus is null))
             {
                 var yOffset = (_offset ? 2.5f : 0) * ((Camera.orthographicSize - 6) / 3f + 1);
@@ -53,7 +55,7 @@ namespace Game
 
             foreach (var entity in _rotatatingEntities)
             {
-                entity.transform.rotation = transform.rotation;
+                entity.Rotation = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
             }
         }
         

@@ -9,5 +9,7 @@ namespace Models
         public const float PLAYER_ROTATE_SPEED = 0.003f;
 
         public static readonly string ServerURL = $"http://{IP_ADDRESS}:{WEB_PORT}";
+
+        public static float CameraAngle;
     }
 }
