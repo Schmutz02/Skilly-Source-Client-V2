@@ -12,7 +12,10 @@ public static class AssetLibrary
     private static readonly Dictionary<string, List<Sprite>> _Images = new Dictionary<string, List<Sprite>>();
 
     private static readonly Dictionary<int, ObjectDesc> _Type2ObjectDesc = new Dictionary<int, ObjectDesc>();
+    private static readonly Dictionary<string, ObjectDesc> _Id2ObjectDesc = new Dictionary<string, ObjectDesc>();
     private static readonly Dictionary<int, TileDesc> _Type2TileDesc = new Dictionary<int, TileDesc>();
+    private static readonly Dictionary<int, ItemDesc> _Type2ItemDesc = new Dictionary<int, ItemDesc>();
+    private static readonly Dictionary<int, PlayerDesc> _Type2PlayerDesc = new Dictionary<int, PlayerDesc>();
     
     public static void AddAnimations(Texture2D texture, SpriteSheetData data)
     {
@@ -45,14 +48,29 @@ public static class AssetLibrary
     {
         foreach (var objectXml in xml.Elements("Object"))
         {
-            var objectDesc = new ObjectDesc(objectXml);
-            _Type2ObjectDesc[objectDesc.Type] = objectDesc;
+            var id = objectXml.ParseString("@id");
+            var type = objectXml.ParseUshort("@type");
+            
+            switch (objectXml.ParseString("Class"))
+            {
+                case "Player":
+                    _Type2PlayerDesc[type] = new PlayerDesc(objectXml, id, type);
+                    break;
+                case "Equipment":
+                case "Dye":
+                    _Type2ItemDesc[type] = new ItemDesc(objectXml, id, type);
+                    break;
+            }
+            
+            _Id2ObjectDesc[id] = _Type2ObjectDesc[type] = new ObjectDesc(objectXml, id, type);
         }
 
         foreach (var groundXml in xml.Elements("Ground"))
         {
-            var tileDesc = new TileDesc(groundXml);
-            _Type2TileDesc[tileDesc.Type] = tileDesc;
+            var id = groundXml.ParseString("@id");
+            var type = groundXml.ParseUshort("@type");
+
+            _Type2TileDesc[type] = new TileDesc(groundXml, id, type);
         }
     }
 
@@ -71,9 +89,24 @@ public static class AssetLibrary
         return _Type2ObjectDesc[type];
     }
 
+    public static ObjectDesc GetObjectDesc(string id)
+    {
+        return _Id2ObjectDesc[id];
+    }
+
     public static TileDesc GetTileDesc(int type)
     {
         return _Type2TileDesc[type];
+    }
+
+    public static ItemDesc GetItemDesc(int type)
+    {
+        return _Type2ItemDesc[type];
+    }
+
+    public static PlayerDesc GetPlayerDesc(int type)
+    {
+        return _Type2PlayerDesc[type];
     }
 }
 

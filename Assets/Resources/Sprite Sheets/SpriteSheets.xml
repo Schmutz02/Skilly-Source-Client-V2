@@ -8,4 +8,10 @@
     <Sheet id="lofiEnvironment">
         <ImageSize>8x8</ImageSize>
     </Sheet>
+    <Sheet id="lofiObj2">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiObj5">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
 </Sheets>

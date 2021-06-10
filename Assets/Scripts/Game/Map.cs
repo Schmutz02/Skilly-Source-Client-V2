@@ -17,10 +17,17 @@ namespace Game
         private Transform _entityParentTransform;
 
         private Dictionary<int, Entity> _entities;
+        private List<Projectile> _projectiles;
+        private ProjectileWrapper _projectileWrapper;
+        
+        //TODO probably extract out
+        public int NextProjectileId;
 
         private void Awake()
         {
             _entities = new Dictionary<int, Entity>();
+            _projectiles = new List<Projectile>();
+            _projectileWrapper = Resources.Load<ProjectileWrapper>("Entities/Projectile");
         }
 
         public void Clear()
@@ -55,6 +62,19 @@ namespace Game
         public Entity CreateEntity(Entity entityPrefab)
         {
             return Instantiate(entityPrefab, _entityParentTransform);
+        }
+
+        public void AddProjectile(Projectile projectile, Vector2 position)
+        {
+            var wrapper = Instantiate(_projectileWrapper, _entityParentTransform);
+            wrapper.transform.position = position;
+            wrapper.Init(projectile);
+            _projectiles.Add(projectile);
+        }
+
+        public void RemoveProjectile(Projectile projectile)
+        {
+            _projectiles.Remove(projectile);
         }
 
         public bool AddObject(Entity entity, Vector2 position)

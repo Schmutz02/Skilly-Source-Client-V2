@@ -46,7 +46,7 @@ namespace Networking.Packets.Incoming
             foreach (var add in _adds)
             {
                 var desc = AssetLibrary.GetObjectDesc(add.ObjectType);
-                var prefab = Resources.Load<Entity>($"Entities/{desc.Class}");
+                var prefab = Resources.Load<Entity>($"Entities/{desc.Class}"); //TODO should probably cache these
                 var entity = map.CreateEntity(prefab); //TODO add pooling class
                 entity.Init(add, map);
                 
@@ -56,10 +56,11 @@ namespace Networking.Packets.Incoming
                 if (entity.ObjectId == handler.PlayerId)
                 {
                     handler.Player = entity as Player;
+                    handler.Player!.Random = handler.Random;
                     isMyPlayer = true;
                 }
                 
-                entity.AddMovementController(isMyPlayer);
+                entity.AddControllers(isMyPlayer);
             }
 
             foreach (var drop in _drops)

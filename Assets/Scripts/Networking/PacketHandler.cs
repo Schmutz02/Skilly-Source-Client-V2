@@ -95,6 +95,8 @@ namespace Networking
         // [SerializeField]
         // private EntityManager _entityManager;
 
+        public wRandom Random;
+
         private void OnEnable()
         {
             _toBeHandled = new ConcurrentQueue<IncomingPacket>();

@@ -1,0 +1,7 @@
+<Objects>
+	<Object type="0x0029" id="Grey Missile">
+		<Class>Projectile</Class>
+		<Texture><File>lofiObj2</File><Index>0x9c</Index></Texture>
+		<AngleCorrection>1</AngleCorrection>
+	</Object>
+</Objects>

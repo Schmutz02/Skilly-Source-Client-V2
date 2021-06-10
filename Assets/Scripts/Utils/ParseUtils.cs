@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Models.Static;
 
 namespace Utils
 {
@@ -72,13 +73,13 @@ namespace Utils
             return (T)Enum.Parse(typeof(T), value.Replace(" ", ""));
         }
 
-//         public static ConditionEffectIndex ParseConditionEffect(this XElement element, string name, ConditionEffectIndex undefined = ConditionEffectIndex.Nothing)
-//         {
-//             var value = name[0].Equals('@') ? element.Attribute(name.Remove(0, 1))?.Value : element.Element(name)?.Value;
-//             if (string.IsNullOrWhiteSpace(value))
-//                 return undefined;
-//             return (ConditionEffectIndex)Enum.Parse(typeof(ConditionEffectIndex), value.Replace(" ", ""));
-//         }
+         public static ConditionEffect ParseConditionEffect(this XElement element, string name, ConditionEffect undefined = ConditionEffect.Nothing)
+         {
+             var value = name[0].Equals('@') ? element.Attribute(name.Remove(0, 1))?.Value : element.Element(name)?.Value;
+             if (string.IsNullOrWhiteSpace(value))
+                 return undefined;
+             return (ConditionEffect)Enum.Parse(typeof(ConditionEffect), value.Replace(" ", ""));
+         }
 //
 //         public static ActivateEffectIndex ParseActivateEffect(this XElement element, string name)
 //         {

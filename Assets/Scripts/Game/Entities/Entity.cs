@@ -25,12 +25,15 @@ namespace Game.Entities
         public ObjectDesc Desc { get; private set; }
 
         private IMovementController _movementController;
+        private PlayerShootController _shootController;
 
         private SpriteRenderer _renderer;
+        private Camera _camera;
 
         private void Awake()
         {
             _renderer = GetComponent<SpriteRenderer>();
+            _camera = Camera.main;
         }
 
         public virtual void Init(ObjectDefinition def, Map map)
@@ -45,10 +48,13 @@ namespace Game.Entities
             ObjectId = def.ObjectStatus.Id;
         }
 
-        public void AddMovementController(bool isMyPlayer)
+        public void AddControllers(bool isMyPlayer)
         {
-            if (isMyPlayer)
-                _movementController = new PlayerMovementController(this as Player);
+            if (isMyPlayer && this is Player player)
+            {
+                _movementController = new PlayerMovementController(player);
+                _shootController = new PlayerShootController(player, _camera);
+            }
             else
                 _movementController = new EntityMovementController(this);
         }
@@ -114,6 +120,7 @@ namespace Game.Entities
         private void Update()
         {
             _movementController?.Tick(Time.deltaTime * 1000);
+            _shootController?.Tick(Time.time * 1000);
         }
 
         public bool HasConditionEffect(ConditionEffect conditionEffect)

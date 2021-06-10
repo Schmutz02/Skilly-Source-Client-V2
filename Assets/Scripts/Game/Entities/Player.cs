@@ -16,7 +16,8 @@ namespace Game.Entities
         private const float _MAX_SINK_LEVEL = 18f;
 
         public float MoveMultiplier = 1f;
-        
+
+        public new PlayerDesc Desc { get; private set; }
         public int AccountId { get; private set; }
         public int Exp { get; private set; }
         public int NextLevelExp { get; private set; }
@@ -44,6 +45,26 @@ namespace Game.Entities
         public int Wisdom { get; private set; }
         public float PushX { get; private set; }
         public float PushY { get; private set; }
+        public ItemType[] SlotTypes { get; private set; }
+        public int[] Equipment { get; private set; }
+        public int[] ItemDatas { get; private set; }
+        public wRandom Random;
+
+        public override void Init(ObjectDefinition def, Map map)
+        {
+            base.Init(def, map);
+
+            Desc = AssetLibrary.GetPlayerDesc(def.ObjectType);
+
+            SlotTypes = Desc.SlotTypes;
+            Equipment = new int[SlotTypes.Length];
+            ItemDatas = new int[SlotTypes.Length];
+            for (var i = 0; i < Equipment.Length; i++)
+            {
+                Equipment[i] = -1;
+                ItemDatas[i] = -1;
+            }
+        }
 
         protected override void UpdateStat(StatType statType, object value)
         {
@@ -124,6 +145,42 @@ namespace Game.Entities
                 case StatType.Wisdom:
                     Wisdom = (int) value;
                     break;
+                case StatType.Inventory0:
+                case StatType.Inventory1:
+                case StatType.Inventory2:
+                case StatType.Inventory3:
+                case StatType.Inventory4:
+                case StatType.Inventory5:
+                case StatType.Inventory6:
+                case StatType.Inventory7:
+                case StatType.Inventory8:
+                case StatType.Inventory9:
+                case StatType.Inventory10:
+                case StatType.Inventory11:
+                    Equipment[statType - StatType.Inventory0] = (int) value;
+                    break;
+                case StatType.ItemData0:
+                case StatType.ItemData1:
+                case StatType.ItemData2:
+                case StatType.ItemData3:
+                case StatType.ItemData4:
+                case StatType.ItemData5:
+                case StatType.ItemData6:
+                case StatType.ItemData7:
+                case StatType.ItemData8:
+                case StatType.ItemData9:
+                case StatType.ItemData10:
+                case StatType.ItemData11:
+                case StatType.ItemData12:
+                case StatType.ItemData13:
+                case StatType.ItemData14:
+                case StatType.ItemData15:
+                case StatType.ItemData16:
+                case StatType.ItemData17:
+                case StatType.ItemData18:
+                case StatType.ItemData19:
+                    ItemDatas[statType - StatType.ItemData0] = (int) value;
+                    break;
             }
         }
 
@@ -141,6 +198,30 @@ namespace Game.Entities
                 ret *= 1.5f;
             }
             ret *= MoveMultiplier;
+            return ret;
+        }
+        
+        public float GetAttackFrequency()
+        {
+            if (HasConditionEffect(ConditionEffect.Dazed))
+                return _MIN_ATTACK_FREQ;
+
+            var ret = _MIN_ATTACK_FREQ + Dexterity / 75f * (_MAX_ATTACK_FREQ - _MIN_ATTACK_FREQ);
+            if (HasConditionEffect(ConditionEffect.Berserk))
+            {
+                ret *= 1.5f;
+            }
+            return ret;
+        }
+        
+        public float GetAttackMultiplier()
+        {
+            if (HasConditionEffect(ConditionEffect.Weak))
+                return _MIN_ATTACK_MULT;
+
+            var ret = _MIN_ATTACK_MULT + Attack / 75f * (_MAX_ATTACK_MULT - _MIN_ATTACK_MULT);
+            if (HasConditionEffect(ConditionEffect.Damaging))
+                ret *= 1.5f;
             return ret;
         }
     }
