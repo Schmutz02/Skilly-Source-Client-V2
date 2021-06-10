@@ -28,12 +28,12 @@ namespace Game.Entities
         private PlayerShootController _shootController;
 
         private SpriteRenderer _renderer;
-        private Camera _camera;
+        public MainCameraManager CameraManager { get; private set; }
 
         private void Awake()
         {
             _renderer = GetComponent<SpriteRenderer>();
-            _camera = Camera.main;
+            CameraManager = Camera.main.GetComponent<MainCameraManager>();
         }
 
         public virtual void Init(ObjectDefinition def, Map map)
@@ -46,14 +46,15 @@ namespace Game.Entities
 
             Owner = map;
             ObjectId = def.ObjectStatus.Id;
+            CameraManager.AddRotatingEntity(this);
         }
 
         public void AddControllers(bool isMyPlayer)
         {
             if (isMyPlayer && this is Player player)
             {
-                _movementController = new PlayerMovementController(player);
-                _shootController = new PlayerShootController(player, _camera);
+                _movementController = new PlayerMovementController(player, CameraManager.Camera);
+                _shootController = new PlayerShootController(player, CameraManager.Camera);
             }
             else
                 _movementController = new EntityMovementController(this);

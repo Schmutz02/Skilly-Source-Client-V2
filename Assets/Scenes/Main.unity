@@ -776,6 +776,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tilemap: {fileID: 1776870506}
   _entityParentTransform: {fileID: 1252946165}
+  NextProjectileId: 0
 --- !u!156049354 &1349212828
 Grid:
   m_ObjectHideFlags: 0
@@ -998,7 +999,7 @@ Tilemap:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: 0, y: 0, z: 0}
   m_Size: {x: 0, y: 0, z: 1}
-  m_TileAnchor: {x: 0, y: 0, z: 0}
+  m_TileAnchor: {x: 0.5, y: 0, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
     e00: 1
@@ -2101,7 +2102,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7754677132695851994}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5, y: 5, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2161,6 +2162,7 @@ GameObject:
   - component: {fileID: 7754677132695851814}
   - component: {fileID: 7754677132695851993}
   - component: {fileID: 7754677132695851995}
+  - component: {fileID: 7754677132695851996}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2176,6 +2178,21 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7754677132695851994}
   m_Enabled: 1
+--- !u!114 &7754677132695851996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7754677132695851994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f5ab9e56ca4dc59d0b5c6a4d774d98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Angle: 0
+  ZScale: -1.15
+  ZOffset: -10
 --- !u!114 &7754677132906729104
 MonoBehaviour:
   m_ObjectHideFlags: 0

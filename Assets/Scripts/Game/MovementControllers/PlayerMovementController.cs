@@ -12,11 +12,15 @@ namespace Game.MovementControllers
         
         private readonly Player _player;
         private readonly Transform _entityTransform;
+
+        private readonly Camera _camera;
         
-        public PlayerMovementController(Player player)
+        public PlayerMovementController(Player player, Camera camera)
         {
             _player = player;
             _entityTransform = player.transform;
+
+            _camera = camera;
         }
         
         public void Tick(float deltaTime)
@@ -33,11 +37,11 @@ namespace Game.MovementControllers
                 rotate = -rotate;
             }
             
-            var playerAngle = _entityTransform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+            var playerAngle = _camera.transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
             if (rotate != 0)
             {
                 playerAngle += deltaTime * Settings.PLAYER_ROTATE_SPEED * rotate;
-                _entityTransform.rotation = Quaternion.Euler(0, 0, playerAngle * Mathf.Rad2Deg);
+                _camera.transform.rotation = Quaternion.Euler(0, 0, playerAngle * Mathf.Rad2Deg);
             }
 
             var direction = Vector2.zero;

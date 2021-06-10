@@ -34,6 +34,7 @@ namespace Game
         {
             _tilemap.ClearAllTiles();
             _entities.Clear();
+            _projectiles.Clear();
 
             foreach (Transform child in _entityParentTransform)
             {
