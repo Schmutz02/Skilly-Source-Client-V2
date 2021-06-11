@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using Game.Entities;
 using Game.EntityWrappers;
 using Models;
+using Networking;
+using Networking.Packets.Outgoing;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using TileData = Models.TileData;
@@ -18,9 +21,23 @@ namespace Game
 
         private Dictionary<int, Entity> _entities;
 
+        public int MovesRequested;
+        public Player MyPlayer;
+
         private void Awake()
         {
             _entities = new Dictionary<int, Entity>();
+        }
+
+        private void LateUpdate()
+        {
+            // might need tick rate
+            if (MovesRequested > 0)
+            {
+                TcpTicker.Send(new Move(GameTime.Time, MyPlayer.Position));
+                //TODO onmove
+                MovesRequested--;
+            }
         }
 
         public void Clear()

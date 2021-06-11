@@ -1,5 +1,7 @@
 using Game.Entities;
 using Models.Static;
+using Networking;
+using Networking.Packets.Outgoing;
 using UnityEngine;
 
 namespace Game
@@ -9,8 +11,8 @@ namespace Game
         private readonly Player _player;
 
         private float _attackPeriod;
-        private float _attackStart;
-        private float _time;
+        private int _attackStart;
+        private int _time;
         
         private int _nextProjectileId;
 
@@ -19,7 +21,7 @@ namespace Game
             _player = player;
         }
 
-        public void Tick(float time, Camera camera)
+        public void Tick(int time, Camera camera)
         {
             _time = time;
             
@@ -55,7 +57,7 @@ namespace Game
             Shoot(_attackStart, weaponType, itemData, weaponXml, attackAngle, false);
         }
 
-        private void Shoot(float time, int weaponType, int itemData, ItemDesc weaponXml, float attackAngle,
+        private void Shoot(int time, int weaponType, int itemData, ItemDesc weaponXml, float attackAngle,
             bool isAbility)
         {
             var numShots = weaponXml.NumProjectiles;
@@ -79,7 +81,7 @@ namespace Game
                 angle += arcGap;
             }
             
-            // TODO TcpTicker.Send(new PlayerShoot());
+            TcpTicker.Send(new PlayerShoot(time, _player.Position, attackAngle, isAbility, numShots));
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Game
 
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                transform.rotation = Quaternion.identity;
+                Settings.CameraAngle = 0;
             }
         }
 

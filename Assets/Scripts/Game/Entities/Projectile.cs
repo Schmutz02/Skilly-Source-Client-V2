@@ -7,6 +7,8 @@ namespace Game.Entities
 {
     public class Projectile : Entity
     {
+        public static int NextFakeBulletId;
+        
         public readonly Entity Owner;
         public readonly ProjectileDesc ProjectileDesc;
         public readonly int BulletId;

@@ -55,6 +55,7 @@ namespace Networking.Packets.Incoming
                 {
                     handler.Player = entity as Player;
                     handler.Player!.Random = handler.Random;
+                    map.MyPlayer = entity as Player;
                 }
             }
 
