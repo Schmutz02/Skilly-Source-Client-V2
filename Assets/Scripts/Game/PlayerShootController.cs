@@ -11,6 +11,8 @@ namespace Game
         private float _attackPeriod;
         private float _attackStart;
         private float _time;
+        
+        private int _nextProjectileId;
 
         public PlayerShootController(Player player)
         {
@@ -61,8 +63,8 @@ namespace Game
             var totalArc = arcGap * (numShots - 1);
             var angle = attackAngle - totalArc / 2;
             var damageMod = ItemDesc.GetStat(itemData, ItemData.Damage, ItemDesc.DAMAGE_MULTIPLIER);
-            var startId = _player.Map.NextProjectileId;
-            _player.Map.NextProjectileId -= numShots;
+            var startId = _nextProjectileId;
+            _nextProjectileId -= numShots;
             
             for (var i = 0; i < numShots; i++)
             {

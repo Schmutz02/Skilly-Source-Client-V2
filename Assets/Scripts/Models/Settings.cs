@@ -10,6 +10,6 @@ namespace Models
 
         public static readonly string ServerURL = $"http://{IP_ADDRESS}:{WEB_PORT}";
 
-        public static float CameraAngle;
+        public static float CameraAngle; // in radians
     }
 }

@@ -12,17 +12,18 @@ namespace Game.EntityWrappers
         [SerializeField]
         protected SpriteRenderer Renderer;
 
-        protected MainCameraManager CameraManager;
+        protected static MainCameraManager CameraManager;
         
         private void Awake()
         {
             if (!Renderer)
                 Renderer = GetComponent<SpriteRenderer>();
             
-            CameraManager = Camera.main.GetComponent<MainCameraManager>();
+            if (!CameraManager)
+                CameraManager = Camera.main.GetComponent<MainCameraManager>();
         }
 
-        public virtual void Init(Entity child)
+        public virtual void Init(Entity child, bool rotating)
         {
             Entity = child;
             
@@ -30,7 +31,10 @@ namespace Game.EntityWrappers
                 Entity.Desc.TextureData.Texture : 
                 Entity.Desc.TextureData.Animation.GetFrame(Facing.Down, Action.Stand, 0);
             
-            CameraManager.AddRotatingEntity(Entity);
+            SetPositionAndRotation();
+            
+            if (rotating)
+                CameraManager.AddRotatingEntity(Entity);
             
             if (child.IsMyPlayer)
                 CameraManager.SetFocus(gameObject);
@@ -40,6 +44,11 @@ namespace Game.EntityWrappers
         {
             Entity.Tick(GameTime.Time, GameTime.DeltaTime, CameraManager.Camera);
 
+            SetPositionAndRotation();
+        }
+
+        private void SetPositionAndRotation()
+        {
             transform.position = Entity.Position;
             transform.rotation = Quaternion.Euler(0, 0, Entity.Rotation * Mathf.Rad2Deg);
         }

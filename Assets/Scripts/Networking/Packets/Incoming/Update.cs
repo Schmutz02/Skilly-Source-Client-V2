@@ -60,7 +60,7 @@ namespace Networking.Packets.Incoming
 
             foreach (var drop in _drops)
             {
-                map.RemoveObject(drop);
+                map.RemoveObject(drop.Id);
             }
         }
     }

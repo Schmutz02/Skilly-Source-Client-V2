@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Game.Entities;
 using Game.EntityWrappers;
@@ -18,22 +17,16 @@ namespace Game
         private Transform _entityParentTransform;
 
         private Dictionary<int, Entity> _entities;
-        private List<Projectile> _projectiles;
-
-        //TODO probably extract out
-        public int NextProjectileId;
 
         private void Awake()
         {
             _entities = new Dictionary<int, Entity>();
-            _projectiles = new List<Projectile>();
         }
 
         public void Clear()
         {
             _tilemap.ClearAllTiles();
             _entities.Clear();
-            _projectiles.Clear();
 
             foreach (Transform child in _entityParentTransform)
             {
@@ -41,14 +34,6 @@ namespace Game
                 Destroy(child.gameObject);
             }
         }
-
-        // private void OnEnable()
-        // {
-        //     foreach (Transform child in _entityParentTransform)
-        //     {
-        //         child.gameObject.SetActive(false);
-        //     }
-        // }
 
         public void AddTile(TileData tileData)
         {
@@ -59,45 +44,11 @@ namespace Game
             _tilemap.SetTile(new Vector3Int(tileData.X, tileData.Y, 0), tile);
         }
 
-        // private void AddProjectile(Projectile projectile, Vector2 position)
-        // {
-        //     var wrapper = Instantiate(_projectileWrapper, _entityParentTransform);
-        //     wrapper.transform.position = position;
-        //     wrapper.Init(projectile);
-        //     
-        // }
-
-        public void RemoveProjectile(Projectile projectile)
-        {
-            _projectiles.Remove(projectile);
-        }
-
         public bool AddObject(Entity entity, Vector2 position)
         {
-            //TODO optimize (make a data structure)
-            // foreach (Transform child in _entityParentTransform.transform)
-            // {
-            //     if (child.gameObject.activeSelf)
-            //         continue;
-            //
-            //     //TODO is this even pooling??
-            //     child.transform.position = status.Position;
-            //     child.gameObject.SetActive(true);
-            //     foreach (var VARIABLE in GetComponents<MonoBehaviour>())
-            //     {
-            //         
-            //     }
-            //     Destroy(child.GetComponents<Entity>());
-            //     var type = defaultEntity.GetComponent<Entity>();
-            //     return child.gameObject.AddComponent(type.GetType()) as Entity;
-            // }
             var wrapperPrefab = Resources.Load<EntityWrapper>($"Entities/{entity.Desc.Class}");
             var wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
-            wrapper.transform.position = position;
-            wrapper.Init(entity);
-            
-            if (entity is Projectile projectile)
-                _projectiles.Add(projectile);
+            wrapper.Init(entity, true); // always rotates unless overridden
             
             entity.Position = position;
 
@@ -116,9 +67,9 @@ namespace Game
             return _entities[id];
         }
 
-        public void RemoveObject(ObjectDrop obj)
+        public void RemoveObject(int objectId)
         {
-            
+            _entities.Remove(objectId);
         }
 
         public void MoveEntity(Entity entity, Vector2 position)
@@ -238,12 +189,12 @@ namespace Game
             return false;
         }
 
-        private Square GetTile(float x, float y)
+        public Square GetTile(float x, float y)
         {
             return _tilemap.GetTile<Square>(new Vector3Int((int) x, (int) y, 0));
         }
 
-        private Square GetTile(Vector2 pos)
+        public Square GetTile(Vector2 pos)
         {
             return GetTile(pos.x, pos.y);
         }

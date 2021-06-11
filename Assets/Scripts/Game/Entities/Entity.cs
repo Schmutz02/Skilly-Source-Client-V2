@@ -44,9 +44,10 @@ namespace Game.Entities
             return 2130706432 | _nextFakeObjectId++;
         }
 
-        public void MoveTo(Vector2 position)
+        public virtual bool MoveTo(Vector2 position)
         {
             Map.MoveEntity(this, position);
+            return true;
         }
 
         public void OnNewTick(Vector2 position)

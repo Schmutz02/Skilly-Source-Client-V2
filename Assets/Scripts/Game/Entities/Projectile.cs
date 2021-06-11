@@ -14,6 +14,8 @@ namespace Game.Entities
         public readonly Vector2 StartPosition;
         public readonly int Damage;
         public readonly HashSet<int> Hit;
+        public readonly bool DamagesPlayers;
+        public readonly bool DamagesEnemies;
 
         public float StartTime;
 
@@ -26,8 +28,10 @@ namespace Game.Entities
             BulletId = bulletId;
             StartTime = startTime;
             Angle = MathUtils.BoundToPI(angle);
-            StartPosition = startPos;
+            StartPosition = Position = startPos;
             Damage = damage;
+            DamagesPlayers = owner.Desc.Enemy;
+            DamagesEnemies = !DamagesPlayers;
             Hit = new HashSet<int>();
         }
 
@@ -54,7 +58,46 @@ namespace Game.Entities
                 return false;
             }
 
-            Position = PositionAt(elapsed);
+            if (!MoveTo(PositionAt(elapsed)) || Square.Type == 255)
+            {
+                if (DamagesPlayers)
+                {
+                    //TODO square hit
+                }
+                else if (Square.StaticObject != null)
+                {
+                    //TODO square hit effect
+                }
+                return false;
+            }
+
+            if (Square.StaticObject != null && (!Square.StaticObject.Desc.Enemy || !DamagesEnemies) &&
+                (Square.StaticObject.Desc.EnemyOccupySquare ||
+                 !ProjectileDesc.PassesCover && Square.StaticObject.Desc.OccupySquare))
+            {
+                if (DamagesPlayers)
+                {
+                    //TODO square hit
+                }
+                else
+                {
+                    //TODO square hit effect
+                }
+                return false;
+            }
+            
+            //TODO damage what's there
+            return true;
+        }
+
+        public override bool MoveTo(Vector2 position)
+        {
+            var square = Map.GetTile(position);
+            if (square is null)
+                return false;
+
+            Position = position;
+            Square = square;
             return true;
         }
 

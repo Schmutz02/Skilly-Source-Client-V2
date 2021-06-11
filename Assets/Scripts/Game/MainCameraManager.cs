@@ -20,7 +20,7 @@ namespace Game
         
         private bool _offset;
 
-        private HashSet<Entity> _rotatatingEntities;
+        private HashSet<Entity> _rotatingEntities;
         
         private void Awake()
         {
@@ -28,7 +28,7 @@ namespace Game
             Camera!.orthographicSize = PlayerPrefs.GetFloat("Map Scale", 6);
             Camera.transparencySortMode = TransparencySortMode.CustomAxis;
             _offset = PlayerPrefs.GetInt("Camera Offset", 0) == 1;
-            _rotatatingEntities = new HashSet<Entity>();
+            _rotatingEntities = new HashSet<Entity>();
         }
 
         private void Update()
@@ -39,7 +39,8 @@ namespace Game
             if (!(_focus is null))
             {
                 var yOffset = (_offset ? 2.5f : 0) * ((Camera.orthographicSize - 6) / 3f + 1);
-                transform.position = new Vector3(_focus.transform.position.x, _focus.transform.position.y + yOffset, ZOffset);
+                transform.position = new Vector3(_focus.transform.position.x, _focus.transform.position.y, ZOffset);
+                transform.Translate(0, 0.5f + yOffset, 0, Space.Self);
             }
 
             var orthoHeight = Camera.orthographicSize;
@@ -53,7 +54,7 @@ namespace Game
             Camera.projectionMatrix = m;
             Camera.transparencySortAxis = transform.up;
 
-            foreach (var entity in _rotatatingEntities)
+            foreach (var entity in _rotatingEntities)
             {
                 entity.Rotation = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
             }
@@ -90,12 +91,12 @@ namespace Game
 
         public void AddRotatingEntity(Entity entity)
         {
-            _rotatatingEntities.Add(entity);
+            _rotatingEntities.Add(entity);
         }
 
         public void RemoveRotatingEntity(Entity entity)
         {
-            _rotatatingEntities.Remove(entity);
+            _rotatingEntities.Remove(entity);
         }
     }
 }
