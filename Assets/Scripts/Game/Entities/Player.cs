@@ -91,8 +91,6 @@ namespace Game.Entities
 
         public override Sprite GetTexture(int time)
         {
-            // var i = Desc.TextureData.Animation.ImageFromFacing(0, Action.Attack, .5f);
-            // return SpriteUtils.Redraw(i, 100);
             var action = Action.Stand;
             var p = 0f;
             if (time < AttackStart + AttackPeriod)
@@ -110,7 +108,7 @@ namespace Game.Entities
             }
 
             var image = Desc.TextureData.Animation.ImageFromFacing(Facing, action, p);
-            return SpriteUtils.Redraw(image, 100);
+            return SpriteUtils.Redraw(image, Size);
         }
 
         protected override void UpdateStat(StatType statType, object value)

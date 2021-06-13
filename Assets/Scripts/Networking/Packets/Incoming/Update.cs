@@ -57,6 +57,8 @@ namespace Networking.Packets.Incoming
                     handler.Player!.Random = handler.Random;
                     map.MyPlayer = entity as Player;
                 }
+                
+                entity.UpdateObjectStats(add.ObjectStatus.Stats);
             }
 
             foreach (var drop in _drops)

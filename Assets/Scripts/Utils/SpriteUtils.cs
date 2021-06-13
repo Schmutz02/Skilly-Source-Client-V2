@@ -157,10 +157,10 @@ namespace Utils
             smallTexture.SetPixels(1, 1, (int)sprite.rect.width, (int)sprite.rect.height, rawPixels);
             smallTexture.Apply(true);
             
-            var w = multiplier * size / 100 * smallTexture.width;
-            var h = multiplier * size / 100 * smallTexture.height;
+            var w = (int)(multiplier * size / 100 * smallTexture.width);
+            var h = (int)(multiplier * size / 100 * smallTexture.height);
             var pivot = new Vector2(((sprite.pivot.x + 1) / smallTexture.width), 0);
-            Scale(smallTexture, (int)w, (int)h, FilterMode.Point);
+            Scale(smallTexture, w, h, FilterMode.Point);
 
             var rect = new Rect(0, 0, w, h);
             var rescaledSprite = Sprite.Create(smallTexture, rect, pivot, 8 * 6.25f);
