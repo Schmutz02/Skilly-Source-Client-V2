@@ -80,6 +80,9 @@ namespace Networking
     {
         private ConcurrentQueue<IncomingPacket> _toBeHandled;
 
+        [SerializeField]
+        public MainCameraManager _cameraManager;
+
         [HideInInspector]
         public int PlayerId;
 
@@ -108,6 +111,8 @@ namespace Networking
         {
             TcpTicker.Stop();
             _map.Clear();
+            _cameraManager.Clear();
+            _cameraManager.SetFocus(null);
         }
 
         private void Update()

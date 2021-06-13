@@ -15,7 +15,7 @@ namespace Game.Entities
         private ConditionEffect _conditionEffects;
         public int Hp { get; private set; }
         public int MaxHp { get; private set; }
-        public int Size { get; private set; } = 100;
+        public int Size { get; protected set; } = 100;
         public string Name { get; private set; }
         public int AltTextureIndex { get; private set; }
 

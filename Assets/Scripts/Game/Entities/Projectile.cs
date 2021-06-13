@@ -34,6 +34,12 @@ namespace Game.Entities
             Damage = damage;
             DamagesPlayers = owner.Desc.Enemy;
             DamagesEnemies = !DamagesPlayers;
+            var size = projectileDesc.Size;
+            if (size < 0)
+            {
+                size = Desc.Size;
+            }
+            Size = 8 * (size / 100);
             Hit = new HashSet<int>();
         }
 

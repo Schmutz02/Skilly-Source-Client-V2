@@ -94,6 +94,11 @@ namespace Game
             _rotatingEntities.Add(entity);
         }
 
+        public void Clear()
+        {
+            _rotatingEntities.Clear();
+        }
+
         public void RemoveRotatingEntity(Entity entity)
         {
             _rotatingEntities.Remove(entity);

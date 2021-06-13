@@ -92,7 +92,7 @@ namespace Networking
             _Receive.Reset();
             _tickingTask = null;
             _crashed = false;
-
+            
             try
             {
                 _socket.Shutdown(SocketShutdown.Both);

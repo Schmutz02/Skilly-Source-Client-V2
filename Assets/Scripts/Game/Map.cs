@@ -19,19 +19,18 @@ namespace Game
         [SerializeField]
         private Transform _entityParentTransform;
 
-        private Dictionary<int, Entity> _entities;
+        private Dictionary<int, EntityWrapper> _entities;
 
         public int MovesRequested;
         public Player MyPlayer;
 
         private void Awake()
         {
-            _entities = new Dictionary<int, Entity>();
+            _entities = new Dictionary<int, EntityWrapper>();
         }
 
         private void LateUpdate()
         {
-            // might need tick rate
             if (MovesRequested > 0)
             {
                 TcpTicker.Send(new Move(GameTime.Time, MyPlayer.Position));
@@ -75,17 +74,18 @@ namespace Game
                 tile.StaticObject = entity;
             }
 
-            _entities[entity.ObjectId] = entity;
+            _entities[entity.ObjectId] = wrapper;
             return true;
         }
 
         public Entity GetEntity(int id)
         {
-            return _entities[id];
+            return _entities[id].Entity;
         }
 
         public void RemoveObject(int objectId)
         {
+            Destroy(_entities[objectId].gameObject);
             _entities.Remove(objectId);
         }
 

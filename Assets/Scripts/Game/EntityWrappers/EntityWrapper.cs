@@ -1,13 +1,12 @@
 using System;
 using Game.Entities;
 using UnityEngine;
-using Action = Models.Static.Action;
 
 namespace Game.EntityWrappers
 {
     public class EntityWrapper : MonoBehaviour
     {
-        protected Entity Entity;
+        public Entity Entity { get; private set; }
         
         [SerializeField]
         protected SpriteRenderer Renderer;

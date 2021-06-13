@@ -245,6 +245,8 @@ namespace Models.Static
         public readonly bool Player;
         public readonly bool Enemy;
 
+        public readonly int Size;
+
         public readonly TextureData TextureData;
         public readonly TextureData TopTextureData;
 
@@ -276,6 +278,8 @@ namespace Models.Static
             
             Enemy = xml.ParseBool("Enemy");
             Player = xml.ParseBool("Player");
+
+            Size = xml.ParseInt("Size", 100);
 
             TextureData = new TextureData(xml);
             if (xml.Element("Top") != null)
@@ -588,6 +592,7 @@ namespace Models.Static
         public readonly string ObjectId;
         public readonly int LifetimeMS;
         public readonly float Speed;
+        public readonly int Size;
 
         public readonly int Damage;
         public readonly int MinDamage; //Only for players
@@ -618,6 +623,8 @@ namespace Models.Static
             ObjectId = e.ParseString("ObjectId");
             LifetimeMS = e.ParseInt("LifetimeMS");
             Speed = e.ParseFloat("Speed");
+            Size = e.ParseInt("Size", -1);
+            
             Damage = e.ParseInt("Damage");
             MinDamage = e.ParseInt("MinDamage", Damage);
             MaxDamage = e.ParseInt("MaxDamage", Damage);
