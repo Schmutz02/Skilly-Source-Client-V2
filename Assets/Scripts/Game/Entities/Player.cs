@@ -1,6 +1,7 @@
 using Models;
 using Models.Static;
 using UnityEngine;
+using Utils;
 
 namespace Game.Entities
 {
@@ -49,6 +50,7 @@ namespace Game.Entities
         public int[] ItemDatas { get; }
         public wRandom Random;
         private readonly PlayerShootController _shootController;
+        public int AttackPeriod;
 
         public Player(PlayerDesc desc, int objectId, bool isMyPlayer, Map map) : base(desc, objectId, isMyPlayer, map)
         {
@@ -74,6 +76,41 @@ namespace Game.Entities
             _shootController?.Tick(time, camera);
 
             return true;
+        }
+
+        public override void SetAttack(ItemDesc container, float attackAngle)
+        {
+            var itemData = ItemDatas[0];
+            var rateOfFireMod = ItemDesc.GetStat(itemData, ItemData.RateOfFire, ItemDesc.RATE_OF_FIRE_MULTIPLIER);
+            var rateOfFire = container.RateOfFire;
+            
+            rateOfFire *= 1 + rateOfFireMod;
+            AttackPeriod = (int)(1 / GetAttackFrequency() * (1 / rateOfFire));
+            base.SetAttack(container, attackAngle);
+        }
+
+        public override Sprite GetTexture(int time)
+        {
+            // var i = Desc.TextureData.Animation.ImageFromFacing(0, Action.Attack, .5f);
+            // return SpriteUtils.Redraw(i, 100);
+            var action = Action.Stand;
+            var p = 0f;
+            if (time < AttackStart + AttackPeriod)
+            {
+                Facing = AttackAngle;
+                p = (time - AttackStart) % (float)AttackPeriod / AttackPeriod;
+                action = Action.Attack;
+            }
+            else if (MovementController.Direction != Vector2.zero)
+            {
+                var walkPer = 3.5f / GetMovementSpeed();
+                Facing = Mathf.Atan2(MovementController.Direction.y, MovementController.Direction.x);
+                p = time % walkPer / walkPer;
+                action = Action.Walk;
+            }
+
+            var image = Desc.TextureData.Animation.ImageFromFacing(Facing, action, p);
+            return SpriteUtils.Redraw(image, 100);
         }
 
         protected override void UpdateStat(StatType statType, object value)

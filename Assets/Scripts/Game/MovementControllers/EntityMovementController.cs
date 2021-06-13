@@ -5,7 +5,7 @@ namespace Game.MovementControllers
 {
     public class EntityMovementController : IMovementController
     {
-        public Vector2 Direction;
+        public Vector2 Direction { get; set; }
         public Vector2 TargetPosition;
         
         private readonly Entity _entity;
@@ -22,25 +22,27 @@ namespace Game.MovementControllers
             if (Direction == Vector2.zero)
                 return;
 
-            var dx = Direction.x * deltaTime;
-            var dy = Direction.y * deltaTime;
+            var direction = Direction;
+            var dx = direction.x * deltaTime;
+            var dy = direction.y * deltaTime;
             var nextX = _entity.Position.x + dx;
             var nextY = _entity.Position.y + dy;
 
-            if (Direction.x > 0 && nextX > TargetPosition.x ||
-                Direction.x < 0 && nextX < TargetPosition.x)
+            if (direction.x > 0 && nextX > TargetPosition.x ||
+                direction.x < 0 && nextX < TargetPosition.x)
             {
                 nextX = TargetPosition.x;
-                Direction.x = 0;
+                direction.x = 0;
             }
             
-            if (Direction.y > 0 && nextY > TargetPosition.y ||
-                Direction.y < 0 && nextY < TargetPosition.y)
+            if (direction.y > 0 && nextY > TargetPosition.y ||
+                direction.y < 0 && nextY < TargetPosition.y)
             {
                 nextY = TargetPosition.y;
-                Direction.y = 0;
+                direction.y = 0;
             }
-            
+
+            Direction = direction;
             _entity.MoveTo(new Vector2(nextX, nextY));
 
             //TODO add flying thing with z

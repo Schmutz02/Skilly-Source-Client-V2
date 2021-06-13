@@ -248,6 +248,8 @@ namespace Models.Static
         public readonly TextureData TextureData;
         public readonly TextureData TopTextureData;
 
+        public readonly bool DontFaceAttacks;
+
         public readonly string HitSound;
         public readonly string DeathSound;
 
@@ -278,6 +280,8 @@ namespace Models.Static
             TextureData = new TextureData(xml);
             if (xml.Element("Top") != null)
                 TopTextureData = new TextureData(xml.Element("Top"));
+
+            DontFaceAttacks = xml.ParseBool("DontFaceAttacks");
 
             HitSound = xml.ParseString("HitSound");
             DeathSound = xml.ParseString("DeathSound");

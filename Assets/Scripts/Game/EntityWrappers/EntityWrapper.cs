@@ -26,11 +26,7 @@ namespace Game.EntityWrappers
         public virtual void Init(Entity child, bool rotating)
         {
             Entity = child;
-            
-            Renderer.sprite = Entity.Desc.TextureData.Texture ? 
-                Entity.Desc.TextureData.Texture : 
-                Entity.Desc.TextureData.Animation.GetFrame(Facing.Down, Action.Stand, 0);
-            
+
             SetPositionAndRotation();
             
             if (rotating)
@@ -43,6 +39,8 @@ namespace Game.EntityWrappers
         protected virtual void Update()
         {
             Entity.Tick(GameTime.Time, GameTime.DeltaTime, CameraManager.Camera);
+
+            Renderer.sprite = Entity.GetTexture(GameTime.Time);
 
             SetPositionAndRotation();
         }

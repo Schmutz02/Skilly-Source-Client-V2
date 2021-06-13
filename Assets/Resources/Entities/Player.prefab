@@ -85,6 +85,11 @@ PrefabInstance:
       propertyPath: m_SpriteSortPoint
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6090188786275417466, guid: a4fa260802ae5804f9f0e0d69d8eaf6a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4b0a1f321bd47fa4594bf228433a5e6b, type: 2}
     m_RemovedComponents:
     - {fileID: 1730937014258634585, guid: a4fa260802ae5804f9f0e0d69d8eaf6a, type: 3}
     - {fileID: 629825891436510716, guid: a4fa260802ae5804f9f0e0d69d8eaf6a, type: 3}

@@ -10,6 +10,8 @@ namespace Game.MovementControllers
     {
         private const float _MOVE_THRESHOLD = 0.4f;
         
+        public Vector2 Direction { get; private set; }
+        
         private readonly Player _player;
 
         public PlayerMovementController(Player player)
@@ -53,6 +55,7 @@ namespace Game.MovementControllers
                 direction.y -= _player.PushY;
             }
 
+            Direction = direction;
             ValidateAndMove(_player.Position + deltaTime * direction);
         }
 

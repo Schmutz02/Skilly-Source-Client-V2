@@ -1,11 +1,15 @@
 using Game.MovementControllers;
 using Models.Static;
 using UnityEngine;
+using Utils;
 
 namespace Game.Entities
 {
     public partial class Entity
     {
+        //TODO do animation things seperate
+        public const int ATTACK_PERIOD = 500;
+        
         private static int _nextFakeObjectId;
         
         private ConditionEffect _conditionEffects;
@@ -22,8 +26,12 @@ namespace Game.Entities
         public Vector2 Position;
         public float Rotation; // in radians
         public readonly bool IsMyPlayer;
+        
+        public int AttackStart;
+        public float AttackAngle;
+        public float Facing;
 
-        private readonly IMovementController _movementController;
+        protected readonly IMovementController MovementController;
 
         public Entity(ObjectDesc desc, int objectId, bool isMyPlayer, Map map)
         {
@@ -34,9 +42,9 @@ namespace Game.Entities
             IsMyPlayer = isMyPlayer;
 
             if (isMyPlayer)
-                _movementController = new PlayerMovementController(this as Player);
+                MovementController = new PlayerMovementController(this as Player);
             else
-                _movementController = new EntityMovementController(this);
+                MovementController = new EntityMovementController(this);
         }
 
         public static int GetNextFakeObjectId()
@@ -50,10 +58,16 @@ namespace Game.Entities
             return true;
         }
 
+        public virtual void SetAttack(ItemDesc container, float attackAngle)
+        {
+            AttackAngle = attackAngle;
+            AttackStart = GameTime.Time;
+        }
+
         public void OnNewTick(Vector2 position)
         {
             // only called on things that aren't my player
-            var movement = _movementController as EntityMovementController;
+            var movement = MovementController as EntityMovementController;
             if (movement!.TargetPosition == position)
                 return;
 
@@ -63,8 +77,46 @@ namespace Game.Entities
 
         public virtual bool Tick(int time, int dt, Camera camera)
         {
-            _movementController?.Tick(dt);
+            MovementController?.Tick(dt);
             return true;
+        }
+
+        //TODO possibly extract out
+        public virtual Sprite GetTexture(int time)
+        {
+            Sprite image;
+            if (Desc.TextureData.Animation != null)
+            {
+                var p = 0;
+                var action = Action.Stand;
+                if (time < AttackStart + ATTACK_PERIOD)
+                {
+                    if (!Desc.DontFaceAttacks)
+                    {
+                        Facing = AttackAngle;
+                    }
+
+                    p = (time - AttackStart) % ATTACK_PERIOD / ATTACK_PERIOD;
+                    action = Action.Attack;
+                }
+                else if (MovementController.Direction != Vector2.zero)
+                {
+                    var walkPer = (int)(0.5 / (MovementController.Direction.magnitude * 4));
+                    walkPer = 400 - walkPer % 400;
+                    Facing = Mathf.Atan2(MovementController.Direction.y, MovementController.Direction.x);
+                    action = Action.Walk;
+                    p = time % walkPer / walkPer;
+                    Debug.LogError(p);
+                }
+
+                image = Desc.TextureData.Animation.ImageFromFacing(Facing, action, p);
+            }
+            else
+            {
+                image = Desc.TextureData.Texture;
+            }
+
+            return SpriteUtils.Redraw(image, 100);
         }
 
         public bool HasConditionEffect(ConditionEffect conditionEffect)

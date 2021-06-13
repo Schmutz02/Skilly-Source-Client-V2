@@ -8,6 +8,42 @@ namespace Models.Static
     {
         private readonly Dictionary<Facing, Dictionary<Action, List<Sprite>>> _directionToAnimation =
             new Dictionary<Facing, Dictionary<Action, List<Sprite>>>();
+        
+        private readonly List<List<Facing>> _sec2Dirs = new List<List<Facing>>
+        {
+            new List<Facing>
+            {
+                Facing.Left, Facing.Down, Facing.Up
+            },
+            new List<Facing>
+            {
+                Facing.Down, Facing.Left, Facing.Up
+            },
+            new List<Facing>
+            {
+                Facing.Down, Facing.Right, Facing.Up
+            },
+            new List<Facing>
+            {
+                Facing.Right, Facing.Down, Facing.Up
+            },
+            new List<Facing>
+            {
+                Facing.Right, Facing.Up
+            },
+            new List<Facing>
+            {
+                Facing.Up, Facing.Right
+            },
+            new List<Facing>
+            {
+                Facing.Up, Facing.Left
+            },
+            new List<Facing>
+            {
+                Facing.Left, Facing.Up
+            }
+        };
     
         public CharacterAnimation(List<Sprite> frames, Facing startFacing)
         {
@@ -42,6 +78,21 @@ namespace Models.Static
         public Sprite GetFrame(Facing facing, Action action, int frame)
         {
             return _directionToAnimation[facing][action][frame];
+        }
+
+        public Sprite ImageFromFacing(float facing, Action action, float p)
+        {
+            var cameraAngle = MathUtils.BoundToPI(facing - Settings.CameraAngle);
+            var sec = (int) (cameraAngle / (Mathf.PI / 4) + 4) % 8;
+            var dirs = _sec2Dirs[sec];
+            if (!_directionToAnimation.TryGetValue(dirs[0], out var actions))
+                if (!_directionToAnimation.TryGetValue(dirs[1], out actions))
+                    actions = _directionToAnimation[dirs[2]];
+
+            var images = actions[action];
+            p = Mathf.Max(0, Mathf.Min(0.99999f, p));
+            var i = (int)(p * images.Count);
+            return images[i];
         }
 
         private static Dictionary<Action, List<Sprite>> GetDirection(List<Sprite> frames, int offset, bool mirror)

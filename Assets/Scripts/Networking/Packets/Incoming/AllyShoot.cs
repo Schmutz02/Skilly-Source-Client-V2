@@ -40,7 +40,8 @@ namespace Networking.Packets.Incoming
                 map.AddObject(projectile, projectile.StartPosition);
                 angle += arcGap;
             }
-            //TODO attack angle
+
+            owner.SetAttack(weaponXml, _angle);
         }
     }
 }

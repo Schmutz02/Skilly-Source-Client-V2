@@ -10,7 +10,7 @@ namespace Game
     {
         private readonly Player _player;
 
-        private float _attackPeriod;
+        private int _attackPeriod;
         private int _attackStart;
         private int _time;
         
@@ -49,11 +49,14 @@ namespace Game
             var rateOfFire = weaponXml.RateOfFire;
             
             rateOfFire *= 1 + rateOfFireMod;
-            _attackPeriod = 1 / _player.GetAttackFrequency() * (1 / rateOfFire);
+            _attackPeriod = (int)(1 / _player.GetAttackFrequency() * (1 / rateOfFire));
+            _player.AttackPeriod = _attackPeriod;
             if (_time < _attackStart + _attackPeriod)
                 return;
             
             _attackStart = _time;
+            _player.AttackStart = _time;
+            _player.AttackAngle = attackAngle;
             Shoot(_attackStart, weaponType, itemData, weaponXml, attackAngle, false);
         }
 

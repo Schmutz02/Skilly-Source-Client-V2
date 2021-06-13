@@ -19,5 +19,10 @@ namespace Game.EntityWrappers
                 side.sprite = child.Desc.TextureData.Texture;
             }
         }
+
+        protected override void Update()
+        {
+            transform.position = Entity.Position;
+        }
     }
 }

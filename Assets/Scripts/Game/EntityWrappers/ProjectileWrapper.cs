@@ -14,6 +14,8 @@ namespace Game.EntityWrappers
             _projectile = projectile as Projectile;
 
             transform.position = _projectile!.StartPosition;
+            Renderer.sprite = Entity.Desc.TextureData.Texture;
+            
             SetRotation();
         }
 

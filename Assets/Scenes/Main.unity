@@ -169,7 +169,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerId: 0
   CharId: 0
-  Player: {fileID: 0}
   _map: {fileID: 1349212827}
 --- !u!1 &50060063
 GameObject:
@@ -776,7 +775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tilemap: {fileID: 1776870506}
   _entityParentTransform: {fileID: 1252946165}
-  NextProjectileId: 0
+  MovesRequested: 0
 --- !u!156049354 &1349212828
 Grid:
   m_ObjectHideFlags: 0
@@ -2191,7 +2190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Angle: 0
-  ZScale: -1.15
+  ZScale: -1
   ZOffset: -10
 --- !u!114 &7754677132906729104
 MonoBehaviour:
