@@ -22,7 +22,7 @@ namespace Game
             Sprite image;
             if (_entity.Desc.TextureData.Animation != null)
             {
-                var p = 0;
+                var p = 0f;
                 var action = Action.Stand;
                 if (time < _entity.AttackStart + _ATTACK_PERIOD)
                 {
@@ -31,12 +31,12 @@ namespace Game
                         _facing = _entity.AttackAngle;
                     }
 
-                    p = (time - _entity.AttackStart) % _ATTACK_PERIOD / _ATTACK_PERIOD;
+                    p = (time - _entity.AttackStart) % (float)_ATTACK_PERIOD / _ATTACK_PERIOD;
                     action = Action.Attack;
                 }
                 else if (_entity.Direction != Vector2.zero)
                 {
-                    var walkPer = (int)(0.5 / (_entity.Direction.magnitude * 4));
+                    var walkPer = 0.5f / (_entity.Direction.magnitude * 4);
                     walkPer = 400 - walkPer % 400;
                     _facing = Mathf.Atan2(_entity.Direction.y, _entity.Direction.x);
                     action = Action.Walk;
