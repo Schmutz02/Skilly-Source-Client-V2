@@ -37,13 +37,13 @@ namespace Networking.Packets.Incoming
         {
             handler.Random = new wRandom(_seed);
             
-            if (Account.GameInitData.NewCharacter)
+            if (handler.NewCharacter)
             {
                         
             }
             else
             {
-                TcpTicker.Send(new Load(Account.GameInitData.CharId)); 
+                TcpTicker.Send(new Load(handler.CharId)); 
             }
         }
     }

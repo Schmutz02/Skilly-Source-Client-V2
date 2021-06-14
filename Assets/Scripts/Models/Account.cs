@@ -18,7 +18,6 @@ namespace Models
         public static GuildInfo Guild { get; private set; }
         public static int CurrentFame { get; private set; }
         public static int CurrentGold { get; private set; }
-        public static GameInitData GameInitData { get; private set; }
 
         private static readonly Dictionary<int, ClassStats> _ClassStats =
             new Dictionary<int, ClassStats>();
@@ -56,11 +55,6 @@ namespace Models
             _ClassStats.Clear();
             _Characters.Clear();
             PlayerPrefs.DeleteKey(USERNAME_KEY);
-        }
-
-        public static void SetGameInitData(int gameId, int charId, bool isNewCharacter)
-        {
-            GameInitData = new GameInitData(gameId, charId, isNewCharacter);
         }
 
         public static void LoadFromCharList(XElement xml)

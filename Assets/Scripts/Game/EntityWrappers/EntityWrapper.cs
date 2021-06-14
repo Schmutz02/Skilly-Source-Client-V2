@@ -39,7 +39,7 @@ namespace Game.EntityWrappers
         {
             Entity.Tick(GameTime.Time, GameTime.DeltaTime, CameraManager.Camera);
 
-            Renderer.sprite = Entity.GetTexture(GameTime.Time);
+            Renderer.sprite = Entity.TextureProvider.GetTexture(GameTime.Time);
 
             SetPositionAndRotation();
         }

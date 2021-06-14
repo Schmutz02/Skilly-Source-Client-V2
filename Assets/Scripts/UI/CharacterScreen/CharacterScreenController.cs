@@ -23,6 +23,7 @@ namespace UI.CharacterScreen
                 if (i < Account.Characters.Count)
                 {
                     child.GetComponent<CharacterRect>().Init(Account.Characters[i]);
+                    child.gameObject.SetActive(true);
                     i++;
                     continue;
                 }
@@ -34,6 +35,7 @@ namespace UI.CharacterScreen
             {
                 var characterRect = Instantiate(_characterRectPrefab, _characterGroup).GetComponent<CharacterRect>();
                 characterRect.Init(Account.Characters[i]);
+                characterRect.gameObject.SetActive(true);
                 i++;
             }
         }

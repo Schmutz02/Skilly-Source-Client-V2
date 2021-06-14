@@ -4,13 +4,13 @@ namespace Networking.Packets.Outgoing
     {
         public override PacketId Id => PacketId.Hello;
         
-        private readonly int _gameId;
+        private readonly int _worldId;
         private readonly string _username;
         private readonly string _password;
 
-        public Hello(int gameId, string username, string password)
+        public Hello(int worldId, string username, string password)
         {
-            _gameId = gameId;
+            _worldId = worldId;
             _username = username;
             _password = password;
         }
@@ -18,7 +18,7 @@ namespace Networking.Packets.Outgoing
         public override void Write(PacketWriter wtr)
         {
             wtr.Write("");
-            wtr.Write(_gameId);
+            wtr.Write(_worldId);
             wtr.Write(_username);
             wtr.Write(_password);
             wtr.Write(0);

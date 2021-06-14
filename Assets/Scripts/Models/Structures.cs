@@ -91,20 +91,6 @@ namespace Models
         }
     }
 
-    public readonly struct GameInitData
-    {
-        public readonly int GameId;
-        public readonly int CharId;
-        public readonly bool NewCharacter;
-
-        public GameInitData(int gameId, int charId, bool newCharacter)
-        {
-            GameId = gameId;
-            CharId = charId;
-            NewCharacter = newCharacter;
-        }
-    }
-
     public struct TileData
     {
         public ushort TileType;

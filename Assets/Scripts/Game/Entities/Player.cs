@@ -89,28 +89,6 @@ namespace Game.Entities
             base.SetAttack(container, attackAngle);
         }
 
-        public override Sprite GetTexture(int time)
-        {
-            var action = Action.Stand;
-            var p = 0f;
-            if (time < AttackStart + AttackPeriod)
-            {
-                Facing = AttackAngle;
-                p = (time - AttackStart) % (float)AttackPeriod / AttackPeriod;
-                action = Action.Attack;
-            }
-            else if (MovementController.Direction != Vector2.zero)
-            {
-                var walkPer = 3.5f / GetMovementSpeed();
-                Facing = Mathf.Atan2(MovementController.Direction.y, MovementController.Direction.x);
-                p = time % walkPer / walkPer;
-                action = Action.Walk;
-            }
-
-            var image = Desc.TextureData.Animation.ImageFromFacing(Facing, action, p);
-            return SpriteUtils.Redraw(image, Size);
-        }
-
         protected override void UpdateStat(StatType statType, object value)
         {
             base.UpdateStat(statType, value);

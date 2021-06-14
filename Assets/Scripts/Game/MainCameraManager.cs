@@ -38,6 +38,7 @@ namespace Game
             transform.rotation = Quaternion.Euler(0, 0, Settings.CameraAngle * Mathf.Rad2Deg);
             if (!(_focus is null))
             {
+                //TODO fix
                 var yOffset = (_offset ? 2.5f : 0) * ((Camera.orthographicSize - 6) / 3f + 1);
                 transform.position = new Vector3(_focus.transform.position.x, _focus.transform.position.y, ZOffset);
                 transform.Translate(0, 0.5f + yOffset, 0, Space.Self);

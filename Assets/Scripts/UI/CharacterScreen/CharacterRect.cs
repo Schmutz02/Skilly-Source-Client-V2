@@ -1,3 +1,4 @@
+using Game;
 using Models;
 using Models.Static;
 using UnityEngine;
@@ -12,6 +13,9 @@ namespace UI.CharacterScreen
 
         [SerializeField]
         private Button _frameButton;
+
+        [SerializeField]
+        private GameManager _gameManager;
 
         private int _charId;
         
@@ -30,8 +34,7 @@ namespace UI.CharacterScreen
 
         private void OnFrameClick()
         {
-            Account.SetGameInitData(-1, _charId, false); // TODO probably not a good way to do this
-            ViewManager.Instance.ChangeView(View.Game);
+            _gameManager.StartGame(-1, _charId, false);
         }
     }
 }
