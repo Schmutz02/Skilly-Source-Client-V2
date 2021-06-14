@@ -45,7 +45,7 @@ namespace UI.TitleScreen
         {
             SetUsernameField();
             _passwordField.text = "";
-            _rememberUsernameToggle.isOn = false;
+            _rememberUsernameToggle.isOn = PlayerPrefs.GetInt(Account.REMEMBER_USERNAME_KEY) == 1;
             _errorTextField.text = "";
         }
 
