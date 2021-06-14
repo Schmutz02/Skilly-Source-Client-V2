@@ -19,8 +19,9 @@ namespace Game.Entities
         public Square Square;
         public readonly int ObjectId;
         public readonly ObjectDesc Desc;
-        public Vector2 Position;
+        public Vector3 Position;
         public float Rotation; // in radians
+        public bool Flying;
         public readonly bool IsMyPlayer;
         
         public int AttackStart;
@@ -75,7 +76,7 @@ namespace Game.Entities
                 return;
 
             movement.TargetPosition = position;
-            movement.Direction = (movement.TargetPosition - Position) / 127f;
+            movement.Direction = (movement.TargetPosition - (Vector2)Position) / 127f;
         }
 
         public virtual bool Tick(int time, int dt, Camera camera)

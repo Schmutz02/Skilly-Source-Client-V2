@@ -56,7 +56,7 @@ namespace Game.MovementControllers
             }
 
             Direction = direction;
-            ValidateAndMove(_player.Position + deltaTime * direction);
+            ValidateAndMove((Vector2)_player.Position + deltaTime * direction);
         }
 
         private void ValidateAndMove(Vector2 pos)

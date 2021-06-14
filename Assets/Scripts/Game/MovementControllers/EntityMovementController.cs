@@ -19,33 +19,47 @@ namespace Game.MovementControllers
 
         public void Tick(float deltaTime)
         {
-            if (Direction == Vector2.zero)
-                return;
-
-            var direction = Direction;
-            var dx = direction.x * deltaTime;
-            var dy = direction.y * deltaTime;
-            var nextX = _entity.Position.x + dx;
-            var nextY = _entity.Position.y + dy;
-
-            if (direction.x > 0 && nextX > TargetPosition.x ||
-                direction.x < 0 && nextX < TargetPosition.x)
+            var moving = false;
+            if (Direction != Vector2.zero)
             {
-                nextX = TargetPosition.x;
-                direction.x = 0;
+                var direction = Direction;
+                var dx = direction.x * deltaTime;
+                var dy = direction.y * deltaTime;
+                var nextX = _entity.Position.x + dx;
+                var nextY = _entity.Position.y + dy;
+
+                if (direction.x > 0 && nextX > TargetPosition.x ||
+                    direction.x < 0 && nextX < TargetPosition.x)
+                {
+                    nextX = TargetPosition.x;
+                    direction.x = 0;
+                }
+
+                if (direction.y > 0 && nextY > TargetPosition.y ||
+                    direction.y < 0 && nextY < TargetPosition.y)
+                {
+                    nextY = TargetPosition.y;
+                    direction.y = 0;
+                }
+
+                Direction = direction;
+                _entity.MoveTo(new Vector2(nextX, nextY));
+                moving = true;
             }
-            
-            if (direction.y > 0 && nextY > TargetPosition.y ||
-                direction.y < 0 && nextY < TargetPosition.y)
+
+            if (_entity.Desc.WhileMoving != null)
             {
-                nextY = TargetPosition.y;
-                direction.y = 0;
+                if (!moving)
+                {
+                    _entity.Position.z = _entity.Desc.Z;
+                    _entity.Flying = _entity.Desc.Flying;
+                }
+                else
+                {
+                    _entity.Position.z = _entity.Desc.WhileMoving.Z;
+                    _entity.Flying = _entity.Desc.WhileMoving.Flying;
+                }
             }
-
-            Direction = direction;
-            _entity.MoveTo(new Vector2(nextX, nextY));
-
-            //TODO add flying thing with z
         }
     }
 }

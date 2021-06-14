@@ -246,6 +246,9 @@ namespace Models.Static
         public readonly bool Enemy;
 
         public readonly int Size;
+        public readonly WhileMovingDesc WhileMoving;
+        public readonly bool Flying;
+        public readonly float Z;
 
         public readonly TextureData TextureData;
         public readonly TextureData TopTextureData;
@@ -280,6 +283,10 @@ namespace Models.Static
             Player = xml.ParseBool("Player");
 
             Size = xml.ParseInt("Size", 100);
+            if (xml.Element("WhileMoving") != null)
+                WhileMoving = new WhileMovingDesc(xml.Element("WhileMoving"));
+            Flying = xml.ParseBool("Flying");
+            Z = xml.ParseFloat("Z");
 
             TextureData = new TextureData(xml);
             if (xml.Element("Top") != null)
@@ -301,6 +308,18 @@ namespace Models.Static
 
             AngleCorrection = xml.ParseInt("AngleCorrection") * -Mathf.PI / 4;
             Rotation = xml.ParseFloat("Rotation");
+        }
+    }
+
+    public class WhileMovingDesc
+    {
+        public readonly float Z;
+        public readonly bool Flying;
+
+        public WhileMovingDesc(XElement xml)
+        {
+            Z = xml.ParseFloat("Z");
+            Flying = xml.ParseBool("Flying");
         }
     }
     
