@@ -1,15 +1,10 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using Game;
 using Game.Entities;
 using Models;
 using Networking.Packets;
 using Networking.Packets.Outgoing;
 using UI;
-using UnityEngine;
 
 namespace Networking
 {
@@ -76,46 +71,43 @@ namespace Networking
         SwitchMusic
     }
     
-    public class PacketHandler : MonoBehaviour
+    public class PacketHandler
     {
         private ConcurrentQueue<IncomingPacket> _toBeHandled;
 
-        [SerializeField]
-        public MainCameraManager _cameraManager;
-
-        [HideInInspector]
         public int PlayerId;
-
-        [HideInInspector]
+        
         public int CharId;
-
-        [HideInInspector]
+        private readonly int _worldId;
+        public readonly bool NewCharacter;
+        
         public Player Player;
-
-        [SerializeField]
-        private Map _map;
-
-        // [SerializeField]
-        // private EntityManager _entityManager;
+        
+        private readonly Map _map;
 
         public wRandom Random;
 
-        private void OnEnable()
+        public PacketHandler(int worldId, int charId, bool newCharacter, Map map)
+        {
+            _worldId = worldId;
+            CharId = charId;
+            NewCharacter = newCharacter;
+            _map = map;
+        }
+
+        public void Start()
         {
             _toBeHandled = new ConcurrentQueue<IncomingPacket>();
             TcpTicker.Start(this);
-            TcpTicker.Send(new Hello(Account.GameInitData.GameId, Account.Username, Account.Password));
+            TcpTicker.Send(new Hello(_worldId, Account.Username, Account.Password));
         }
 
-        private void OnDisable()
+        public void Stop()
         {
             TcpTicker.Stop();
-            _map.Clear();
-            _cameraManager.Clear();
-            _cameraManager.SetFocus(null);
         }
 
-        private void Update()
+        public void Tick()
         {
             if (!TcpTicker.Running)
             {
