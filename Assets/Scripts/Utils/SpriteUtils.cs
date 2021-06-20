@@ -159,7 +159,7 @@ namespace Utils
             
             var w = (int)(multiplier * size / 100 * smallTexture.width);
             var h = (int)(multiplier * size / 100 * smallTexture.height);
-            var pivot = new Vector2(((sprite.pivot.x + 1) / smallTexture.width), 0);
+            var pivot = new Vector2(((sprite.pivot.x + 1) / smallTexture.width), multiplier / h);
             Scale(smallTexture, w, h, FilterMode.Point);
 
             var rect = new Rect(0, 0, w, h);
