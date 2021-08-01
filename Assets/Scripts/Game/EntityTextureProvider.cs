@@ -41,7 +41,6 @@ namespace Game
                     _facing = Mathf.Atan2(_entity.Direction.y, _entity.Direction.x);
                     action = Action.Walk;
                     p = time % walkPer / walkPer;
-                    Debug.LogError(p);
                 }
 
                 image = _entity.Desc.TextureData.Animation.ImageFromFacing(_facing, action, p);

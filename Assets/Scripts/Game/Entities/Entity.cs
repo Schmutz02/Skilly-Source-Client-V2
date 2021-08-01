@@ -24,6 +24,8 @@ namespace Game.Entities
         public bool Flying;
         public readonly bool IsMyPlayer;
         
+        public readonly int SizeMult = 1;
+        
         public int AttackStart;
         public float AttackAngle;
         public Vector2 Direction => _movementController.Direction;
@@ -49,6 +51,9 @@ namespace Game.Entities
                 _movementController = new EntityMovementController(this);
                 TextureProvider = new EntityTextureProvider(this);
             }
+
+            if (Desc.TextureData.Texture)
+                SizeMult = (int) Desc.TextureData.Texture.rect.height / 8;
         }
 
         public static int GetNextFakeObjectId()

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Renderer: {fileID: 0}
+  ShadowRenderer: {fileID: 7665649249194916972}
 --- !u!1001 &1687561259050357325
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -97,6 +98,12 @@ PrefabInstance:
 --- !u!1 &1854265822043714777 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1067565278717044372, guid: a4fa260802ae5804f9f0e0d69d8eaf6a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1687561259050357325}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &7665649249194916972 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 9010215655662218785, guid: a4fa260802ae5804f9f0e0d69d8eaf6a,
     type: 3}
   m_PrefabInstance: {fileID: 1687561259050357325}
   m_PrefabAsset: {fileID: 0}

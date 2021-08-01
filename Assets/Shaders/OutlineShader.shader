@@ -3,7 +3,8 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _Color ("Color", Color) = (0,0,0,1)
+        _OutlineColor ("OutlineColor", Color) = (0,0,0,1)
+        _GradientColor ("GradientColor", Color) = (0,0,0,1)
         _BlurAmount ("Blur", Range(1,10)) = 0
     }
 
@@ -54,7 +55,8 @@
 
             sampler2D _MainTex;
             float4 _MainTex_TexelSize;
-            half4 _Color;
+            half4 _OutlineColor;
+            half4 _GradientColor;
             uint _BlurAmount;
 
             float testForColor(v2f pix)
@@ -122,7 +124,8 @@
             
             half4 frag (v2f IN) : SV_Target
             {
-                half4 col = tex2D(_MainTex, IN.uv);
+                const half4 texColor = tex2D(_MainTex, IN.uv);
+                half4 col = lerp(texColor * _GradientColor, texColor, IN.uv.y);
                 
                 if (col.a == 0)
                 {
@@ -137,7 +140,7 @@
 
                             if (pixColor.a != 0)
                             {
-                                return _Color;
+                                return _OutlineColor;
                             }
                         }
                     }

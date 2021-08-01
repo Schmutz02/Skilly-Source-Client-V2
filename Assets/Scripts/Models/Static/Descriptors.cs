@@ -246,6 +246,8 @@ namespace Models.Static
         public readonly bool Enemy;
 
         public readonly int Size;
+        public readonly int ShadowSize;
+        public readonly Color ShadowColor;
         public readonly WhileMovingDesc WhileMoving;
         public readonly bool Flying;
         public readonly float Z;
@@ -283,6 +285,9 @@ namespace Models.Static
             Player = xml.ParseBool("Player");
 
             Size = xml.ParseInt("Size", 100);
+            ShadowSize = xml.ParseInt("ShadowSize", 100);
+            // ShadowColor = xml.ParseColor("ShadowColor");
+            ShadowColor = Color.black;
             if (xml.Element("WhileMoving") != null)
                 WhileMoving = new WhileMovingDesc(xml.Element("WhileMoving"));
             Flying = xml.ParseBool("Flying");
