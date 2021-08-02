@@ -20,13 +20,16 @@ namespace Game
         private Transform _entityParentTransform;
 
         private Dictionary<int, EntityWrapper> _entities;
+        private Dictionary<string, Queue<EntityWrapper>> _entityPool;
 
+        [HideInInspector]
         public int MovesRequested;
         public Player MyPlayer;
 
         private void Awake()
         {
             _entities = new Dictionary<int, EntityWrapper>();
+            _entityPool = new Dictionary<string, Queue<EntityWrapper>>();
         }
 
         private void LateUpdate()
@@ -46,14 +49,18 @@ namespace Game
 
             foreach (Transform child in _entityParentTransform)
             {
-                //TODO pooling instead
-                Destroy(child.gameObject);
+                var wrapper = child.GetComponent<EntityWrapper>();
+                var type = wrapper.Entity.Desc.Class;
+                if (!_entityPool.ContainsKey(type))
+                    _entityPool[type] = new Queue<EntityWrapper>();
+                _entityPool[type].Enqueue(wrapper);
+
+                child.gameObject.SetActive(false);
             }
         }
 
         public void AddTile(TileData tileData)
         {
-            // TODO convert to objects for pooling
             var tile = ScriptableObject.CreateInstance<Square>();
             var tileDesc = AssetLibrary.GetTileDesc(tileData.TileType);
             tile.Init(tileDesc);
@@ -62,8 +69,17 @@ namespace Game
 
         public bool AddObject(Entity entity, Vector2 position)
         {
-            var wrapperPrefab = Resources.Load<EntityWrapper>($"Entities/{entity.Desc.Class}");
-            var wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
+            EntityWrapper wrapper;
+            if (_entityPool.ContainsKey(entity.Desc.Class) && _entityPool[entity.Desc.Class].Count > 0)
+            {
+                wrapper = _entityPool[entity.Desc.Class].Dequeue();
+                wrapper.gameObject.SetActive(true);
+            }
+            else
+            {
+                var wrapperPrefab = Resources.Load<EntityWrapper>($"Entities/{entity.Desc.Class}");
+                wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
+            }
             wrapper.Init(entity, true); // always rotates unless overridden
             
             entity.Position = position;
@@ -85,7 +101,13 @@ namespace Game
 
         public void RemoveObject(int objectId)
         {
-            Destroy(_entities[objectId].gameObject);
+            var en = _entities[objectId];
+            var type = en.Entity.Desc.Class;
+            if (!_entityPool.ContainsKey(type))
+                _entityPool[type] = new Queue<EntityWrapper>();
+            _entityPool[type].Enqueue(en);
+            
+            en.gameObject.SetActive(false);
             _entities.Remove(objectId);
         }
 

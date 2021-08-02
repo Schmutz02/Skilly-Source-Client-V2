@@ -25,7 +25,6 @@ namespace Game.EntityWrappers
             {
                 //TODO sfield map instead??
                 _projectile.Map.RemoveObject(_projectile.ObjectId);
-                Destroy(gameObject);
             }
             transform.position = _projectile.Position;
             
