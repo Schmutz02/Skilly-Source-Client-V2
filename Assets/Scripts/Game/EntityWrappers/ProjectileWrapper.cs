@@ -7,7 +7,7 @@ namespace Game.EntityWrappers
     {
         private Projectile _projectile;
         
-        public override void Init(Entity projectile, bool rotating)
+        public override void Init(Entity projectile, bool rotating = true)
         {
             base.Init(projectile, false);
 

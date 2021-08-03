@@ -37,10 +37,16 @@ namespace Game.EntityWrappers
                 CameraManager = Camera.main.GetComponent<MainCameraManager>();
         }
 
-        public virtual void Init(Entity child, bool rotating)
+        private void OnDisable()
         {
-            if (Entity?.Model) // if cached entity
+            if (Entity?.Model)
                 Destroy(_model);
+            
+            CameraManager.RemoveRotatingEntity(Entity);
+        }
+
+        public virtual void Init(Entity child, bool rotating = true)
+        {
             Entity = child;
 
             SetPositionAndRotation();

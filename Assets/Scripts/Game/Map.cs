@@ -80,7 +80,7 @@ namespace Game
                 var wrapperPrefab = Resources.Load<EntityWrapper>($"Entities/{entity.Desc.Class}");
                 wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
             }
-            wrapper.Init(entity, true); // always rotates unless overridden
+            wrapper.Init(entity); // always rotates unless overridden
             
             entity.Position = position;
 

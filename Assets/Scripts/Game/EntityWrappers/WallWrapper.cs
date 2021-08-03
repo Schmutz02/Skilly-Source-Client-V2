@@ -9,7 +9,7 @@ namespace Game.EntityWrappers
         [SerializeField]
         private SpriteRenderer[] _sides;
 
-        public override void Init(Entity child, bool rotating)
+        public override void Init(Entity child, bool rotating = true)
         {
             base.Init(child, false);
 
