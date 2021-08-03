@@ -1,6 +1,7 @@
 using System;
 using Game.Entities;
 using UnityEngine;
+using Utils;
 
 namespace Game.EntityWrappers
 {
@@ -18,6 +19,8 @@ namespace Game.EntityWrappers
         private int currentShadowScale;
 
         protected static MainCameraManager CameraManager;
+
+        private GameObject _model;
         
         private void Awake()
         {
@@ -36,6 +39,8 @@ namespace Game.EntityWrappers
 
         public virtual void Init(Entity child, bool rotating)
         {
+            if (Entity?.Model) // if cached entity
+                Destroy(_model);
             Entity = child;
 
             SetPositionAndRotation();
@@ -43,9 +48,12 @@ namespace Game.EntityWrappers
 
             if (rotating)
                 CameraManager.AddRotatingEntity(Entity);
-            
+
             if (child.IsMyPlayer)
                 CameraManager.SetFocus(gameObject);
+
+            if (Entity.Model)
+                AddModel();
         }
 
         protected virtual void Update()
@@ -58,9 +66,10 @@ namespace Game.EntityWrappers
                 currentShadowScale = shadowSize;
                 RedrawShadow();
             }
-                
 
-            Renderer.sprite = Entity.TextureProvider.GetTexture(GameTime.Time);
+
+            if (!Entity.Model)
+                Renderer.sprite = Entity.TextureProvider.GetTexture(GameTime.Time);
 
             SetPositionAndRotation();
         }
@@ -79,6 +88,18 @@ namespace Game.EntityWrappers
         {
             transform.position = Entity.Position;
             transform.rotation = Quaternion.Euler(0, 0, Entity.Rotation * Mathf.Rad2Deg);
+            
+            if (_model)
+                _model.transform.rotation = Quaternion.identity;
+        }
+        
+        private static readonly int _MainTex = Shader.PropertyToID("_MainTex");
+        private void AddModel()
+        {
+            _model = Instantiate(Entity.Model, transform);
+            var renderer = _model.GetComponentInChildren<Renderer>();
+            var texture = SpriteUtils.CreateTexture(Entity.Desc.TextureData.Texture);
+            renderer.material.SetTexture(_MainTex, texture);
         }
     }
 }

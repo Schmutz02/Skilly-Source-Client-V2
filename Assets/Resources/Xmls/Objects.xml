@@ -1,0 +1,8 @@
+<Objects>
+    <Object type="0x01c7" id="White Fountain">
+        <Class>GameObject</Class>
+        <Model>Tower</Model>
+        <Effect>Fountain</Effect>
+        <Texture><File>lofiEnvironment2</File><Index>0x96</Index></Texture>
+    </Object>
+</Objects>

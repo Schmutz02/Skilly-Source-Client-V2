@@ -25,6 +25,8 @@ namespace Game.Entities
         public readonly bool IsMyPlayer;
         
         public readonly int SizeMult = 1;
+
+        public readonly GameObject Model;
         
         public int AttackStart;
         public float AttackAngle;
@@ -54,6 +56,11 @@ namespace Game.Entities
 
             if (Desc.TextureData.Texture)
                 SizeMult = (int) Desc.TextureData.Texture.rect.height / 8;
+
+            if (Desc.Model != null)
+            {
+                Model = AssetLibrary.GetModel(Desc.Model);
+            }
         }
 
         public static int GetNextFakeObjectId()

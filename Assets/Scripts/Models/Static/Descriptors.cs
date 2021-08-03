@@ -252,6 +252,8 @@ namespace Models.Static
         public readonly bool Flying;
         public readonly float Z;
 
+        public readonly string Model;
+
         public readonly TextureData TextureData;
         public readonly TextureData TopTextureData;
 
@@ -292,6 +294,8 @@ namespace Models.Static
                 WhileMoving = new WhileMovingDesc(xml.Element("WhileMoving"));
             Flying = xml.ParseBool("Flying");
             Z = xml.ParseFloat("Z");
+
+            Model = xml.ParseString("Model");
 
             TextureData = new TextureData(xml);
             if (xml.Element("Top") != null)

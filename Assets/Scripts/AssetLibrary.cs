@@ -11,6 +11,8 @@ public static class AssetLibrary
     
     private static readonly Dictionary<string, List<Sprite>> _Images = new Dictionary<string, List<Sprite>>();
 
+    private static readonly Dictionary<string, GameObject> _Models = new Dictionary<string, GameObject>();
+
     private static readonly Dictionary<int, ObjectDesc> _Type2ObjectDesc = new Dictionary<int, ObjectDesc>();
     private static readonly Dictionary<string, ObjectDesc> _Id2ObjectDesc = new Dictionary<string, ObjectDesc>();
     private static readonly Dictionary<int, TileDesc> _Type2TileDesc = new Dictionary<int, TileDesc>();
@@ -42,6 +44,11 @@ public static class AssetLibrary
 
         var rect = new Rect(0, texture.height, texture.width, texture.height);
         _Images[data.Id] = SpriteUtils.CreateSprites(texture, rect, data.ImageWidth, data.ImageHeight);
+    }
+
+    public static void AddModel(GameObject model)
+    {
+        _Models[model.name] = model;
     }
     
     public static void ParseXml(XElement xml)
@@ -82,6 +89,11 @@ public static class AssetLibrary
     public static CharacterAnimation GetAnimation(string sheetName, int index)
     {
         return _Animations[sheetName][index];
+    }
+
+    public static GameObject GetModel(string name)
+    {
+        return _Models[name];
     }
 
     public static ObjectDesc GetObjectDesc(int type)

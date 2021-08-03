@@ -7,6 +7,9 @@ namespace Utils
     {
         private static readonly Dictionary<Sprite, Dictionary<int, Sprite>> RedrawCache =
             new Dictionary<Sprite, Dictionary<int, Sprite>>();
+
+        private static readonly Dictionary<string, Dictionary<int, Texture>> TextureCache =
+            new Dictionary<string, Dictionary<int, Texture>>();
         
         public static Sprite Redraw(Sprite sprite, int size, float multiplier = 5)
         {
@@ -35,6 +38,22 @@ namespace Utils
         private static int GetHash(int size, float multiplier)
         {
             return (int)(size * multiplier);
+        }
+
+        public static Texture2D CreateTexture(Sprite sprite)
+        {
+            var smallTex = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height, sprite.texture.format, false);
+            smallTex.filterMode = FilterMode.Point;
+            for (var y = 0; y < sprite.rect.height; y++)
+            {
+                for (var x = 0; x < sprite.rect.width; x++)
+                {
+                    var color = sprite.texture.GetPixel((int) sprite.rect.x + x, (int) sprite.rect.y + y);
+                    smallTex.SetPixel(x, y, color);
+                }
+            }
+            smallTex.Apply();
+            return smallTex;
         }
         
         public static bool IsTransparent(this Sprite sprite)

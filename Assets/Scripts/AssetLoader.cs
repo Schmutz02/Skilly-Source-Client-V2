@@ -7,6 +7,7 @@ public class AssetLoader : MonoBehaviour
     {
         LoadSpriteSheets();
         LoadXmls();
+        Load3DModels();
         Destroy(gameObject);
     }
 
@@ -21,7 +22,6 @@ public class AssetLoader : MonoBehaviour
             if (sheetData.IsAnimation())
             {
                 AssetLibrary.AddAnimations(texture, sheetData);
-                
             }
             else
             {
@@ -38,6 +38,16 @@ public class AssetLoader : MonoBehaviour
         {
             var xml = XElement.Parse(xmlAsset.text);
             AssetLibrary.ParseXml(xml);
+        }
+    }
+
+    private void Load3DModels()
+    {
+        var modelAsset = Resources.LoadAll<GameObject>("Models");
+
+        foreach (var model in modelAsset)
+        {
+            AssetLibrary.AddModel(model);
         }
     }
 }
