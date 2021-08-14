@@ -7,11 +7,11 @@ namespace Game.EntityWrappers
     {
         private Projectile _projectile;
         
-        public override void Init(Entity projectile, bool rotating = true)
+        public override void Init(Entity portal, bool rotating = true)
         {
-            base.Init(projectile, false);
+            base.Init(portal, false);
 
-            _projectile = projectile as Projectile;
+            _projectile = portal as Projectile;
 
             transform.position = _projectile!.StartPosition;
             Renderer.sprite = Entity.Desc.TextureData.Texture;
@@ -23,8 +23,8 @@ namespace Game.EntityWrappers
         {
             if (!_projectile.Tick(GameTime.Time, GameTime.DeltaTime, CameraManager.Camera))
             {
-                //TODO sfield map instead??
                 _projectile.Map.RemoveObject(_projectile.ObjectId);
+                return;
             }
             transform.position = _projectile.Position;
             

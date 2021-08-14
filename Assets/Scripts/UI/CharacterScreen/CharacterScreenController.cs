@@ -1,7 +1,5 @@
 using Models;
-using Models.Static;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI.CharacterScreen
 {
@@ -16,6 +14,7 @@ namespace UI.CharacterScreen
         protected override void Reset()
         {
             Camera.main.backgroundColor = BlueColor;
+            Camera.main.rect = new Rect(0, 0, 1, 1);
             
             var i = 0;
             foreach (Transform child in _characterGroup.transform)

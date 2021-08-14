@@ -5,11 +5,22 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Models.Static;
+using UnityEngine;
 
 namespace Utils
 {
     public static class ParseUtils
     {
+        public static Color ColorFromInt(uint hex)
+        {
+            Color c;
+            c.b = (byte)((hex) & 0xFF);
+            c.g = (byte)((hex>>8) & 0xFF);
+            c.r = (byte)((hex>>16) & 0xFF);
+            c.a = (byte)((hex>>24) & 0xFF);
+            return c;
+        }
+        
         public static string ParseString(this XElement element, string name, string undefined = null)
         {
             var value = name[0].Equals('@') ? element.Attribute(name.Remove(0, 1))?.Value : element.Element(name)?.Value;

@@ -1,3 +1,4 @@
+using System;
 using Game;
 using Game.Entities;
 using Models;
@@ -6,6 +7,8 @@ namespace Networking.Packets.Incoming
 {
     public class Update : IncomingPacket
     {
+        public static Action<Player> OnMyPlayerJoined;
+        
         public override PacketId Id => PacketId.Update;
         public override IncomingPacket CreateInstance() => new Update();
         
@@ -43,9 +46,6 @@ namespace Networking.Packets.Incoming
 
             foreach (var add in _adds)
             {
-                // var prefab = Resources.Load<Entity>($"Entities/{desc.Class}"); //TODO should probably cache these
-                // var entity = map.CreateEntity(prefab); //TODO add pooling class
-                // entity.Init(add, map);
                 var isMyPlayer = add.ObjectStatus.Id == handler.PlayerId;
                 var entity = Entity.Resolve(add.ObjectType, add.ObjectStatus.Id, isMyPlayer, map);
                 
@@ -53,9 +53,7 @@ namespace Networking.Packets.Incoming
 
                 if (entity.ObjectId == handler.PlayerId)
                 {
-                    handler.Player = entity as Player;
-                    handler.Player!.Random = handler.Random;
-                    map.MyPlayer = entity as Player;
+                    OnMyPlayerJoined?.Invoke(entity as Player);
                 }
                 
                 entity.UpdateObjectStats(add.ObjectStatus.Stats);

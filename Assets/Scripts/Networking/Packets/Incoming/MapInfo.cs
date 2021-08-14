@@ -1,6 +1,4 @@
-using System;
 using Game;
-using Models;
 using Networking.Packets.Outgoing;
 
 namespace Networking.Packets.Incoming

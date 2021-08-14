@@ -9,14 +9,14 @@ namespace Game.EntityWrappers
         [SerializeField]
         private SpriteRenderer[] _sides;
 
-        public override void Init(Entity child, bool rotating = true)
+        public override void Init(Entity portal, bool rotating = true)
         {
-            base.Init(child, false);
+            base.Init(portal, false);
 
-            Renderer.sprite = child.Desc.TopTextureData.Texture;
+            Renderer.sprite = portal.Desc.TopTextureData.Texture;
             foreach (var side in _sides)
             {
-                side.sprite = child.Desc.TextureData.Texture;
+                side.sprite = portal.Desc.TextureData.Texture;
             }
         }
 

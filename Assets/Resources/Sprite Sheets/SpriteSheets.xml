@@ -17,4 +17,13 @@
     <Sheet id="lofiObj5">
         <ImageSize>8x8</ImageSize>
     </Sheet>
+    <Sheet id="lofiChar28x8" name="lofiChar2">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiChar216x8" name="lofiChar2">
+        <ImageSize>16x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiChar216x16" name="lofiChar2">
+        <ImageSize>16x16</ImageSize>
+    </Sheet>
 </Sheets>

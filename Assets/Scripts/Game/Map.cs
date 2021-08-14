@@ -5,14 +5,20 @@ using Game.EntityWrappers;
 using Models;
 using Networking;
 using Networking.Packets.Outgoing;
+using UI.GameScreen.Panels;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Utils;
 using TileData = Models.TileData;
 
 namespace Game
 {
     public class Map : MonoBehaviour
     {
+        public static Action<IInteractiveObject> UpdateInteractive;
+        
+        private const int _INTERACTIVE_UPDATE_INTERVAL = 100;
+        
         [SerializeField]
         private Tilemap _tilemap;
 
@@ -21,31 +27,83 @@ namespace Game
 
         private Dictionary<int, EntityWrapper> _entities;
         private Dictionary<string, Queue<EntityWrapper>> _entityPool;
+        private HashSet<EntityWrapper> _interactiveObjects;
 
         [HideInInspector]
         public int MovesRequested;
-        public Player MyPlayer;
+
+        private Player _myPlayer;
+
+        private int _lastInteractiveUpdateTime;
 
         private void Awake()
         {
             _entities = new Dictionary<int, EntityWrapper>();
             _entityPool = new Dictionary<string, Queue<EntityWrapper>>();
+            _interactiveObjects = new HashSet<EntityWrapper>();
+            
+            Networking.Packets.Incoming.Update.OnMyPlayerJoined += OnMyPlayerJoined;
+        }
+
+        private void OnMyPlayerJoined(Player player)
+        {
+            _myPlayer = player;
+        }
+
+        private void Update()
+        {
+            if (GameTime.Time - _lastInteractiveUpdateTime >= _INTERACTIVE_UPDATE_INTERVAL)
+            {
+                UpdateNearestInteractive();
+                _lastInteractiveUpdateTime = GameTime.Time;
+            }
         }
 
         private void LateUpdate()
         {
             if (MovesRequested > 0)
             {
-                TcpTicker.Send(new Move(GameTime.Time, MyPlayer.Position));
+                TcpTicker.Send(new Move(GameTime.Time, _myPlayer.Position));
                 //TODO onmove
                 MovesRequested--;
             }
         }
 
-        public void Clear()
+        private void UpdateNearestInteractive()
         {
+            if (_myPlayer == null)
+                return;
+
+            var minDistSqr = Settings.MAXIMUM_INTERACTION_DISTANCE * Settings.MAXIMUM_INTERACTION_DISTANCE;
+            var playerX = _myPlayer.Position.x;
+            var playerY = _myPlayer.Position.y;
+            IInteractiveObject closestInteractive = null;
+            foreach (var obj in _interactiveObjects)
+            {
+                var objX = obj.transform.position.x;
+                var objY = obj.transform.position.y;
+                if (Mathf.Abs(playerX - objX) < Settings.MAXIMUM_INTERACTION_DISTANCE ||
+                    Mathf.Abs(playerY - objY) < Settings.MAXIMUM_INTERACTION_DISTANCE)
+                {
+                    var distSqr = MathUtils.DistanceSquared(_myPlayer.Position, obj.transform.position);
+                    if (distSqr < minDistSqr)
+                    {
+                        minDistSqr = distSqr;
+                        closestInteractive = obj as IInteractiveObject;
+                    }
+                }
+            }
+            
+            UpdateInteractive?.Invoke(closestInteractive);
+        }
+
+        public void Dispose()
+        {
+            Networking.Packets.Incoming.Update.OnMyPlayerJoined -= OnMyPlayerJoined;
+            
             _tilemap.ClearAllTiles();
             _entities.Clear();
+            _interactiveObjects.Clear();
 
             foreach (Transform child in _entityParentTransform)
             {
@@ -90,6 +148,9 @@ namespace Game
                 tile.StaticObject = entity;
             }
 
+            if (wrapper is IInteractiveObject)
+                _interactiveObjects.Add(wrapper);
+
             _entities[entity.ObjectId] = wrapper;
             return true;
         }
@@ -109,6 +170,9 @@ namespace Game
             
             en.gameObject.SetActive(false);
             _entities.Remove(objectId);
+            
+            if (en is IInteractiveObject)
+                _interactiveObjects.Remove(en);
         }
 
         public void MoveEntity(Entity entity, Vector2 position)

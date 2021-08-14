@@ -28,7 +28,7 @@ namespace Game
         private void OnDisable()
         {
             _packetHandler.Stop();
-            _map.Clear();
+            _map.Dispose();
             _cameraManager.Clear();
             _cameraManager.SetFocus(null);
         }

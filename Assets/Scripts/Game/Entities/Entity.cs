@@ -112,6 +112,8 @@ namespace Game.Entities
             {
                 case "Player":
                     return new Player(AssetLibrary.GetPlayerDesc(type), objectId, isMyPlayer, map);
+                case "Portal":
+                    return new Portal(AssetLibrary.GetObjectDesc(type), objectId, map);
             }
 
             return new Entity(desc, objectId, isMyPlayer, map);

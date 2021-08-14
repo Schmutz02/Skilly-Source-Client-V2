@@ -29,7 +29,7 @@ namespace Game.EntityWrappers
 
             if (!ShadowRenderer)
             {
-                throw new Exception("ShadowRenderer not assigned");
+                throw new NullReferenceException($"ShadowRenderer not assigned to {gameObject.name}");
             }
             ShadowTransform = ShadowRenderer.transform;
             
@@ -42,12 +42,13 @@ namespace Game.EntityWrappers
             if (Entity?.Model)
                 Destroy(_model);
             
+            //TODO try to move to map
             CameraManager.RemoveRotatingEntity(Entity);
         }
 
-        public virtual void Init(Entity child, bool rotating = true)
+        public virtual void Init(Entity portal, bool rotating = true)
         {
-            Entity = child;
+            Entity = portal;
 
             SetPositionAndRotation();
             RedrawShadow();
@@ -55,7 +56,7 @@ namespace Game.EntityWrappers
             if (rotating)
                 CameraManager.AddRotatingEntity(Entity);
 
-            if (child.IsMyPlayer)
+            if (portal.IsMyPlayer)
                 CameraManager.SetFocus(gameObject);
 
             if (Entity.Model)
@@ -64,6 +65,7 @@ namespace Game.EntityWrappers
 
         protected virtual void Update()
         {
+            //TODO try to move to map
             Entity.Tick(GameTime.Time, GameTime.DeltaTime, CameraManager.Camera);
             
             var shadowSize = Entity.Size * Entity.Desc.ShadowSize * Entity.SizeMult;

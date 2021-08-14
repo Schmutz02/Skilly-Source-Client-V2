@@ -1,7 +1,6 @@
 using Models;
 using Models.Static;
 using UnityEngine;
-using Utils;
 
 namespace Game.Entities
 {

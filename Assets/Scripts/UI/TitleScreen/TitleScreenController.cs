@@ -7,6 +7,7 @@ namespace UI.TitleScreen
         protected override void Reset()
         {
             Camera.main.backgroundColor = BlueColor;
+            Camera.main.rect = new Rect(0, 0, 1, 1);
         }
     }
 }

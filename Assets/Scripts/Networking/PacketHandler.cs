@@ -3,6 +3,7 @@ using Game;
 using Game.Entities;
 using Models;
 using Networking.Packets;
+using Networking.Packets.Incoming;
 using Networking.Packets.Outgoing;
 using UI;
 
@@ -93,6 +94,13 @@ namespace Networking
             CharId = charId;
             NewCharacter = newCharacter;
             _map = map;
+            Update.OnMyPlayerJoined += OnMyPlayerJoined;
+        }
+
+        private void OnMyPlayerJoined(Player player)
+        {
+            Player = player;
+            player.Random = Random;
         }
 
         public void Start()
@@ -105,6 +113,7 @@ namespace Networking
         public void Stop()
         {
             TcpTicker.Stop();
+            Update.OnMyPlayerJoined -= OnMyPlayerJoined;
         }
 
         public void Tick()

@@ -256,6 +256,7 @@ namespace Models.Static
 
         public readonly TextureData TextureData;
         public readonly TextureData TopTextureData;
+        public readonly TextureData Portrait;
 
         public readonly bool DontFaceAttacks;
 
@@ -268,6 +269,9 @@ namespace Models.Static
 
         public readonly float AngleCorrection;
         public readonly float Rotation;
+
+        public readonly bool NexusPortal;
+        public readonly bool LockedPortal;
 
         public ObjectDesc(XElement xml, string id, ushort type)
         {
@@ -300,6 +304,8 @@ namespace Models.Static
             TextureData = new TextureData(xml);
             if (xml.Element("Top") != null)
                 TopTextureData = new TextureData(xml.Element("Top"));
+            if (xml.Element("Portrait") != null)
+                Portrait = new TextureData(xml.Element("Portrait"));
 
             DontFaceAttacks = xml.ParseBool("DontFaceAttacks");
 
@@ -317,6 +323,9 @@ namespace Models.Static
 
             AngleCorrection = xml.ParseInt("AngleCorrection") * -Mathf.PI / 4;
             Rotation = xml.ParseFloat("Rotation");
+
+            NexusPortal = xml.ParseBool("NexusPortal");
+            LockedPortal = xml.ParseBool("LockedPortal");
         }
     }
 

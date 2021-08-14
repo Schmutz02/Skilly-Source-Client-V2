@@ -9,6 +9,7 @@ namespace Game
     {
         private readonly Player _player;
         private float _facing;
+        private Sprite _portrait;
         
         public PlayerTextureProvider(Player player)
         {
@@ -35,6 +36,18 @@ namespace Game
 
             var image = _player.Desc.TextureData.Animation.ImageFromFacing(_facing, action, p);
             return SpriteUtils.Redraw(image, _player.Size);
+        }
+
+        public Sprite GetPortrait()
+        {
+            if (_portrait == null)
+            {
+                var image = _player.Desc.TextureData.Animation.ImageFromDir(Facing.Right, Action.Stand, 0);
+                var size = 4 / (int)image.rect.width * 100;
+                _portrait = SpriteUtils.Redraw(image, size);
+            }
+
+            return _portrait;
         }
     }
 }

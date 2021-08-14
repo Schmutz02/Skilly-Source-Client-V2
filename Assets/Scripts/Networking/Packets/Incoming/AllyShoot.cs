@@ -1,6 +1,5 @@
 using Game;
 using Game.Entities;
-using Models.Static;
 using UnityEngine;
 
 namespace Networking.Packets.Incoming

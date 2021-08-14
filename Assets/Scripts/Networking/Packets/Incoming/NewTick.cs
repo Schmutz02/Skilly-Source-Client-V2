@@ -3,8 +3,6 @@ using Game;
 using Game.Entities;
 using Models;
 using Models.Static;
-using Networking.Packets.Outgoing;
-using UnityEngine;
 
 namespace Networking.Packets.Incoming
 {
@@ -50,7 +48,6 @@ namespace Networking.Packets.Incoming
                 handler.Player.UpdateObjectStats(_playerStats);
             }
             
-            //TODO might need to moves requested
             map.MovesRequested++;
         }
 

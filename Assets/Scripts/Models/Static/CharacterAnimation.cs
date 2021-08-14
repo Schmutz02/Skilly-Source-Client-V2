@@ -75,9 +75,11 @@ namespace Models.Static
             }
         }
 
-        public Sprite GetFrame(Facing facing, Action action, int frame)
+        public Sprite ImageFromDir(Facing facing, Action action, int frame)
         {
-            return _directionToAnimation[facing][action][frame];
+            var frames = _directionToAnimation[facing][action];
+            frame %= frames.Count;
+            return frames[frame];
         }
 
         public Sprite ImageFromFacing(float facing, Action action, float p)
