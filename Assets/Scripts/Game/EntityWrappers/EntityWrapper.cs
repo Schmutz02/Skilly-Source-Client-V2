@@ -60,7 +60,10 @@ namespace Game.EntityWrappers
                 CameraManager.SetFocus(gameObject);
 
             if (Entity.Model)
+            {
                 AddModel();
+                Renderer.sprite = null;
+            }
         }
 
         protected virtual void Update()

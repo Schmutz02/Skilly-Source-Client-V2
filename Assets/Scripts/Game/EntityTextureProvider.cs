@@ -38,7 +38,7 @@ namespace Game
                 }
                 else if (_entity.Direction != Vector2.zero)
                 {
-                    var walkPer = 0.5f / (_entity.Direction.magnitude * 4);
+                    var walkPer = (int)(0.5f / (_entity.Direction.magnitude * 4));
                     walkPer = 400 - walkPer % 400;
                     _facing = Mathf.Atan2(_entity.Direction.y, _entity.Direction.x);
                     action = Action.Walk;

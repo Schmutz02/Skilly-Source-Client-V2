@@ -13,35 +13,35 @@ namespace Models.Static
         {
             new List<Facing>
             {
-                Facing.Left, Facing.Down, Facing.Up
+                Facing.Left, Facing.Up, Facing.Down
             },
             new List<Facing>
             {
-                Facing.Down, Facing.Left, Facing.Up
+                Facing.Up, Facing.Left, Facing.Down
             },
             new List<Facing>
             {
-                Facing.Down, Facing.Right, Facing.Up
+                Facing.Up, Facing.Right, Facing.Down
             },
             new List<Facing>
             {
-                Facing.Right, Facing.Down, Facing.Up
+                Facing.Right, Facing.Up, Facing.Down
             },
             new List<Facing>
             {
-                Facing.Right, Facing.Up
+                Facing.Right, Facing.Down
             },
             new List<Facing>
             {
-                Facing.Up, Facing.Right
+                Facing.Down, Facing.Right
             },
             new List<Facing>
             {
-                Facing.Up, Facing.Left
+                Facing.Down, Facing.Left
             },
             new List<Facing>
             {
-                Facing.Left, Facing.Up
+                Facing.Left, Facing.Down
             }
         };
     
@@ -84,7 +84,7 @@ namespace Models.Static
 
         public Sprite ImageFromFacing(float facing, Action action, float p)
         {
-            var cameraAngle = MathUtils.BoundToPI(facing - Settings.CameraAngle);
+            var cameraAngle = MathUtils.BoundToPI(facing - Settings.CameraAngle) * -1;
             var sec = (int) (cameraAngle / (Mathf.PI / 4) + 4) % 8;
             var dirs = _sec2Dirs[sec];
             if (!_directionToAnimation.TryGetValue(dirs[0], out var actions))

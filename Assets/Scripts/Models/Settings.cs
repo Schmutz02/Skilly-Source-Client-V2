@@ -18,7 +18,7 @@ namespace Models
 
         public static readonly string ServerURL = $"http://{IP_ADDRESS}:{_WEB_PORT}";
 
-        public static float CameraAngle; // in radians
+        public static float CameraAngle; // in radians //TODO remove
         public static float MapScale;
         public static bool CameraOffset;
 

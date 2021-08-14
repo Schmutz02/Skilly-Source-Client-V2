@@ -28,7 +28,7 @@ namespace Game
             }
             else if (_player.Direction != Vector2.zero)
             {
-                var walkPer = 3.5f / _player.GetMovementSpeed();
+                var walkPer = (int)(3.5f / _player.GetMovementSpeed());
                 _facing = Mathf.Atan2(_player.Direction.y, _player.Direction.x);
                 p = time % walkPer / walkPer;
                 action = Action.Walk;
