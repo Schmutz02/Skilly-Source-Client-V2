@@ -18,12 +18,12 @@ namespace Models
 
         public static readonly string ServerURL = $"http://{IP_ADDRESS}:{_WEB_PORT}";
 
-        public static float CameraAngle; // in radians //TODO remove
+        public static float CameraAngle; // in radians
         public static float MapScale;
         public static bool CameraOffset;
 
-        public static readonly Color NameColor = ParseUtils.ColorFromInt(16572160);
-        public static readonly Color GuildNameColor = ParseUtils.ColorFromInt(10944349);
+        public static readonly Color NameColor = ParseUtils.ColorFromUInt(16572160);
+        public static readonly Color GuildNameColor = ParseUtils.ColorFromUInt(10944349);
 
         public static void Save()
         {

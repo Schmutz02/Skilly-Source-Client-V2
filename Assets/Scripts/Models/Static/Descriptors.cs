@@ -242,6 +242,9 @@ namespace Models.Static
         public readonly bool FullOccupy;
         public readonly bool EnemyOccupySquare;
         
+        public readonly bool ProtectFromGroundDamage;
+        public readonly bool ProtectFromSink;
+        
         public readonly bool Player;
         public readonly bool Enemy;
 
@@ -287,13 +290,15 @@ namespace Models.Static
             FullOccupy = xml.ParseBool("FullOccupy");
             EnemyOccupySquare = xml.ParseBool("EnemyOccupySquare");
             
+            ProtectFromGroundDamage = xml.ParseBool("ProtectFromGroundDamage");
+            ProtectFromSink = xml.ParseBool("ProtectFromSink");
+            
             Enemy = xml.ParseBool("Enemy");
             Player = xml.ParseBool("Player");
 
             Size = xml.ParseInt("Size", 100);
             ShadowSize = xml.ParseInt("ShadowSize", 100);
-            // ShadowColor = xml.ParseColor("ShadowColor");
-            ShadowColor = Color.black;
+            ShadowColor = ParseUtils.ColorFromUInt(xml.ParseUInt("ShadowColor"));
             if (xml.Element("WhileMoving") != null)
                 WhileMoving = new WhileMovingDesc(xml.Element("WhileMoving"));
             Flying = xml.ParseBool("Flying");

@@ -64,7 +64,7 @@ namespace Game
             if (MovesRequested > 0)
             {
                 TcpTicker.Send(new Move(GameTime.Time, _myPlayer.Position));
-                //TODO onmove
+                _myPlayer.OnMove();
                 MovesRequested--;
             }
         }

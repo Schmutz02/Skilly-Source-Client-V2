@@ -77,6 +77,40 @@ namespace Game.Entities
             return true;
         }
 
+        public void OnMove()
+        {
+            var tile = Map.GetTile(Position);
+            if (tile.Desc.Sinking)
+            {
+                SinkLevel = (int) Mathf.Min(SinkLevel + 1, _MAX_SINK_LEVEL);
+                MoveMultiplier = 0.1f + (1 - SinkLevel / _MAX_SINK_LEVEL) * (tile.Desc.Speed - 0.1f);
+            }
+            else
+            {
+                SinkLevel = 0;
+                MoveMultiplier = tile.Desc.Speed;
+            }
+
+            if (tile.Desc.Damage > 0 && !HasConditionEffect(ConditionEffect.Invincible))
+            {
+                if (tile.StaticObject == null || !tile.StaticObject.Desc.ProtectFromGroundDamage)
+                {
+                    //TODO damage player
+                }
+            }
+
+            if (tile.Desc.Push)
+            {
+                PushX = tile.Desc.DX;
+                PushX = tile.Desc.DY;
+            }
+            else
+            {
+                PushX = 0;
+                PushY = 0;
+            }
+        }
+
         public override void SetAttack(ItemDesc container, float attackAngle)
         {
             var itemData = ItemDatas[0];

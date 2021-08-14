@@ -11,8 +11,7 @@ namespace Game.EntityWrappers
         
         [SerializeField]
         protected SpriteRenderer Renderer;
-
-        //TODO extract out into shadow drawer class
+        
         [SerializeField]
         protected SpriteRenderer ShadowRenderer;
         protected Transform ShadowTransform;
@@ -42,7 +41,6 @@ namespace Game.EntityWrappers
             if (Entity?.Model)
                 Destroy(_model);
             
-            //TODO try to move to map
             CameraManager.RemoveRotatingEntity(Entity);
         }
 
@@ -68,7 +66,6 @@ namespace Game.EntityWrappers
 
         protected virtual void Update()
         {
-            //TODO try to move to map
             Entity.Tick(GameTime.Time, GameTime.DeltaTime, CameraManager.Camera);
             
             var shadowSize = Entity.Size * Entity.Desc.ShadowSize * Entity.SizeMult;

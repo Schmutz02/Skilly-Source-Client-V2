@@ -11,7 +11,7 @@ namespace Utils
 {
     public static class ParseUtils
     {
-        public static Color ColorFromInt(uint hex)
+        public static Color ColorFromUInt(uint hex)
         {
             Color c;
             c.b = (byte)((hex) & 0xFF);
