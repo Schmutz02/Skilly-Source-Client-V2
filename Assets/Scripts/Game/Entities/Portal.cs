@@ -6,8 +6,8 @@ namespace Game.Entities
     {
         public readonly bool NexusPortal;
         public readonly bool LockedPortal;
-        
-        public bool Active { get; private set; }
+
+        public bool Active { get; private set; } = true;
         
         public Portal(ObjectDesc desc, int objectId, Map map) : base(desc, objectId, false, map)
         {

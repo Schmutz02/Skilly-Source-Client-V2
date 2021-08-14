@@ -48,9 +48,9 @@ namespace UI.GameScreen.Panels
 
             _nameText.text = name;
             
-            var newPos = _nameText.rectTransform.localPosition;
+            var newPos = _nameText.rectTransform.anchoredPosition;
             newPos.y = _nameText.rectTransform.rect.height > 30 ? 0 : 6;
-            _nameText.rectTransform.localPosition = newPos;
+            _nameText.rectTransform.anchoredPosition = newPos;
 
             if (!_parent.LockedPortal && _parent.Active && _fullText.gameObject.activeSelf)
             {
