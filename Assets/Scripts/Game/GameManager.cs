@@ -1,4 +1,6 @@
+using System;
 using Networking;
+using Networking.Packets.Incoming;
 using UI;
 using UnityEngine;
 
@@ -13,7 +15,19 @@ namespace Game
         private MainCameraManager _cameraManager;
 
         private PacketHandler _packetHandler;
-        
+
+        private void Awake()
+        {
+            Reconnect.OnReconnect += OnReconnect;
+        }
+
+        private void OnReconnect(int worldId, int charId, bool newCharacter)
+        {
+            ViewManager.Instance.DisableCurrentView(); // clean up assets and disconnect
+            _packetHandler = new PacketHandler(worldId, charId, newCharacter, _map);
+            ViewManager.Instance.EnableCurrentView(); // reconnect using new packet handler
+        }
+
         public void StartGame(int worldId, int charId, bool newCharacter)
         {
             _packetHandler = new PacketHandler(worldId, charId, newCharacter, _map);

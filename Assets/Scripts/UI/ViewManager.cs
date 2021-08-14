@@ -52,6 +52,16 @@ namespace UI
             _activeView = newView;
             _activeView?.SetActive(true);
         }
+
+        public void DisableCurrentView()
+        {
+            _activeView?.SetActive(false);
+        }
+        
+        public void EnableCurrentView()
+        {
+            _activeView?.SetActive(true);
+        }
     }
 
     public enum View

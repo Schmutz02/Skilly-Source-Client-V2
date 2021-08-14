@@ -1,5 +1,6 @@
 using Game.Entities;
 using Networking;
+using Networking.Packets.Outgoing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,8 +36,7 @@ namespace UI.GameScreen.Panels
 
         private void EnterPortal()
         {
-            //TODO use portal
-            //TcpTicker.Send();
+            TcpTicker.Send(new UsePortal(_parent.ObjectId));
         }
 
         private void Update()

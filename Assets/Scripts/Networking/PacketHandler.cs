@@ -113,6 +113,8 @@ namespace Networking
         public void Stop()
         {
             TcpTicker.Stop();
+            // this needs to be unassigned since we create again on reconnect
+            // assignments done in Awake() shouldn't be unassigned unless changing scenes
             Update.OnMyPlayerJoined -= OnMyPlayerJoined;
         }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Models.Static;
@@ -58,18 +59,26 @@ public static class AssetLibrary
             var id = objectXml.ParseString("@id");
             var type = objectXml.ParseUshort("@type");
             
-            switch (objectXml.ParseString("Class"))
+            try
             {
-                case "Player":
-                    _Type2PlayerDesc[type] = new PlayerDesc(objectXml, id, type);
-                    break;
-                case "Equipment":
-                case "Dye":
-                    _Type2ItemDesc[type] = new ItemDesc(objectXml, id, type);
-                    break;
-            }
+                switch (objectXml.ParseString("Class"))
+                {
+                    case "Player":
+                        _Type2PlayerDesc[type] = new PlayerDesc(objectXml, id, type);
+                        break;
+                    case "Equipment":
+                    case "Dye":
+                        _Type2ItemDesc[type] = new ItemDesc(objectXml, id, type);
+                        break;
+                }
             
-            _Id2ObjectDesc[id] = _Type2ObjectDesc[type] = new ObjectDesc(objectXml, id, type);
+                _Id2ObjectDesc[id] = _Type2ObjectDesc[type] = new ObjectDesc(objectXml, id, type);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Unable to add item {id}");
+                Debug.LogError(e);
+            }
         }
 
         foreach (var groundXml in xml.Elements("Ground"))
@@ -135,7 +144,7 @@ public readonly struct SpriteSheetData
     public SpriteSheetData(XElement xml)
     {
         Id = xml.ParseString("@id");
-        SheetName = xml.ParseString("@name", Id);
+        SheetName = xml.ParseString("@sheetName", Id);
 
         var animationSize = xml.ParseIntArray("AnimationSize", "x", new [] {0, 0});
         AnimationWidth = animationSize[0];

@@ -1,4 +1,5 @@
 <Objects>
+	
 	<Object type="0x0300" id="Rogue">
 		<Class>Player</Class>
 		<Description>The rogue relies on his speed to deal damage at medium range while avoiding attacks.</Description>

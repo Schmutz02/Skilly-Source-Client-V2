@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Sheets>
-    <Sheet id="players">
-        <AnimationSize>56x24</AnimationSize>
-        <StartDirection>Right</StartDirection>
+    <Sheet id="lofiChar8x8" sheetName="lofiChar">
         <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiChar16x8" sheetName="lofiChar">
+        <ImageSize>16x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiChar16x16" sheetName="lofiChar">
+        <ImageSize>16x16</ImageSize>
+    </Sheet>
+    <Sheet id="lofiChar28x8" sheetName="lofiChar2">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiChar216x8" sheetName="lofiChar2">
+        <ImageSize>16x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiChar216x16" sheetName="lofiChar2">
+        <ImageSize>16x16</ImageSize>
+    </Sheet>
+    <Sheet id="lofiCharBig">
+        <ImageSize>16x16</ImageSize>
     </Sheet>
     <Sheet id="lofiEnvironment">
         <ImageSize>8x8</ImageSize>
@@ -11,19 +27,204 @@
     <Sheet id="lofiEnvironment2">
         <ImageSize>8x8</ImageSize>
     </Sheet>
+    <Sheet id="lofiEnvironment3">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiInterface">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="redLootBag">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiInterfaceBig">
+        <ImageSize>16x16</ImageSize>
+    </Sheet>
+    <Sheet id="lofiInterface2">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiObj">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
     <Sheet id="lofiObj2">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiObj3">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiObj4">
         <ImageSize>8x8</ImageSize>
     </Sheet>
     <Sheet id="lofiObj5">
         <ImageSize>8x8</ImageSize>
     </Sheet>
-    <Sheet id="lofiChar28x8" name="lofiChar2">
+    <Sheet id="lofiObj6">
         <ImageSize>8x8</ImageSize>
     </Sheet>
-    <Sheet id="lofiChar216x8" name="lofiChar2">
-        <ImageSize>16x8</ImageSize>
-    </Sheet>
-    <Sheet id="lofiChar216x16" name="lofiChar2">
+    <Sheet id="lofiObjBig">
         <ImageSize>16x16</ImageSize>
+    </Sheet>
+    <Sheet id="lofiObj40x40">
+        <ImageSize>40x40</ImageSize>
+    </Sheet>
+    <Sheet id="lofiProjs">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="lofiProjsBig">
+        <ImageSize>16x16</ImageSize>
+    </Sheet>
+    <Sheet id="lofiParts">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="stars">
+        <ImageSize>5x5</ImageSize>
+    </Sheet>
+    <Sheet id="textile4x4">
+        <ImageSize>4x4</ImageSize>
+    </Sheet>
+    <Sheet id="textile5x5">
+        <ImageSize>5x5</ImageSize>
+    </Sheet>
+    <Sheet id="textile9x9">
+        <ImageSize>9x9</ImageSize>
+    </Sheet>
+    <Sheet id="textile10x10">
+        <ImageSize>10x10</ImageSize>
+    </Sheet>
+    <Sheet id="inner_mask" sheetName="innerMask">
+        <ImageSize>4x4</ImageSize>
+    </Sheet>
+    <Sheet id="sides_mask" sheetName="sidesMask">
+        <ImageSize>4x4</ImageSize>
+    </Sheet>
+    <Sheet id="outer_mask" sheetName="outerMask">
+        <ImageSize>4x4</ImageSize>
+    </Sheet>
+    <Sheet id="innerP1_mask" sheetName="innerP1Mask">
+        <ImageSize>4x4</ImageSize>
+    </Sheet>
+    <Sheet id="innerP2_mask" sheetName="innerP2Mask">
+        <ImageSize>4x4</ImageSize>
+    </Sheet>
+    <Sheet id="invisible">
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="cursors">
+        <ImageSize>32x32</ImageSize>
+    </Sheet>
+
+    <Sheet id="players">
+        <AnimationSize>56x24</AnimationSize>
+        <StartDirection>Right</StartDirection>
+        <ImageSize>8x8</ImageSize>
+    </Sheet>
+    <Sheet id="chars8x8rBeach">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8dBeach">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Down</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8rLow1">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8rLow2">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8rMid">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8rMid2">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8rHigh">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8rHero1">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8rHero2">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8dHero1">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Down</StartDirection>
+    </Sheet>
+    <Sheet id="chars16x16dMountains1">
+        <ImageSize>16x16</ImageSize>
+        <AnimationSize>112x16</AnimationSize>
+        <StartDirection>Down</StartDirection>
+    </Sheet>
+    <Sheet id="chars16x16dMountains2">
+        <ImageSize>16x16</ImageSize>
+        <AnimationSize>112x16</AnimationSize>
+        <StartDirection>Down</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8dEncounters">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Down</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8rEncounters">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="chars16x8dEncounters">
+        <ImageSize>16x8</ImageSize>
+        <AnimationSize>112x8</AnimationSize>
+        <StartDirection>Down</StartDirection>
+    </Sheet>
+    <Sheet id="chars16x8rEncounters">
+        <ImageSize>16x8</ImageSize>
+        <AnimationSize>112x8</AnimationSize>
+        <StartDirection>Down</StartDirection>
+    </Sheet>
+    <Sheet id="chars16x16dEncounters">
+        <ImageSize>16x16</ImageSize>
+        <AnimationSize>112x16</AnimationSize>
+        <StartDirection>Down</StartDirection>
+    </Sheet>
+    <Sheet id="chars16x16dEncounters2">
+        <ImageSize>16x16</ImageSize>
+        <AnimationSize>112x16</AnimationSize>
+        <StartDirection>Down</StartDirection>
+    </Sheet>
+    <Sheet id="chars16x16rEncounters">
+        <ImageSize>16x16</ImageSize>
+        <AnimationSize>112x16</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="players">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x24</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="playerskins" sheetName="playersSkins">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x24</AnimationSize>
+        <StartDirection>Right</StartDirection>
+    </Sheet>
+    <Sheet id="chars8x8rPets1">
+        <ImageSize>8x8</ImageSize>
+        <AnimationSize>56x8</AnimationSize>
+        <StartDirection>Right</StartDirection>
     </Sheet>
 </Sheets>

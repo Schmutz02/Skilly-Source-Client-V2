@@ -27,12 +27,6 @@ namespace UI.GameScreen.Panels
             Map.UpdateInteractive += SetNewInteractive;
         }
 
-        private void OnDisable()
-        {
-            Networking.Packets.Incoming.Update.OnMyPlayerJoined -= OnMyPlayerJoined;
-            Map.UpdateInteractive -= SetNewInteractive;
-        }
-
         private void OnMyPlayerJoined(Player player)
         {
             _player = player;
@@ -65,7 +59,7 @@ namespace UI.GameScreen.Panels
 
         private void Update()
         {
-            if (_currentPanel == null || _newInteractive != _closestInteractive)
+            if (_currentPanel == null || _closestInteractive != _newInteractive)
             {
                 _closestInteractive = _newInteractive;
                 var panel = _closestInteractive?.GetPanel(this) ?? _partyPanel;

@@ -321,7 +321,7 @@ namespace Models.Static
                 Projectiles[desc.BulletType] = desc;
             }
 
-            AngleCorrection = xml.ParseInt("AngleCorrection") * -Mathf.PI / 4;
+            AngleCorrection = xml.ParseFloat("AngleCorrection") * -Mathf.PI / 4;
             Rotation = xml.ParseFloat("Rotation");
 
             NexusPortal = xml.ParseBool("NexusPortal");

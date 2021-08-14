@@ -99,8 +99,6 @@ namespace Game
 
         public void Dispose()
         {
-            Networking.Packets.Incoming.Update.OnMyPlayerJoined -= OnMyPlayerJoined;
-            
             _tilemap.ClearAllTiles();
             _entities.Clear();
             _interactiveObjects.Clear();

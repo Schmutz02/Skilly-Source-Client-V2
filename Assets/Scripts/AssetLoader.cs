@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Linq;
 using UnityEngine;
 
@@ -19,13 +20,21 @@ public class AssetLoader : MonoBehaviour
         {
             var sheetData = new SpriteSheetData(sheetXml);
             var texture = Resources.Load<Texture2D>($"Sprite Sheets/{sheetData.SheetName}");
-            if (sheetData.IsAnimation())
+            try
             {
-                AssetLibrary.AddAnimations(texture, sheetData);
+                if (sheetData.IsAnimation())
+                {
+                    AssetLibrary.AddAnimations(texture, sheetData);
+                }
+                else
+                {
+                    AssetLibrary.AddImages(texture, sheetData);
+                }
             }
-            else
+            catch (Exception e)
             {
-                AssetLibrary.AddImages(texture, sheetData);
+                Debug.LogWarning($"Unable to add {sheetData.Id}");
+                Debug.LogError(e);
             }
         }
     }
