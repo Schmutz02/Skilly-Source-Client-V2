@@ -28,6 +28,10 @@ namespace Game
             if (Input.GetMouseButton(0))
             {
                 var mousePosition = Input.mousePosition;
+                var viewportPoint = camera.ScreenToViewportPoint(mousePosition);
+                if (viewportPoint.x < 0 || viewportPoint.x > 1 || viewportPoint.y < 0 || viewportPoint.y > 1)
+                    return;
+                
                 var playerPosition = camera.WorldToScreenPoint(_player.Position);
                 var angle = Mathf.Atan2(mousePosition.y - playerPosition.y, mousePosition.x - playerPosition.x);
                 TryShoot(angle + _player.Rotation);
