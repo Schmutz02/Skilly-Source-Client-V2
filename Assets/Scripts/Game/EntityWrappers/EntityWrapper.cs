@@ -44,9 +44,9 @@ namespace Game.EntityWrappers
             CameraManager.RemoveRotatingEntity(Entity);
         }
 
-        public virtual void Init(Entity portal, bool rotating = true)
+        public virtual void Init(Entity entity, bool rotating = true)
         {
-            Entity = portal;
+            Entity = entity;
 
             SetPositionAndRotation();
             RedrawShadow();
@@ -54,7 +54,7 @@ namespace Game.EntityWrappers
             if (rotating)
                 CameraManager.AddRotatingEntity(Entity);
 
-            if (portal.IsMyPlayer)
+            if (entity.IsMyPlayer)
                 CameraManager.SetFocus(gameObject);
 
             if (Entity.Model)
@@ -74,7 +74,6 @@ namespace Game.EntityWrappers
                 currentShadowScale = shadowSize;
                 RedrawShadow();
             }
-
 
             if (!Entity.Model)
                 Renderer.sprite = Entity.TextureProvider.GetTexture(GameTime.Time);

@@ -14,15 +14,27 @@ namespace Game
 
         private Sprite _portrait;
 
+        private readonly Sprite _texture;
+        private readonly CharacterAnimation _animation;
+
         public EntityTextureProvider(Entity entity)
         {
             _entity = entity;
+            _texture = entity.Desc.TextureData.Texture;
+            _animation = entity.Desc.TextureData.Animation;
+            var randomTextureData = entity.Desc.TextureData.RandomTextureData;
+            if (randomTextureData != null)
+            {
+                var textureData = randomTextureData[entity.ObjectId % randomTextureData.Length];
+                _texture = textureData.Texture;
+                _animation = textureData.Animation;
+            }
         }
 
         public Sprite GetTexture(int time)
         {
             Sprite image;
-            if (_entity.Desc.TextureData.Animation != null)
+            if (_animation != null)
             {
                 var p = 0f;
                 var action = Action.Stand;
@@ -38,18 +50,18 @@ namespace Game
                 }
                 else if (_entity.Direction != Vector2.zero)
                 {
-                    var walkPer = (int)(0.5f / (_entity.Direction.magnitude * 4));
+                    var walkPer = 0.5f / (_entity.Direction.magnitude * 4);
                     walkPer = 400 - walkPer % 400;
                     _facing = Mathf.Atan2(_entity.Direction.y, _entity.Direction.x);
                     action = Action.Walk;
                     p = time % walkPer / walkPer;
                 }
 
-                image = _entity.Desc.TextureData.Animation.ImageFromFacing(_facing, action, p);
+                image = _animation.ImageFromFacing(_facing, action, p);
             }
             else
             {
-                image = _entity.Desc.TextureData.Texture;
+                image = _texture;
             }
 
             return SpriteUtils.Redraw(image, _entity.Size);

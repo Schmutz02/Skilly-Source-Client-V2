@@ -11,11 +11,11 @@ namespace Game.EntityWrappers
         [SerializeField]
         private PortalPanel _portalPanel;
 
-        public override void Init(Entity portal, bool rotating = true)
+        public override void Init(Entity entity, bool rotating = true)
         {
-            base.Init(portal, rotating);
+            base.Init(entity, rotating);
             
-            _portal = portal as Portal;
+            _portal = entity as Portal;
         }
 
         public Panel GetPanel(InteractPanel interactPanel)

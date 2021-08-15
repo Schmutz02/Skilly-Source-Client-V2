@@ -122,8 +122,8 @@ namespace Game
         {
             var tile = ScriptableObject.CreateInstance<Square>();
             var tileDesc = AssetLibrary.GetTileDesc(tileData.TileType);
-            tile.Init(tileDesc);
-            _tilemap.SetTile(new Vector3Int(tileData.X, tileData.Y, 0), tile);
+            tile.Init(tileDesc, tileData.X, tileData.Y);
+            _tilemap.SetTile(tile.Position, tile);
         }
 
         public bool AddObject(Entity entity, Vector2 position)

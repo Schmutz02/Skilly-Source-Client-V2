@@ -7,14 +7,14 @@ namespace Game.EntityWrappers
     {
         private Projectile _projectile;
         
-        public override void Init(Entity portal, bool rotating = true)
+        public override void Init(Entity entity, bool rotating = true)
         {
-            base.Init(portal, false);
+            base.Init(entity, false);
 
-            _projectile = portal as Projectile;
+            _projectile = entity as Projectile;
 
             transform.position = _projectile!.StartPosition;
-            Renderer.sprite = Entity.Desc.TextureData.Texture;
+            Renderer.sprite = Entity.Desc.TextureData.GetTexture(entity.ObjectId);
             
             SetRotation();
         }
