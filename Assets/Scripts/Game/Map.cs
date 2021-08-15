@@ -26,7 +26,7 @@ namespace Game
         private Transform _entityParentTransform;
 
         private Dictionary<int, EntityWrapper> _entities;
-        private Dictionary<string, Queue<EntityWrapper>> _entityPool;
+        // private Dictionary<string, Queue<EntityWrapper>> _entityPool;
         private HashSet<EntityWrapper> _interactiveObjects;
 
         [HideInInspector]
@@ -41,7 +41,7 @@ namespace Game
         private void Awake()
         {
             _entities = new Dictionary<int, EntityWrapper>();
-            _entityPool = new Dictionary<string, Queue<EntityWrapper>>();
+            // _entityPool = new Dictionary<string, Queue<EntityWrapper>>();
             _interactiveObjects = new HashSet<EntityWrapper>();
             
             Networking.Packets.Incoming.Update.OnMyPlayerJoined += OnMyPlayerJoined;
@@ -108,13 +108,14 @@ namespace Game
 
             foreach (Transform child in _entityParentTransform)
             {
-                var wrapper = child.GetComponent<EntityWrapper>();
-                var type = wrapper.Entity.Desc.Class;
-                if (!_entityPool.ContainsKey(type))
-                    _entityPool[type] = new Queue<EntityWrapper>();
-                _entityPool[type].Enqueue(wrapper);
+                // var wrapper = child.GetComponent<EntityWrapper>();
+                // var type = wrapper.Entity.Desc.Class;
+                // if (!_entityPool.ContainsKey(type))
+                //     _entityPool[type] = new Queue<EntityWrapper>();
+                // _entityPool[type].Enqueue(wrapper);
 
-                child.gameObject.SetActive(false);
+                Destroy(child.gameObject);
+                // child.gameObject.SetActive(false);
             }
         }
 
@@ -129,27 +130,28 @@ namespace Game
         public bool AddObject(Entity entity, Vector2 position)
         {
             EntityWrapper wrapper = null;
-            if (_entityPool.ContainsKey(entity.Desc.Class) && _entityPool[entity.Desc.Class].Count > 0)
+            try
             {
-                wrapper = _entityPool[entity.Desc.Class].Dequeue();
-                wrapper.gameObject.SetActive(true);
+                var wrapperPrefab = Resources.Load<EntityWrapper>($"Entities/{entity.Desc.Class}");
+                wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
             }
-            else
+            catch (Exception e)
             {
-                try
-                {
-                    var wrapperPrefab = Resources.Load<EntityWrapper>($"Entities/{entity.Desc.Class}");
-                    wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogWarning($"No wrapper found for class {entity.Desc.Class}");
-                    Debug.LogError(e.Message);
-                }
+                Debug.LogWarning($"No wrapper found for class {entity.Desc.Class}");
+                Debug.LogError(e.Message);
             }
-            wrapper?.Init(entity); // always rotates unless overridden
-            
+            // if (_entityPool.ContainsKey(entity.Desc.Class) && _entityPool[entity.Desc.Class].Count > 0)
+            // {
+            //     wrapper = _entityPool[entity.Desc.Class].Dequeue();
+            //     wrapper.gameObject.SetActive(true);
+            // }
+            // else
+            // {
+            //     
+            // }
             entity.Position = position;
+            
+            wrapper?.Init(entity); // always rotates unless overridden
 
             if (entity.Desc.Static)
             {
@@ -173,11 +175,12 @@ namespace Game
         {
             var en = _entities[objectId];
             var type = en.Entity.Desc.Class;
-            if (!_entityPool.ContainsKey(type))
-                _entityPool[type] = new Queue<EntityWrapper>();
-            _entityPool[type].Enqueue(en);
+            // if (!_entityPool.ContainsKey(type))
+            //     _entityPool[type] = new Queue<EntityWrapper>();
+            // _entityPool[type].Enqueue(en);
             
-            en.gameObject.SetActive(false);
+            Destroy(en.gameObject);
+            // en.gameObject.SetActive(false);
             _entities.Remove(objectId);
             
             if (en is IInteractiveObject)

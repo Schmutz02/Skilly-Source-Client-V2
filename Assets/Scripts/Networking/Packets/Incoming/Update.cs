@@ -43,25 +43,25 @@ namespace Networking.Packets.Incoming
             {
                 map.AddTile(tile);
             }
-            
-            foreach (var drop in _drops)
-            {
-                map.RemoveObject(drop.Id);
-            }
 
             foreach (var add in _adds)
             {
                 var isMyPlayer = add.ObjectStatus.Id == handler.PlayerId;
                 var entity = Entity.Resolve(add.ObjectType, add.ObjectStatus.Id, isMyPlayer, map);
-
+                
                 map.AddObject(entity, add.ObjectStatus.Position);
 
                 if (entity.ObjectId == handler.PlayerId)
                 {
                     OnMyPlayerJoined?.Invoke(entity as Player);
                 }
-
+                
                 entity.UpdateObjectStats(add.ObjectStatus.Stats);
+            }
+
+            foreach (var drop in _drops)
+            {
+                map.RemoveObject(drop.Id);
             }
         }
     }
