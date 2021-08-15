@@ -131,7 +131,7 @@ namespace Networking
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                Debug.LogError(e.Message);
                 _crashed = true;
             }
         }
