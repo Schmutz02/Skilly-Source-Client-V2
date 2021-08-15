@@ -73,7 +73,6 @@ namespace Utils
 
         public static Sprite Mirror(this Sprite sprite)
         {
-            //TODO could possibly be replaced
             var width = (int)sprite.rect.width;
             var mirrored = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height, sprite.texture.format, false);
             mirrored.filterMode = FilterMode.Point;

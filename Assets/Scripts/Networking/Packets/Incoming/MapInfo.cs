@@ -33,6 +33,7 @@ namespace Networking.Packets.Incoming
 
         public override void Handle(PacketHandler handler, Map map)
         {
+            map.WorldName = _name;
             handler.Random = new wRandom(_seed);
             
             if (handler.NewCharacter)

@@ -31,6 +31,8 @@ namespace Game
 
         [HideInInspector]
         public int MovesRequested;
+        [HideInInspector]
+        public string WorldName;
 
         private Player _myPlayer;
 
@@ -61,7 +63,7 @@ namespace Game
 
         private void LateUpdate()
         {
-            if (MovesRequested > 0)
+            if (_myPlayer != null && MovesRequested > 0)
             {
                 TcpTicker.Send(new Move(GameTime.Time, _myPlayer.Position));
                 _myPlayer.OnMove();
@@ -99,6 +101,7 @@ namespace Game
 
         public void Dispose()
         {
+            MovesRequested = 0;
             _tilemap.ClearAllTiles();
             _entities.Clear();
             _interactiveObjects.Clear();
@@ -125,7 +128,7 @@ namespace Game
 
         public bool AddObject(Entity entity, Vector2 position)
         {
-            EntityWrapper wrapper;
+            EntityWrapper wrapper = null;
             if (_entityPool.ContainsKey(entity.Desc.Class) && _entityPool[entity.Desc.Class].Count > 0)
             {
                 wrapper = _entityPool[entity.Desc.Class].Dequeue();
@@ -133,10 +136,18 @@ namespace Game
             }
             else
             {
-                var wrapperPrefab = Resources.Load<EntityWrapper>($"Entities/{entity.Desc.Class}");
-                wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
+                try
+                {
+                    var wrapperPrefab = Resources.Load<EntityWrapper>($"Entities/{entity.Desc.Class}");
+                    wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"No wrapper found for class {entity.Desc.Class}");
+                    Debug.LogError(e.Message);
+                }
             }
-            wrapper.Init(entity); // always rotates unless overridden
+            wrapper?.Init(entity); // always rotates unless overridden
             
             entity.Position = position;
 

@@ -1,6 +1,6 @@
-using System;
 using Networking;
 using Networking.Packets.Incoming;
+using Networking.Packets.Outgoing;
 using UI;
 using UnityEngine;
 
@@ -49,6 +49,14 @@ namespace Game
 
         private void Update()
         {
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                if (_packetHandler.PlayerId == -1 || _map.WorldName == "Nexus")
+                    return;
+                
+                TcpTicker.Send(new Escape());
+            }
+            
             _packetHandler.Tick();
         }
     }
