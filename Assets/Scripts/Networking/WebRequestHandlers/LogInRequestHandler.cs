@@ -21,7 +21,7 @@ namespace Networking.WebRequestHandlers
 
         public async Task SendRequestAsync()
         {
-            var result = await WebRequestSender.SendLogInRequest(_username, _password);
+            var result = await WebRequestSender.SendLogInRequestAsync(_username, _password);
             
             await OnLogInRequestComplete(result);
         }

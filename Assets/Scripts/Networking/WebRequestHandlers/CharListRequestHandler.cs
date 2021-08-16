@@ -16,7 +16,11 @@ namespace Networking.WebRequestHandlers
 
         public async Task SendRequestAsync()
         {
-            var result = await WebRequestSender.SendCharListRequest(_username, _password);
+            var result = await WebRequestSender.SendCharListRequestAsync(_username, _password);
+            while (!result.Success)
+            {
+                result = await WebRequestSender.SendCharListRequestAsync(_username, _password);
+            }
             
             OnListRequestComplete(result);
         }

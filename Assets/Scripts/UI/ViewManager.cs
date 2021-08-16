@@ -1,5 +1,6 @@
 using System;
 using UI.CharacterScreen;
+using UI.DeathScreen;
 using UI.GameScreen;
 using UI.NewCharacterScreen;
 using UI.SkinSelectScreen;
@@ -26,6 +27,9 @@ namespace UI
         
         [SerializeField]
         private GameScreenController _gameView;
+
+        [SerializeField]
+        private DeathScreenController _deathView;
 
         private UIController _activeView;
 
@@ -57,6 +61,9 @@ namespace UI
                 case View.Game:
                     newView = _gameView;
                     break;
+                case View.Death:
+                    newView = _deathView;
+                    break;
                 default:
                     throw new Exception($"{view} not yet implemented");
             }
@@ -84,6 +91,7 @@ namespace UI
         Character,
         NewCharacter,
         SkinSelect,
-        Game
+        Game,
+        Death
     }
 }

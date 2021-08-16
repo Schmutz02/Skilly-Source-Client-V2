@@ -9,13 +9,16 @@ namespace Networking
 {
     public static class WebRequestSender
     {
-        private static readonly HttpClient HttpClient = new HttpClient();
+        private static readonly HttpClient _HttpClient = new HttpClient()
+        {
+            Timeout = TimeSpan.FromMilliseconds(1000)
+        };
 
         private static async Task<WebRequestResult> SendRequestAsync(string request, FormUrlEncodedContent content)
         {
             try
             {
-                var response = await HttpClient.PostAsync(Settings.ServerURL + request, content);
+                var response = await _HttpClient.PostAsync(Settings.ServerURL + request, content);
                 return await HandleHttpResponse(response);
             }
             catch (Exception)
@@ -34,7 +37,7 @@ namespace Networking
             return new WebRequestResult(xml, isSuccessResponse);
         }
 
-        public static async Task<WebRequestResult> SendLogInRequest(string username, string password)
+        public static async Task<WebRequestResult> SendLogInRequestAsync(string username, string password)
         {
             var content = new FormUrlEncodedContent(new[]
             {
@@ -45,7 +48,7 @@ namespace Networking
             return await SendRequestAsync("/account/verify", content);
         }
 
-        public static async Task<WebRequestResult> SendCharListRequest(string username, string password)
+        public static async Task<WebRequestResult> SendCharListRequestAsync(string username, string password)
         {
             var content = new FormUrlEncodedContent(new[]
             {
