@@ -709,4 +709,25 @@ namespace Models.Static
             DurationMS = (int)(e.ParseFloat("@duration") * 1000);
         }
     }
+
+    public class SkinDesc
+    {
+        public readonly int Type;
+        public readonly string Id;
+        
+        public readonly CharacterAnimation Animation;
+        public readonly int ClassType;
+
+        public SkinDesc(XElement skinXml, int type, string id)
+        {
+            Type = type;
+            Id = id;
+            
+            var sheetName = skinXml.Element("AnimatedTexture").ParseString("File");
+            var index = skinXml.Element("AnimatedTexture").ParseUshort("Index");
+            Animation = AssetLibrary.GetAnimation(sheetName, index);
+            
+            ClassType = skinXml.ParseUshort("PlayerClassType");
+        }
+    }
 }

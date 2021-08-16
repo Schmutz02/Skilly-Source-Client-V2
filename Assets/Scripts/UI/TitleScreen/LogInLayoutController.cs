@@ -41,8 +41,10 @@ namespace UI.TitleScreen
             }
         }
         
-        protected override void Reset()
+        public override void Reset(object data)
         {
+            base.Reset(data);
+            
             SetUsernameField();
             _passwordField.text = "";
             _rememberUsernameToggle.isOn = PlayerPrefs.GetInt(Account.REMEMBER_USERNAME_KEY) == 1;

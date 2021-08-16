@@ -14,10 +14,7 @@ namespace UI.CharacterScreen
         [SerializeField]
         private Button _frameButton;
 
-        [SerializeField]
-        private GameManager _gameManager;
-
-        private int _charId;
+        private CharacterStats _stats;
         
         private void Awake()
         {
@@ -29,12 +26,13 @@ namespace UI.CharacterScreen
             var desc = AssetLibrary.GetPlayerDesc(stats.ClassType);
             _image.sprite = desc.TextureData.Animation.ImageFromDir(Facing.Right, Action.Stand, 0);
 
-            _charId = stats.Id;
+            _stats = stats;
         }
 
         private void OnFrameClick()
         {
-            _gameManager.StartGame(-1, _charId, false);
+            ViewManager.Instance.ChangeView(View.Game,
+                new GameInitData(-1, _stats.Id, false, _stats.ClassType, _stats.SkinType));
         }
     }
 }

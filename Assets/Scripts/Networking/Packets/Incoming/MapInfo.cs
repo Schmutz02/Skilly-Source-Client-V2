@@ -1,4 +1,5 @@
 using Game;
+using Models;
 using Networking.Packets.Outgoing;
 
 namespace Networking.Packets.Incoming
@@ -36,13 +37,13 @@ namespace Networking.Packets.Incoming
             map.WorldName = _name;
             handler.Random = new wRandom(_seed);
             
-            if (handler.NewCharacter)
+            if (handler.InitData.NewCharacter)
             {
-                        
+                TcpTicker.Send(new Create(handler.InitData.ClassType, handler.InitData.SkinType));
             }
             else
             {
-                TcpTicker.Send(new Load(handler.CharId)); 
+                TcpTicker.Send(new Load(handler.InitData.CharId)); 
             }
         }
     }

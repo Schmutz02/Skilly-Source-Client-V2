@@ -18,7 +18,9 @@ public static class AssetLibrary
     private static readonly Dictionary<string, ObjectDesc> _Id2ObjectDesc = new Dictionary<string, ObjectDesc>();
     private static readonly Dictionary<int, TileDesc> _Type2TileDesc = new Dictionary<int, TileDesc>();
     private static readonly Dictionary<int, ItemDesc> _Type2ItemDesc = new Dictionary<int, ItemDesc>();
-    private static readonly Dictionary<int, PlayerDesc> _Type2PlayerDesc = new Dictionary<int, PlayerDesc>();
+    public static readonly Dictionary<int, PlayerDesc> Type2PlayerDesc = new Dictionary<int, PlayerDesc>();
+    public static readonly Dictionary<int, List<SkinDesc>> ClassType2Skins =
+        new Dictionary<int, List<SkinDesc>>();
     
     public static void AddAnimations(Texture2D texture, SpriteSheetData data)
     {
@@ -63,8 +65,17 @@ public static class AssetLibrary
             {
                 switch (objectXml.ParseString("Class"))
                 {
+                    case "Skin":
+                        var skinDesc = new SkinDesc(objectXml, type, id);
+                        if (!ClassType2Skins.TryGetValue(skinDesc.ClassType, out var skinList))
+                            skinList = new List<SkinDesc>();
+                        
+                        skinList.Add(skinDesc);
+                        
+                        ClassType2Skins[skinDesc.ClassType] = skinList;
+                        break;
                     case "Player":
-                        _Type2PlayerDesc[type] = new PlayerDesc(objectXml, id, type);
+                        Type2PlayerDesc[type] = new PlayerDesc(objectXml, id, type);
                         break;
                     case "Equipment":
                     case "Dye":
@@ -127,7 +138,7 @@ public static class AssetLibrary
 
     public static PlayerDesc GetPlayerDesc(int type)
     {
-        return _Type2PlayerDesc[type];
+        return Type2PlayerDesc[type];
     }
 }
 

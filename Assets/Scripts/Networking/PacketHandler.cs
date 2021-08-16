@@ -77,22 +77,18 @@ namespace Networking
         private ConcurrentQueue<IncomingPacket> _toBeHandled;
 
         public int PlayerId;
-        
-        public int CharId;
-        private readonly int _worldId;
-        public readonly bool NewCharacter;
-        
+
+        public readonly GameInitData InitData;
+
         public Player Player;
         
         private readonly Map _map;
 
         public wRandom Random;
 
-        public PacketHandler(int worldId, int charId, bool newCharacter, Map map)
+        public PacketHandler(GameInitData initData, Map map)
         {
-            _worldId = worldId;
-            CharId = charId;
-            NewCharacter = newCharacter;
+            InitData = initData;
             _map = map;
             Update.OnMyPlayerJoined += OnMyPlayerJoined;
         }
@@ -107,7 +103,7 @@ namespace Networking
         {
             _toBeHandled = new ConcurrentQueue<IncomingPacket>();
             TcpTicker.Start(this);
-            TcpTicker.Send(new Hello(_worldId, Account.Username, Account.Password));
+            TcpTicker.Send(new Hello(InitData.WorldId, Account.Username, Account.Password));
         }
 
         public void Stop()

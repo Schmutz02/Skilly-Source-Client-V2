@@ -4,10 +4,14 @@ namespace UI.TitleScreen
 {
     public class TitleScreenController : UIController
     {
-        protected override void Reset()
+        [SerializeField]
+        private LogInLayoutController _logInController;
+        
+        public override void Reset(object data)
         {
-            Camera.main.backgroundColor = BlueColor;
-            Camera.main.rect = new Rect(0, 0, 1, 1);
+            base.Reset(data);
+            
+            _logInController.Reset(data);
         }
     }
 }

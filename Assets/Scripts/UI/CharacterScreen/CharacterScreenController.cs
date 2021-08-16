@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Models;
 using UnityEngine;
 
@@ -9,33 +10,66 @@ namespace UI.CharacterScreen
         private RectTransform _characterGroup;
 
         [SerializeField]
-        private GameObject _characterRectPrefab;
-        
-        protected override void Reset()
+        private CharacterRect _characterRectPrefab;
+
+        [SerializeField]
+        private NewCharacterRect _newCharacterRectPrefab;
+
+        private List<CharacterRect> _characters;
+        private List<NewCharacterRect> _newCharacterRects;
+
+        private void Awake()
         {
-            Camera.main.backgroundColor = BlueColor;
-            Camera.main.rect = new Rect(0, 0, 1, 1);
+            _characters = new List<CharacterRect>();
+            _newCharacterRects = new List<NewCharacterRect>();
+        }
+
+        public override void Reset(object data)
+        {
+            base.Reset(data);
             
             var i = 0;
-            foreach (Transform child in _characterGroup.transform)
+            foreach (var character in _characters)
             {
                 if (i < Account.Characters.Count)
                 {
-                    child.GetComponent<CharacterRect>().Init(Account.Characters[i]);
-                    child.gameObject.SetActive(true);
+                    character.Init(Account.Characters[i]);
+                    character.gameObject.SetActive(true);
                     i++;
                     continue;
                 }
                 
-                child.gameObject.SetActive(false);
+                character.gameObject.SetActive(false);
             }
-            
+
             while (i < Account.Characters.Count)
             {
-                var characterRect = Instantiate(_characterRectPrefab, _characterGroup).GetComponent<CharacterRect>();
+                var characterRect = Instantiate(_characterRectPrefab, _characterGroup);
                 characterRect.Init(Account.Characters[i]);
                 characterRect.gameObject.SetActive(true);
+                _characters.Add(characterRect);
                 i++;
+            }
+
+            var j = Account.Characters.Count;
+            foreach (var newCharacterRect in _newCharacterRects)
+            {
+                if (j < Account.MaxCharacters)
+                {
+                    newCharacterRect.gameObject.SetActive(true);
+                    j++;
+                    continue;
+                }
+                
+                newCharacterRect.gameObject.SetActive(false);
+            }
+
+            while (j < Account.MaxCharacters)
+            {
+                var newCharacterRect = Instantiate(_newCharacterRectPrefab, _characterGroup);
+                newCharacterRect.gameObject.SetActive(true);
+                _newCharacterRects.Add(newCharacterRect);
+                j++;
             }
         }
     }

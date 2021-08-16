@@ -19,7 +19,6 @@ namespace Networking.Packets.Incoming
         public override void Handle(PacketHandler handler, Map map)
         {
             handler.PlayerId = _objectId;
-            handler.CharId = _charId;
         }
     }
 }

@@ -1,11 +1,12 @@
 using System;
 using Game;
+using Models;
 
 namespace Networking.Packets.Incoming
 {
     public class Reconnect : IncomingPacket
     {
-        public static Action<int, int, bool> OnReconnect;
+        public static Action<GameInitData> OnReconnect;
         
         public override PacketId Id => PacketId.Reconnect;
         public override IncomingPacket CreateInstance() => new Reconnect();
@@ -19,7 +20,14 @@ namespace Networking.Packets.Incoming
 
         public override void Handle(PacketHandler handler, Map map)
         {
-            OnReconnect?.Invoke(_worldId, handler.CharId, handler.NewCharacter);
+            var newInitData = new GameInitData(
+                _worldId,
+                handler.InitData.CharId,
+                false,
+                handler.InitData.ClassType,
+                handler.InitData.SkinType);
+            
+            OnReconnect?.Invoke(newInitData);
         }
     }
 }

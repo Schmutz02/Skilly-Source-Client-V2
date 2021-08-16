@@ -18,6 +18,7 @@ namespace Models
         public static GuildInfo Guild { get; private set; }
         public static int CurrentFame { get; private set; }
         public static int CurrentGold { get; private set; }
+        public static int NextCharId { get; private set; }
 
         private static readonly Dictionary<int, ClassStats> _ClassStats =
             new Dictionary<int, ClassStats>();
@@ -60,6 +61,7 @@ namespace Models
         public static void LoadFromCharList(XElement xml)
         {
             MaxCharacters = xml.ParseInt("@maxNumChars");
+            NextCharId = xml.ParseInt("@nextCharId") + 1;
             ParseAccountXml(xml.Element("Account"));
 
             foreach (var charXml in xml.Elements("Char"))

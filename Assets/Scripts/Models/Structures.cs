@@ -7,6 +7,24 @@ using Utils;
 
 namespace Models
 {
+    public readonly struct GameInitData
+    {
+        public readonly int WorldId;
+        public readonly int CharId;
+        public readonly bool NewCharacter;
+        public readonly int ClassType;
+        public readonly int SkinType;
+
+        public GameInitData(int worldId, int charId, bool newCharacter, int classType, int skinType)
+        {
+            WorldId = worldId;
+            CharId = charId;
+            NewCharacter = newCharacter;
+            ClassType = classType;
+            SkinType = skinType;
+        }
+    }
+    
     public readonly struct GuildInfo
     {
         public static GuildInfo None = new GuildInfo(null, GuildRank.Initiate);
