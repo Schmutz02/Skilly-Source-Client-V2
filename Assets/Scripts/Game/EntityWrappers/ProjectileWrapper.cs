@@ -19,16 +19,16 @@ namespace Game.EntityWrappers
             SetRotation();
         }
 
-        protected override void Update()
+        public override bool Tick()
         {
             if (!_projectile.Tick(GameTime.Time, GameTime.DeltaTime, CameraManager.Camera))
             {
-                _projectile.Map.RemoveObject(_projectile.ObjectId);
-                return;
+                return false;
             }
             transform.position = _projectile.Position;
             
             SetRotation();
+            return true;
         }
 
         private void SetRotation()

@@ -64,9 +64,12 @@ namespace Game.EntityWrappers
             }
         }
 
-        protected virtual void Update()
+        public virtual bool Tick()
         {
-            Entity.Tick(GameTime.Time, GameTime.DeltaTime, CameraManager.Camera);
+            if (!Entity.Tick(GameTime.Time, GameTime.DeltaTime, CameraManager.Camera))
+            {
+                return false;
+            }
             
             var shadowSize = Entity.Size * Entity.Desc.ShadowSize * Entity.SizeMult;
             if (shadowSize != currentShadowScale)
@@ -79,6 +82,7 @@ namespace Game.EntityWrappers
                 Renderer.sprite = Entity.TextureProvider.GetTexture(GameTime.Time);
 
             SetPositionAndRotation();
+            return true;
         }
 
         private void RedrawShadow()

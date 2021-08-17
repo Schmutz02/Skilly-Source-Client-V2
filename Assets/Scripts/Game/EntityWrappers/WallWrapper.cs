@@ -18,11 +18,13 @@ namespace Game.EntityWrappers
             {
                 side.sprite = entity.Desc.TextureData.Texture;
             }
+            
+            transform.position = entity.Position;
         }
 
-        protected override void Update()
+        public override bool Tick()
         {
-            transform.position = Entity.Position;
+            return true;
         }
     }
 }

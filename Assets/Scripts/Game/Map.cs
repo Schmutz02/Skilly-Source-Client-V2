@@ -39,12 +39,18 @@ namespace Game
         public Player MyPlayer { get; private set; }
 
         private int _lastInteractiveUpdateTime;
+        
+        private bool _inUpdate;
+        private List<int> _idsToRemove;
+        private List<Entity> _objsToAdd;
 
         private void Awake()
         {
             Entities = new Dictionary<int, EntityWrapper>();
             // _entityPool = new Dictionary<string, Queue<EntityWrapper>>();
             _interactiveObjects = new HashSet<EntityWrapper>();
+            _idsToRemove = new List<int>();
+            _objsToAdd = new List<Entity>();
             
             Networking.Packets.Incoming.Update.OnMyPlayerJoined += OnMyPlayerJoined;
         }
@@ -54,17 +60,35 @@ namespace Game
             MyPlayer = player;
         }
 
-        private void Update()
+        public void Tick()
         {
+            _inUpdate = true;
+            foreach (var wrapper in Entities.Values)
+            { 
+                if (!wrapper.Tick())
+                    _idsToRemove.Add(wrapper.Entity.ObjectId);
+            }
+
+            _inUpdate = false;
+
+            foreach (var obj in _objsToAdd)
+            {
+                InternalAddObj(obj);
+            }
+            _objsToAdd.Clear();
+
+            foreach (var id in _idsToRemove)
+            {
+                InternalRemoveObj(id);
+            }
+            _idsToRemove.Clear();
+            
             if (GameTime.Time - _lastInteractiveUpdateTime >= _INTERACTIVE_UPDATE_INTERVAL)
             {
                 UpdateNearestInteractive();
                 _lastInteractiveUpdateTime = GameTime.Time;
             }
-        }
-
-        private void LateUpdate()
-        {
+            
             if (MyPlayer != null && MovesRequested > 0)
             {
                 TcpTicker.Send(new Move(GameTime.Time, MyPlayer.Position));
@@ -129,7 +153,20 @@ namespace Game
             _tilemap.SetTile(tile.Position, tile);
         }
 
-        public bool AddObject(Entity entity, Vector2 position)
+        public void AddObject(Entity entity, Vector2 position)
+        {
+            entity.Position = position;
+            if (_inUpdate)
+            {
+                _objsToAdd.Add(entity);
+            }
+            else
+            {
+                InternalAddObj(entity);
+            }
+        }
+
+        private void InternalAddObj(Entity entity)
         {
             EntityWrapper wrapper = null;
             try
@@ -151,13 +188,11 @@ namespace Game
             // {
             //     
             // }
-            entity.Position = position;
-            
             wrapper?.Init(entity); // always rotates unless overridden
 
             if (entity.Desc.Static)
             {
-                var tile = GetTile(position);
+                var tile = GetTile(entity.Position);
                 tile.StaticObject = entity;
             }
 
@@ -165,7 +200,6 @@ namespace Game
                 _interactiveObjects.Add(wrapper);
 
             Entities[entity.ObjectId] = wrapper;
-            return true;
         }
 
         public Entity GetEntity(int id)
@@ -174,6 +208,18 @@ namespace Game
         }
 
         public void RemoveObject(int objectId)
+        {
+            if (_inUpdate)
+            {
+                _idsToRemove.Add(objectId);
+            }
+            else
+            {
+                InternalRemoveObj(objectId);
+            }
+        }
+
+        private void InternalRemoveObj(int objectId)
         {
             var en = Entities[objectId];
             var type = en.Entity.Desc.Class;

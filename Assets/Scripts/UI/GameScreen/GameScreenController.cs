@@ -57,6 +57,7 @@ namespace UI.GameScreen
             }
             
             _packetHandler.Tick();
+            _map.Tick();
         }
     }
 }
