@@ -64,6 +64,7 @@ namespace Models
             NextCharId = xml.ParseInt("@nextCharId") + 1;
             ParseAccountXml(xml.Element("Account"));
 
+            _Characters.Clear();
             foreach (var charXml in xml.Elements("Char"))
             {
                 _Characters.Add(new CharacterStats(charXml));
@@ -82,6 +83,7 @@ namespace Models
             CurrentFame = xml.ParseInt("Fame");
             CurrentGold = xml.ParseInt("Credits");
 
+            _ClassStats.Clear();
             foreach (var classStatXml in xml.Elements("ClassStats"))
             {
                 var classType = classStatXml.ParseInt("@objectType");
