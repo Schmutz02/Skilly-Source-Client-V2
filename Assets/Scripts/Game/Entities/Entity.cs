@@ -1,3 +1,4 @@
+using System;
 using Game.MovementControllers;
 using Models.Static;
 using UnityEngine;
@@ -6,11 +7,14 @@ namespace Game.Entities
 {
     public partial class Entity
     {
+        public const float _HITBOX_RADIUS = 0.5f;
+        
         private static int _nextFakeObjectId;
         
         private ConditionEffect _conditionEffects;
         public int Hp { get; private set; }
         public int MaxHp { get; private set; }
+        public int Defense { get; protected set; }
         public int Size { get; protected set; } = 100;
         public string Name { get; private set; }
         public int AltTextureIndex { get; private set; }
@@ -42,6 +46,7 @@ namespace Game.Entities
             ObjectId = objectId;
             Position = Vector2.zero;
             IsMyPlayer = isMyPlayer;
+            Defense = desc.Defense;
 
             if (isMyPlayer)
             {
@@ -100,6 +105,22 @@ namespace Game.Entities
         public bool HasConditionEffect(ConditionEffect conditionEffect)
         {
             return (_conditionEffects & conditionEffect) != 0;
+        }
+
+        public static int DamageWithDefense(Entity target, int damage, bool armorPiercing)
+        {
+            var def = target.Defense;
+            if (armorPiercing || target.HasConditionEffect(ConditionEffect.ArmorBroken))
+                def = 0;
+            else if (target.HasConditionEffect(ConditionEffect.Armored))
+                def *= 2;
+
+            var min = damage * 3 / 20;
+            var d = Math.Max(min, damage - def);
+            if (target.HasConditionEffect(ConditionEffect.Invulnerable))
+                d = 0;
+            
+            return d;
         }
 
         public static Entity Resolve(ushort type, int objectId, bool isMyPlayer, Map map)

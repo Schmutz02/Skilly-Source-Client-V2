@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Models.Static;
+using Networking;
+using Networking.Packets.Outgoing;
 using UnityEngine;
 using MathUtils = Utils.MathUtils;
 
@@ -48,12 +50,7 @@ namespace Game.Entities
             if (en.HasConditionEffect(ConditionEffect.Invincible) || en.HasConditionEffect(ConditionEffect.Stasis))
                 return false;
 
-            if (!Hit.Contains(en.ObjectId))
-            {
-                Hit.Add(en.ObjectId);
-                return true;
-            }
-            return false;
+            return !Hit.Contains(en.ObjectId);
         }
 
         public override bool Tick(int time, int dt, Camera camera)
@@ -70,7 +67,7 @@ namespace Game.Entities
             {
                 if (DamagesPlayers)
                 {
-                    //TODO square hit
+                    TcpTicker.Send(new SquareHit(GameTime.Time, BulletId));
                 }
                 else if (Square.StaticObject != null)
                 {
@@ -85,7 +82,7 @@ namespace Game.Entities
             {
                 if (DamagesPlayers)
                 {
-                    //TODO square hit
+                    TcpTicker.Send(new SquareHit(GameTime.Time, BulletId));
                 }
                 else
                 {
@@ -93,8 +90,37 @@ namespace Game.Entities
                 }
                 return false;
             }
-            
-            //TODO damage what's there
+
+            var target = GetHit();
+            if (target == null)
+                return true;
+
+            var player = Map.MyPlayer;
+            var playerExists = player != null;
+            var isTargetEnemy = target.Desc.Enemy;
+            var sendMessage = playerExists && (DamagesPlayers || isTargetEnemy && Owner.ObjectId == player.ObjectId);
+            if (sendMessage)
+            {
+                var damage = DamageWithDefense(target, Damage, ProjectileDesc.ArmorPiercing);
+                if (target == player)
+                {
+                    TcpTicker.Send(new PlayerHit(BulletId));
+                    //TODO damage
+                }
+                else if (isTargetEnemy)
+                {
+                    TcpTicker.Send(new EnemyHit(GameTime.Time, BulletId, target.ObjectId));
+                }
+            }
+
+            if (ProjectileDesc.MultiHit)
+            {
+                Hit.Add(target.ObjectId);
+            }
+            else
+            {
+                return false;
+            }
             return true;
         }
 
@@ -156,6 +182,47 @@ namespace Game.Entities
             }
 
             return p;
+        }
+
+        private Entity GetHit()
+        {
+            var minDistSquared = float.MaxValue;
+            Entity minEn = null;
+            
+            if (DamagesEnemies)
+            {
+                foreach (var wrapper in Map.Entities.Values)
+                {
+                    var entity = wrapper.Entity;
+                    if (!entity.Desc.Enemy || !CanHit(entity))
+                        continue;
+                    
+                    if (Mathf.Abs(Position.x - entity.Position.x) <= _HITBOX_RADIUS &&
+                        Mathf.Abs(Position.y - entity.Position.y) <= _HITBOX_RADIUS)
+                    {
+                        var distSquared = MathUtils.DistanceSquared(Position, entity.Position);
+                        if (distSquared < minDistSquared)
+                        {
+                            minDistSquared = distSquared;
+                            minEn = entity;
+                        }
+                    }
+                }
+            }
+            else if (DamagesPlayers)
+            {
+                var player = Map.MyPlayer;
+                if (CanHit(player))
+                {
+                    if (Mathf.Abs(Position.x - player.Position.x) <= _HITBOX_RADIUS &&
+                        Mathf.Abs(Position.y - player.Position.y) <= _HITBOX_RADIUS)
+                    {
+                        return player;
+                    }
+                }
+            }
+
+            return minEn;
         }
     }
 }

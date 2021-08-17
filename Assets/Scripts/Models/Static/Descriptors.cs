@@ -248,6 +248,7 @@ namespace Models.Static
         public readonly bool Player;
         public readonly bool Enemy;
 
+        public readonly int Defense;
         public readonly int Size;
         public readonly int ShadowSize;
         public readonly Color ShadowColor;
@@ -296,6 +297,7 @@ namespace Models.Static
             Enemy = xml.ParseBool("Enemy");
             Player = xml.ParseBool("Player");
 
+            Defense = xml.ParseInt("Defense");
             Size = xml.ParseInt("Size", 100);
             ShadowSize = xml.ParseInt("ShadowSize", 100);
             ShadowColor = ParseUtils.ColorFromUInt(xml.ParseUInt("ShadowColor"));

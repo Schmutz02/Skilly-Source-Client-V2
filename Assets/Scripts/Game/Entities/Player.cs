@@ -37,7 +37,6 @@ namespace Game.Entities
         public int MagicPotions { get; private set; }
         public int SinkLevel { get; private set; }
         public int Attack { get; private set; }
-        public int Defense { get; private set; }
         public int Speed { get; private set; }
         public int Dexterity { get; private set; }
         public int Vitality { get; private set; }

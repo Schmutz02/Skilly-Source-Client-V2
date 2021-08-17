@@ -25,7 +25,7 @@ namespace Game
         [SerializeField]
         private Transform _entityParentTransform;
 
-        private Dictionary<int, EntityWrapper> _entities;
+        public Dictionary<int, EntityWrapper> Entities;
         // private Dictionary<string, Queue<EntityWrapper>> _entityPool;
         private HashSet<EntityWrapper> _interactiveObjects;
 
@@ -34,13 +34,13 @@ namespace Game
         [HideInInspector]
         public string WorldName;
 
-        private Player _myPlayer;
+        public Player MyPlayer { get; private set; }
 
         private int _lastInteractiveUpdateTime;
 
         private void Awake()
         {
-            _entities = new Dictionary<int, EntityWrapper>();
+            Entities = new Dictionary<int, EntityWrapper>();
             // _entityPool = new Dictionary<string, Queue<EntityWrapper>>();
             _interactiveObjects = new HashSet<EntityWrapper>();
             
@@ -49,7 +49,7 @@ namespace Game
 
         private void OnMyPlayerJoined(Player player)
         {
-            _myPlayer = player;
+            MyPlayer = player;
         }
 
         private void Update()
@@ -63,31 +63,31 @@ namespace Game
 
         private void LateUpdate()
         {
-            if (_myPlayer != null && MovesRequested > 0)
+            if (MyPlayer != null && MovesRequested > 0)
             {
-                TcpTicker.Send(new Move(GameTime.Time, _myPlayer.Position));
-                _myPlayer.OnMove();
+                TcpTicker.Send(new Move(GameTime.Time, MyPlayer.Position));
+                MyPlayer.OnMove();
                 MovesRequested--;
             }
         }
 
         private void UpdateNearestInteractive()
         {
-            if (_myPlayer == null)
+            if (MyPlayer == null)
                 return;
 
             var minDistSqr = Settings.MAXIMUM_INTERACTION_DISTANCE * Settings.MAXIMUM_INTERACTION_DISTANCE;
-            var playerX = _myPlayer.Position.x;
-            var playerY = _myPlayer.Position.y;
+            var playerX = MyPlayer.Position.x;
+            var playerY = MyPlayer.Position.y;
             IInteractiveObject closestInteractive = null;
             foreach (var obj in _interactiveObjects)
             {
                 var objX = obj.transform.position.x;
                 var objY = obj.transform.position.y;
-                if (Mathf.Abs(playerX - objX) < Settings.MAXIMUM_INTERACTION_DISTANCE ||
+                if (Mathf.Abs(playerX - objX) < Settings.MAXIMUM_INTERACTION_DISTANCE &&
                     Mathf.Abs(playerY - objY) < Settings.MAXIMUM_INTERACTION_DISTANCE)
                 {
-                    var distSqr = MathUtils.DistanceSquared(_myPlayer.Position, obj.transform.position);
+                    var distSqr = MathUtils.DistanceSquared(MyPlayer.Position, obj.transform.position);
                     if (distSqr < minDistSqr)
                     {
                         minDistSqr = distSqr;
@@ -103,7 +103,7 @@ namespace Game
         {
             MovesRequested = 0;
             _tilemap.ClearAllTiles();
-            _entities.Clear();
+            Entities.Clear();
             _interactiveObjects.Clear();
 
             foreach (Transform child in _entityParentTransform)
@@ -162,18 +162,18 @@ namespace Game
             if (wrapper is IInteractiveObject)
                 _interactiveObjects.Add(wrapper);
 
-            _entities[entity.ObjectId] = wrapper;
+            Entities[entity.ObjectId] = wrapper;
             return true;
         }
 
         public Entity GetEntity(int id)
         {
-            return _entities[id].Entity;
+            return Entities[id].Entity;
         }
 
         public void RemoveObject(int objectId)
         {
-            var en = _entities[objectId];
+            var en = Entities[objectId];
             var type = en.Entity.Desc.Class;
             // if (!_entityPool.ContainsKey(type))
             //     _entityPool[type] = new Queue<EntityWrapper>();
@@ -181,7 +181,7 @@ namespace Game
             
             Destroy(en.gameObject);
             // en.gameObject.SetActive(false);
-            _entities.Remove(objectId);
+            Entities.Remove(objectId);
             
             if (en is IInteractiveObject)
                 _interactiveObjects.Remove(en);
