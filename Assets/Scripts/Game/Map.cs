@@ -27,6 +27,7 @@ namespace Game
 
         public MapOverlay Overlay;
 
+        private Dictionary<string, EntityWrapper> _wrapperPrefabs;
         public Dictionary<int, EntityWrapper> Entities;
         // private Dictionary<string, Queue<EntityWrapper>> _entityPool;
         private HashSet<EntityWrapper> _interactiveObjects;
@@ -46,6 +47,12 @@ namespace Game
 
         private void Awake()
         {
+            _wrapperPrefabs = new Dictionary<string, EntityWrapper>();
+            foreach (var wrapper in Resources.LoadAll<EntityWrapper>("Entities"))
+            {
+                _wrapperPrefabs[wrapper.name] = wrapper;
+            }
+            
             Entities = new Dictionary<int, EntityWrapper>();
             // _entityPool = new Dictionary<string, Queue<EntityWrapper>>();
             _interactiveObjects = new HashSet<EntityWrapper>();
@@ -171,7 +178,7 @@ namespace Game
             EntityWrapper wrapper = null;
             try
             {
-                var wrapperPrefab = Resources.Load<EntityWrapper>($"Entities/{entity.Desc.Class}");
+                var wrapperPrefab = _wrapperPrefabs[entity.Desc.Class];
                 wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
             }
             catch (Exception e)
