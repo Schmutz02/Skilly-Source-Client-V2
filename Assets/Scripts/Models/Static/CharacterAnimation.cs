@@ -82,10 +82,9 @@ namespace Models.Static
             return frames[frame];
         }
 
-        public Sprite ImageFromFacing(float facing, Action action, float p)
+        public Sprite ImageFromAngle(float angle, Action action, float p)
         {
-            var cameraAngle = MathUtils.BoundToPI(facing - Settings.CameraAngle) * -1;
-            var sec = (int) (cameraAngle / (Mathf.PI / 4) + 4) % 8;
+            var sec = (int) (angle / (Mathf.PI / 4) + 4) % 8;
             var dirs = _sec2Dirs[sec];
             if (!_directionToAnimation.TryGetValue(dirs[0], out var actions))
                 if (!_directionToAnimation.TryGetValue(dirs[1], out actions))
@@ -95,6 +94,12 @@ namespace Models.Static
             p = Mathf.Max(0, Mathf.Min(0.99999f, p));
             var i = (int)(p * images.Count);
             return images[i];
+        }
+
+        public Sprite ImageFromFacing(float facing, Action action, float p)
+        {
+            var cameraAngle = MathUtils.BoundToPI(facing - Settings.CameraAngle) * -1;
+            return ImageFromAngle(cameraAngle, action, p);
         }
 
         private static Dictionary<Action, List<Sprite>> GetDirection(List<Sprite> frames, int offset, bool mirror)

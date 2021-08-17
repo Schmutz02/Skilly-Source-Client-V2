@@ -59,6 +59,7 @@ namespace Models.Static
                     break;
                 case "AnimatedTexture":
                     Animation = GetAnimatedTexture(textureXml);
+                    Texture = Animation.ImageFromAngle(0, Action.Stand, 0);
                     break;
                 case "RandomTexture":
                     RandomTextureData = GetRandomTexture(textureXml);

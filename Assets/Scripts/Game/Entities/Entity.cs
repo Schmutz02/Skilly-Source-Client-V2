@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Game.MovementControllers;
 using Models.Static;
 using UnityEngine;
+using Utils;
 
 namespace Game.Entities
 {
@@ -105,6 +107,42 @@ namespace Game.Entities
         public bool HasConditionEffect(ConditionEffect conditionEffect)
         {
             return (_conditionEffects & conditionEffect) != 0;
+        }
+
+        public virtual void Damage(int damage, ConditionEffectDesc[] effects, Projectile projectile)
+        {
+            if (effects != null)
+            {
+                var offsetTime = 0;
+                foreach (var effectDesc in effects)
+                {
+                    var effect = effectDesc.Effect;
+                    if (effect == ConditionEffect.Nothing)
+                        continue;
+                    
+                    switch (effect)
+                    {
+                        case ConditionEffect.Stunned:
+                            if (HasConditionEffect(ConditionEffect.StunImmune))
+                            {
+                                Map.Overlay.AddStatusText(this, "Immune", Color.red, 3000);
+                                continue;
+                            }
+                            break;
+                    }
+                    
+                    Map.Overlay.AddStatusText(this, effect.ToString(), Color.red, 3000, offsetTime);
+                    offsetTime += 500;
+                }
+            }
+
+            if (damage > 0)
+            {
+                var pierced = HasConditionEffect(ConditionEffect.ArmorBroken) ||
+                              projectile != null && projectile.ProjectileDesc.ArmorPiercing;
+                
+                Map.Overlay.AddStatusText(this, "-" + damage, pierced ? Color.magenta : Color.red, 1000);
+            }
         }
 
         public static int DamageWithDefense(Entity target, int damage, bool armorPiercing)

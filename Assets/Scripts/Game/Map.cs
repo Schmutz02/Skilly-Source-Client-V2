@@ -25,6 +25,8 @@ namespace Game
         [SerializeField]
         private Transform _entityParentTransform;
 
+        public MapOverlay Overlay;
+
         public Dictionary<int, EntityWrapper> Entities;
         // private Dictionary<string, Queue<EntityWrapper>> _entityPool;
         private HashSet<EntityWrapper> _interactiveObjects;

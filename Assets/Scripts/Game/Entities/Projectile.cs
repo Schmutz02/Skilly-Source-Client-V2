@@ -16,7 +16,7 @@ namespace Game.Entities
         public readonly int BulletId;
         public readonly float Angle;
         public readonly Vector2 StartPosition;
-        public readonly int Damage;
+        private readonly int _damage;
         public readonly HashSet<int> Hit;
         public readonly bool DamagesPlayers;
         public readonly bool DamagesEnemies;
@@ -33,7 +33,7 @@ namespace Game.Entities
             StartTime = startTime;
             Angle = MathUtils.BoundToPI(angle);
             StartPosition = Position = startPos;
-            Damage = damage;
+            _damage = damage;
             DamagesPlayers = owner.Desc.Enemy;
             DamagesEnemies = !DamagesPlayers;
             var size = projectileDesc.Size;
@@ -101,11 +101,11 @@ namespace Game.Entities
             var sendMessage = playerExists && (DamagesPlayers || isTargetEnemy && Owner.ObjectId == player.ObjectId);
             if (sendMessage)
             {
-                var damage = DamageWithDefense(target, Damage, ProjectileDesc.ArmorPiercing);
+                var damage = DamageWithDefense(target, _damage, ProjectileDesc.ArmorPiercing);
+                target.Damage(damage, ProjectileDesc.Effects, this);
                 if (target == player)
                 {
                     TcpTicker.Send(new PlayerHit(BulletId));
-                    //TODO damage
                 }
                 else if (isTargetEnemy)
                 {
@@ -193,8 +193,8 @@ namespace Game.Entities
             {
                 foreach (var wrapper in Map.Entities.Values)
                 {
-                    var entity = wrapper.Entity;
-                    if (!entity.Desc.Enemy || !CanHit(entity))
+                    var entity = wrapper?.Entity;
+                    if (entity == null || !entity.Desc.Enemy || !CanHit(entity))
                         continue;
                     
                     if (Mathf.Abs(Position.x - entity.Position.x) <= _HITBOX_RADIUS &&
