@@ -17,7 +17,7 @@ namespace Utils
             c.b = (byte)((hex) & 0xFF);
             c.g = (byte)((hex>>8) & 0xFF);
             c.r = (byte)((hex>>16) & 0xFF);
-            c.a = (byte)((hex>>24) & 0xFF);
+            c.a = 1;
             return c;
         }
         

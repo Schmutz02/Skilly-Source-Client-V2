@@ -43,6 +43,14 @@ namespace Game.Entities
         public int Wisdom { get; private set; }
         public float PushX { get; private set; }
         public float PushY { get; private set; }
+        public int MaxHpBoost { get; private set; }
+        public int MaxMpBoost { get; private set; }
+        public int AttackBoost { get; private set; }
+        public int DefenseBoost { get; private set; }
+        public int SpeedBoost { get; private set; }
+        public int DexterityBoost { get; private set; }
+        public int VitalityBoost { get; private set; }
+        public int WisdomBoost { get; private set; }
         public ItemType[] SlotTypes { get; }
         public int[] Equipment { get; }
         public int[] ItemDatas { get; }
@@ -201,6 +209,30 @@ namespace Game.Entities
                     return;
                 case StatType.Wisdom:
                     Wisdom = (int) value;
+                    return;
+                case StatType.MaxHpBoost:
+                    MaxHpBoost = (int) value;
+                    return;
+                case StatType.MaxMpBoost:
+                    MaxMpBoost = (int) value;
+                    return;
+                case StatType.AttackBoost:
+                    AttackBoost = (int) value;
+                    return;
+                case StatType.DefenseBoost:
+                    DefenseBoost = (int) value;
+                    return;
+                case StatType.SpeedBoost:
+                    SpeedBoost = (int) value;
+                    return;
+                case StatType.DexterityBoost:
+                    DexterityBoost = (int) value;
+                    return;
+                case StatType.VitalityBoost:
+                    VitalityBoost = (int) value;
+                    return;
+                case StatType.WisdomBoost:
+                    WisdomBoost = (int) value;
                     return;
                 case StatType.Inventory0:
                 case StatType.Inventory1:
