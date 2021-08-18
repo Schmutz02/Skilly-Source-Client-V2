@@ -38,6 +38,9 @@ namespace Game.Entities
                 case StatType.AltTexture:
                     AltTextureIndex = (int) value;
                     return;
+                case StatType.SinkLevel:
+                    SinkLevel = (int) value;
+                    return;
             }
         }
     }

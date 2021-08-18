@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbf6f86f92964e71ba831dc719ad1821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Renderer: {fileID: 3560103712788707184}
+  Renderer: {fileID: 9182367330510884269}
   ShadowRenderer: {fileID: 1794124247786480683}
   _portalPanel: {fileID: 3157662607339779749, guid: 8aea68b5bef4d794c92b3fe3cb41733c,
     type: 3}
@@ -92,9 +92,9 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 7344444215496182282}
   m_PrefabAsset: {fileID: 0}
---- !u!212 &3560103712788707184 stripped
+--- !u!212 &9182367330510884269 stripped
 SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 6090188786275417466, guid: a4fa260802ae5804f9f0e0d69d8eaf6a,
+  m_CorrespondingSourceObject: {fileID: 1910343686706841511, guid: a4fa260802ae5804f9f0e0d69d8eaf6a,
     type: 3}
   m_PrefabInstance: {fileID: 7344444215496182282}
   m_PrefabAsset: {fileID: 0}

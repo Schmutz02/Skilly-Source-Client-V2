@@ -211,7 +211,9 @@ namespace Game
 
         public Entity GetEntity(int id)
         {
-            return Entities[id].Entity;
+            if (Entities.ContainsKey(id))
+                return Entities[id].Entity;
+            return null;
         }
 
         public void RemoveObject(int objectId)

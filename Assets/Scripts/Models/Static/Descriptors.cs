@@ -262,6 +262,9 @@ namespace Models.Static
         public readonly TextureData TopTextureData;
         public readonly TextureData Portrait;
 
+        public readonly bool DrawOnGround;
+        public readonly bool DrawUnder;
+
         public readonly bool DontFaceAttacks;
 
         public readonly string HitSound;
@@ -313,6 +316,9 @@ namespace Models.Static
                 TopTextureData = new TextureData(xml.Element("Top"));
             if (xml.Element("Portrait") != null)
                 Portrait = new TextureData(xml.Element("Portrait"));
+
+            DrawOnGround = xml.ParseBool("DrawOnGround");
+            DrawUnder = DrawOnGround || xml.ParseBool("DrawUnder");
 
             DontFaceAttacks = xml.ParseBool("DontFaceAttacks");
 
@@ -448,6 +454,7 @@ namespace Models.Static
         public readonly int Damage;
         public readonly float Speed;
         public readonly bool Sinking;
+        public readonly bool Sink;
         public readonly bool Push;
         public readonly float DX;
         public readonly float DY;
@@ -461,6 +468,7 @@ namespace Models.Static
             Damage = e.ParseInt("Damage");
             Speed = e.ParseFloat("Speed", 1.0f);
             Sinking = e.ParseBool("Sinking");
+            Sink = e.ParseBool("Sink");
             if (Push = e.ParseBool("Push"))
             {
                 DX = e.Element("Animate").ParseFloat("@dx") / 1000f;

@@ -20,12 +20,14 @@ namespace Game.Entities
         public int Size { get; protected set; } = 100;
         public string Name { get; private set; }
         public int AltTextureIndex { get; private set; }
+        public int SinkLevel { get; protected set; }
 
         public readonly Map Map;
         public Square Square;
         public readonly int ObjectId;
         public readonly ObjectDesc Desc;
-        public Vector3 Position;
+        public Vector2 Position;
+        public float Z;
         public float Rotation; // in radians
         public bool Flying;
         public readonly bool IsMyPlayer;
@@ -46,9 +48,10 @@ namespace Game.Entities
             Desc = desc;
             Map = map;
             ObjectId = objectId;
-            Position = Vector2.zero;
+            Position = Vector3.zero;
             IsMyPlayer = isMyPlayer;
             Defense = desc.Defense;
+            Z = desc.Z;
 
             if (isMyPlayer)
             {

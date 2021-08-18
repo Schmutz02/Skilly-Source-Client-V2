@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Game.EntityWrappers
 {
-    //TODO maybe make a static object??
     public class WallWrapper : EntityWrapper
     {
         [SerializeField]

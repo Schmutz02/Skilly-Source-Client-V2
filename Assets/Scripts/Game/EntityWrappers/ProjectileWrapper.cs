@@ -25,7 +25,7 @@ namespace Game.EntityWrappers
             {
                 return false;
             }
-            transform.position = _projectile.Position;
+            transform.position = new Vector3(_projectile.Position.x, _projectile.Position.y, -_projectile.Z);
             
             SetRotation();
             return true;

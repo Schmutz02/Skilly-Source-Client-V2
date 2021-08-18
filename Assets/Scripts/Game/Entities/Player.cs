@@ -12,7 +12,6 @@ namespace Game.Entities
         private const float _MAX_ATTACK_FREQ = 0.008f;
         private const float _MIN_ATTACK_MULT = 0.5f;
         private const float _MAX_ATTACK_MULT = 2f;
-        private const float _MAX_SINK_LEVEL = 18f;
 
         public float MoveMultiplier = 1f;
 
@@ -35,7 +34,6 @@ namespace Game.Entities
         public int Oxygen { get; private set; }
         public int HealthPotions { get; private set; }
         public int MagicPotions { get; private set; }
-        public int SinkLevel { get; private set; }
         public int Attack { get; private set; }
         public int Speed { get; private set; }
         public int Dexterity { get; private set; }
@@ -89,8 +87,8 @@ namespace Game.Entities
             var tile = Map.GetTile(Position);
             if (tile.Desc.Sinking)
             {
-                SinkLevel = (int) Mathf.Min(SinkLevel + 1, _MAX_SINK_LEVEL);
-                MoveMultiplier = 0.1f + (1 - SinkLevel / _MAX_SINK_LEVEL) * (tile.Desc.Speed - 0.1f);
+                SinkLevel = (int) Mathf.Min(SinkLevel + 1, Settings.MAX_SINK_LEVEL);
+                MoveMultiplier = 0.1f + (1 - SinkLevel / Settings.MAX_SINK_LEVEL) * (tile.Desc.Speed - 0.1f);
             }
             else
             {
@@ -188,9 +186,6 @@ namespace Game.Entities
                     return;
                 case StatType.MagicPotionStack:
                     MagicPotions = (int) value;
-                    return;
-                case StatType.SinkLevel:
-                    SinkLevel = (int) value;
                     return;
                 case StatType.Attack:
                     Attack = (int) value;

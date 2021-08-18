@@ -45,19 +45,19 @@ namespace Networking.Packets.Incoming
 
         public override void Handle(PacketHandler handler, Map map)
         {
-            var owner = map.Entities[_ownerId];
+            var owner = map.GetEntity(_ownerId);
             for (var i = 0; i < _numShots; i++)
             {
-                var projDesc = owner.Entity.Desc.Projectiles[_bulletType];
+                var projDesc = owner.Desc.Projectiles[_bulletType];
                 var angle = _angle + _angleInc * i;
-                var projectile = new Projectile(owner.Entity, projDesc, _bulletId + i, GameTime.Time, angle,
+                var projectile = new Projectile(owner, projDesc, _bulletId + i, GameTime.Time, angle,
                     _startPos, _damage, map);
 
                 map.AddObject(projectile, _startPos);
             }
             
             TcpTicker.Send(new ShootAck(GameTime.Time));
-            owner.Entity.SetAttack(null, _angle + _angleInc * ((_numShots - 1) / 2f));
+            owner.SetAttack(null, _angle + _angleInc * ((_numShots - 1) / 2f));
         }
     }
 }

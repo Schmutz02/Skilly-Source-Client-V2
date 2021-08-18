@@ -48,10 +48,12 @@ namespace Game.EntityWrappers
         {
             Entity = entity;
 
+            Renderer.sortingLayerName = entity.Desc.DrawUnder ? "DrawUnder" : "Visible";
+
             SetPositionAndRotation();
             RedrawShadow();
 
-            if (rotating)
+            if (rotating && !entity.Desc.DrawOnGround)
                 CameraManager.AddRotatingEntity(Entity);
 
             if (entity.IsMyPlayer)
@@ -87,6 +89,9 @@ namespace Game.EntityWrappers
 
         private void RedrawShadow()
         {
+            if (Entity.Desc.DrawOnGround)
+                return;
+            
             var scale = Entity.Size / 100f * (Entity.Desc.ShadowSize / 100f) * Entity.SizeMult;
             ShadowTransform.localScale = new Vector3(scale, scale, 1);
 
@@ -97,7 +102,8 @@ namespace Game.EntityWrappers
 
         private void SetPositionAndRotation()
         {
-            transform.position = Entity.Position;
+            var yOffset = Entity.Desc.DrawOnGround ? -0.5f : 0;
+            transform.position = new Vector3(Entity.Position.x, Entity.Position.y + yOffset, -Entity.Z);
             transform.rotation = Quaternion.Euler(0, 0, Entity.Rotation * Mathf.Rad2Deg);
             
             if (_model)

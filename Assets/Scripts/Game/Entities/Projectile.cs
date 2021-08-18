@@ -21,7 +21,7 @@ namespace Game.Entities
         public readonly bool DamagesPlayers;
         public readonly bool DamagesEnemies;
 
-        public float StartTime;
+        public readonly float StartTime;
 
         public Projectile(Entity owner, ProjectileDesc projectileDesc, int bulletId, float startTime, float angle, 
             Vector2 startPos, int damage, Map map) 
@@ -33,6 +33,7 @@ namespace Game.Entities
             StartTime = startTime;
             Angle = MathUtils.BoundToPI(angle);
             StartPosition = Position = startPos;
+            Z = 0.5f;
             _damage = damage;
             DamagesPlayers = owner.Desc.Enemy;
             DamagesEnemies = !DamagesPlayers;
@@ -193,8 +194,8 @@ namespace Game.Entities
             {
                 foreach (var wrapper in Map.Entities.Values)
                 {
-                    var entity = wrapper?.Entity;
-                    if (entity == null || !entity.Desc.Enemy || !CanHit(entity))
+                    var entity = wrapper.Entity;
+                    if (!entity.Desc.Enemy || !CanHit(entity))
                         continue;
                     
                     if (Mathf.Abs(Position.x - entity.Position.x) <= _HITBOX_RADIUS &&

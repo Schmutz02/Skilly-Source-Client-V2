@@ -15,6 +15,7 @@ namespace Models
         public const float PLAYER_ROTATE_SPEED = 0.003f;
 
         public const float MAXIMUM_INTERACTION_DISTANCE = 1;
+        public const float MAX_SINK_LEVEL = 18f;
 
         public static readonly string ServerURL = $"http://{IP_ADDRESS}:{_WEB_PORT}";
 

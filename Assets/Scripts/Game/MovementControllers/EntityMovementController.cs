@@ -51,12 +51,12 @@ namespace Game.MovementControllers
             {
                 if (!moving)
                 {
-                    _entity.Position.z = _entity.Desc.Z;
+                    _entity.Z = _entity.Desc.Z;
                     _entity.Flying = _entity.Desc.Flying;
                 }
                 else
                 {
-                    _entity.Position.z = _entity.Desc.WhileMoving.Z;
+                    _entity.Z = _entity.Desc.WhileMoving.Z;
                     _entity.Flying = _entity.Desc.WhileMoving.Flying;
                 }
             }
