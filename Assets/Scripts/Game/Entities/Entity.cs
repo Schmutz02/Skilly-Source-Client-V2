@@ -167,8 +167,10 @@ namespace Game.Entities
         public static Entity Resolve(ushort type, int objectId, bool isMyPlayer, Map map)
         {
             var desc = AssetLibrary.GetObjectDesc(type);
-            
+
+#if UNITY_EDITOR
             Debug.Log($"Resolving entity with class {desc.Class}");
+#endif
 
             switch (desc.Class)
             {

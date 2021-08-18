@@ -17,6 +17,7 @@ namespace Game
         public TileDesc Desc { get; private set; }
         public ushort Type { get; private set; }
         public Entity StaticObject;
+        public int SinkLevel { get; private set; }
 
         [NonSerialized]
         public Vector3Int Position;
@@ -27,6 +28,11 @@ namespace Game
             Type = desc.Type;
             Position = new Vector3Int(x, y, 0);
             sprite = desc.TextureData.GetTexture(Hash(x, y));
+
+            if (Desc.Sink)
+            {
+                SinkLevel = 12;
+            }
         }
 
         private static int Hash(int x, int y)

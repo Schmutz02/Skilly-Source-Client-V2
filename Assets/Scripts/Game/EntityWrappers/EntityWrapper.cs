@@ -34,6 +34,8 @@ namespace Game.EntityWrappers
             
             if (!CameraManager)
                 CameraManager = Camera.main.GetComponent<MainCameraManager>();
+
+            _propertyBlock = new MaterialPropertyBlock();
         }
 
         private void OnDisable()
@@ -49,6 +51,7 @@ namespace Game.EntityWrappers
             Entity = entity;
 
             Renderer.sortingLayerName = entity.Desc.DrawUnder ? "DrawUnder" : "Visible";
+            ShadowRenderer.gameObject.SetActive(!entity.Desc.DrawOnGround);
 
             SetPositionAndRotation();
             RedrawShadow();
@@ -84,6 +87,7 @@ namespace Game.EntityWrappers
                 Renderer.sprite = Entity.TextureProvider.GetTexture(GameTime.Time);
 
             SetPositionAndRotation();
+            ApplySink();
             return true;
         }
 
@@ -108,6 +112,27 @@ namespace Game.EntityWrappers
             
             if (_model)
                 _model.transform.rotation = Quaternion.identity;
+        }
+
+        private static readonly int _YOffset = Shader.PropertyToID("_YOffset");
+        private MaterialPropertyBlock _propertyBlock;
+        private void ApplySink()
+        {
+            if (Entity.Square == null)
+                return;
+            
+            var sinkValue = (Entity.Square.SinkLevel + Entity.SinkLevel) / 48f;
+            if (sinkValue > 0 && (Entity.Flying ||
+                                  Entity.Square.StaticObject != null &&
+                                  Entity.Square.StaticObject.Desc.ProtectFromSink))
+            {
+                sinkValue = 0;
+            }
+
+            Renderer.GetPropertyBlock(_propertyBlock);
+            
+            _propertyBlock.SetFloat(_YOffset, sinkValue);
+            Renderer.SetPropertyBlock(_propertyBlock);
         }
         
         private static readonly int _MainTex = Shader.PropertyToID("_MainTex");

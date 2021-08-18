@@ -6,6 +6,7 @@
         _OutlineColor ("OutlineColor", Color) = (0,0,0,1)
         _GradientColor ("GradientColor", Color) = (0,0,0,1)
         _BlurAmount ("Blur", Range(1,10)) = 0
+        _YOffset ("YOffset", Range(0,1)) = 0
     }
 
     SubShader
@@ -58,92 +59,36 @@
             half4 _OutlineColor;
             half4 _GradientColor;
             uint _BlurAmount;
-
-            float testForColor(v2f pix)
-            {
-                for (uint i = 0; i < 5; i++)
-                {
-                    // check left
-                    half4 pixColor = tex2D(_MainTex, pix.uv + float2((i + 1) * _MainTex_TexelSize.x, 0));
-                    if (pixColor.a != 0)
-                    {
-                        return 1.0 - sqrt(i / 5.0);
-                    }
-
-                    // check right
-                    pixColor = tex2D(_MainTex, pix.uv - float2((i + 1) * _MainTex_TexelSize.x, 0));
-                    if (pixColor.a != 0)
-                    {
-                        return 1.0 - sqrt(i / 5.0);
-                    }
-
-                    // check up
-                    pixColor = tex2D(_MainTex, pix.uv - float2(0, (i + 1) * _MainTex_TexelSize.y));
-                    if (pixColor.a != 0)
-                    {
-                        return 1.0 - sqrt(i / 5.0);
-                    }
-
-                    // check down
-                    pixColor = tex2D(_MainTex, pix.uv + float2(0, (i + 1) * _MainTex_TexelSize.y));
-                    if (pixColor.a != 0)
-                    {
-                        return 1.0 - sqrt(i / 5.0);
-                    }
-
-                    // check left down
-                    pixColor = tex2D(_MainTex, pix.uv + float2((i + 1) * _MainTex_TexelSize.x, (i + 1) * _MainTex_TexelSize.y));
-                    if (pixColor.a != 0)
-                    {
-                        return 1.0 - sqrt(i / 5.0);
-                    }
-
-                    // check left up
-                    pixColor = tex2D(_MainTex, pix.uv + float2((i + 1) * _MainTex_TexelSize.x, -(i + 1) * _MainTex_TexelSize.y));
-                    if (pixColor.a != 0)
-                    {
-                        return 1.0 - sqrt(i / 5.0);
-                    }
-
-                    // check right up
-                    pixColor = tex2D(_MainTex, pix.uv + float2(-(i + 1) * _MainTex_TexelSize.x, -(i + 1) * _MainTex_TexelSize.y));
-                    if (pixColor.a != 0)
-                    {
-                        return 1.0 - sqrt(i / 5.0);
-                    }
-
-                    // check right down
-                    pixColor = tex2D(_MainTex, pix.uv + float2(-(i + 1) * _MainTex_TexelSize.x, (i + 1) * _MainTex_TexelSize.y));
-                    if (pixColor.a != 0)
-                    {
-                        return 1.0 - sqrt(i / 5.0);
-                    }
-                }
-                return 0;
-            }
+            fixed _YOffset;
             
             half4 frag (v2f IN) : SV_Target
             {
-                const half4 texColor = tex2D(_MainTex, IN.uv);
-                half4 col = lerp(texColor * _GradientColor, texColor, IN.uv.y);
+                const half4 tex_color = tex2D(_MainTex, IN.uv + float2(0, _YOffset));
+                float4 col = lerp(tex_color * _GradientColor, tex_color, IN.uv.y);
+
+                if (IN.uv.y > 1 - _YOffset)
+                {
+                    col.a = 0;
+                    return col;
+                }
                 
                 if (col.a == 0)
                 {
-                    // float shouldColor = testForColor(IN);
-                    //
-                    // return lerp(col, lerp(_Color * shouldColor, _Color, shouldColor), ceil(shouldColor));
-                    for (int i = -1; i <= 1; i += 2)
-                    {
-                        for (int j = -1; j <= 1; j += 2)
-                        {
-                            half4 pixColor = tex2D(_MainTex, IN.uv + float2(j * _MainTex_TexelSize.x, i * _MainTex_TexelSize.y));
+                    half4 pix_color = tex2D(_MainTex, IN.uv + float2(-1 * _MainTex_TexelSize.x, -1 * _MainTex_TexelSize.y) + float2(0, _YOffset));
+                    if (pix_color.a != 0)
+                        return _OutlineColor;
 
-                            if (pixColor.a != 0)
-                            {
-                                return _OutlineColor;
-                            }
-                        }
-                    }
+                    pix_color = tex2D(_MainTex, IN.uv + float2(1 * _MainTex_TexelSize.x, -1 * _MainTex_TexelSize.y) + float2(0, _YOffset));
+                    if (pix_color.a != 0)
+                        return _OutlineColor;
+
+                    pix_color = tex2D(_MainTex, IN.uv + float2(-1 * _MainTex_TexelSize.x, 1 * _MainTex_TexelSize.y) + float2(0, _YOffset));
+                    if (pix_color.a != 0)
+                        return _OutlineColor;
+
+                    pix_color = tex2D(_MainTex, IN.uv + float2(1 * _MainTex_TexelSize.x, 1 * _MainTex_TexelSize.y) + float2(0, _YOffset));
+                    if (pix_color.a != 0)
+                        return _OutlineColor;
                 }
                 
                 return col;

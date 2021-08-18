@@ -196,7 +196,9 @@ namespace Networking
                         if (_socket.Available != 0)
                             _socket.Receive(_Receive.PacketBytes, PREFIX_LENGTH, _Receive.PacketLength - PREFIX_LENGTH, SocketFlags.None);
                         var packetId = (PacketId) _Receive.GetPacketId();
+#if UNITY_EDITOR
                         Debug.Log(packetId);
+#endif
                         var packetBody = _Receive.GetPacketBody();
                         var packet = _IncomingPackets[packetId].CreateInstance();
                         using (var rdr = new PacketReader(new MemoryStream(packetBody)))
