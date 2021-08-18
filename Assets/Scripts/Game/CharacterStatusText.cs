@@ -7,7 +7,7 @@ namespace Game
 {
     public class CharacterStatusText : MonoBehaviour
     {
-        private const int _MAX_DRIFT = 40;
+        private const float _MAX_DRIFT = 1;
 
         [SerializeField]
         private MainCameraManager _mainCamera;
@@ -16,7 +16,7 @@ namespace Game
         private TextMeshProUGUI _text;
 
         private Entity _entity;
-        private float _yOffset;
+        private float _zOffset;
         private int _lifetime;
 
         private int _startTime;
@@ -26,7 +26,7 @@ namespace Game
             _entity = entity;
             _text.text = text;
             _text.color = color;
-            _yOffset = entity.Desc.TextureData.Texture.rect.height * (entity.Size / 100f) * 5;
+            _zOffset = entity.Desc.TextureData.Texture.rect.height / 8;
             _lifetime = lifetime;
 
             _startTime = GameTime.Time + offsetTime;
@@ -53,11 +53,12 @@ namespace Game
                 return;
             }
 
+            transform.rotation = _mainCamera.Camera.transform.rotation;
             _text.enabled = true;
-            var newPos = _mainCamera.Camera.WorldToScreenPoint(_entity.Position);
+            var newPos = (Vector3) _entity.Position;
             var drift = (float) aliveTime / _lifetime * _MAX_DRIFT;
-            newPos.y += _yOffset + drift;
-            ((RectTransform) transform).anchoredPosition = newPos;
+            newPos.z -= _zOffset + drift;
+            transform.position = newPos;
         }
     }
 }
