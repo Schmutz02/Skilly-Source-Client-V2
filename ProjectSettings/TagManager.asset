@@ -50,3 +50,6 @@ TagManager:
   - name: Visible
     uniqueID: 665877617
     locked: 0
+  - name: Overlay
+    uniqueID: 3059908777
+    locked: 0

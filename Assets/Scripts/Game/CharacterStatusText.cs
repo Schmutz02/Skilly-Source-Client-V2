@@ -13,7 +13,7 @@ namespace Game
         private MainCameraManager _mainCamera;
         
         [SerializeField]
-        private TextMeshProUGUI _text;
+        private TextMeshPro _text;
 
         private Entity _entity;
         private float _zOffset;
