@@ -4,6 +4,7 @@ using Game.Entities;
 using Game.EntityWrappers;
 using Models;
 using Networking;
+using Networking.Packets.Incoming;
 using Networking.Packets.Outgoing;
 using UI.GameScreen.Panels;
 using UnityEngine;
@@ -34,8 +35,10 @@ namespace Game
 
         [HideInInspector]
         public int MovesRequested;
-        [HideInInspector]
-        public string WorldName;
+
+        public string WorldName { get; private set; }
+        public int Width => _tilemap.size.x;
+        public int Height => _tilemap.size.y;
 
         public Player MyPlayer { get; private set; }
 
@@ -59,12 +62,18 @@ namespace Game
             _idsToRemove = new List<int>();
             _objsToAdd = new List<Entity>();
             
-            Networking.Packets.Incoming.Update.OnMyPlayerJoined += OnMyPlayerJoined;
+            Update.OnMyPlayerJoined += OnMyPlayerJoined;
         }
 
         private void OnMyPlayerJoined(Player player)
         {
             MyPlayer = player;
+        }
+
+        public void Initialize(MapInfo mapInfo)
+        {
+            WorldName = mapInfo.Name;
+            _tilemap.size = new Vector3Int(mapInfo.Width, mapInfo.Height, 0);
         }
 
         public void Tick()
@@ -156,8 +165,24 @@ namespace Game
         {
             var tile = ScriptableObject.CreateInstance<Square>();
             var tileDesc = AssetLibrary.GetTileDesc(tileData.TileType);
-            tile.Init(tileDesc, tileData.X, tileData.Y);
+            tile.Init(this, tileDesc, tileData.X, tileData.Y);
             _tilemap.SetTile(tile.Position, tile);
+            var x = tileData.X;
+            var y = tileData.Y;
+            var xEnd = x < Width - 1 ? x + 1 : x;
+            var yEnd = y < Height - 1 ? y + 1 : y;
+            for (var xi = x > 0 ? x - 1 : x; xi <= xEnd; xi++)
+            {
+                for (var yi = y > 0 ? y - 1 : y; yi <= yEnd; yi++)
+                {
+                    var square = GetTile(xi, yi);
+                    if (square != null && (square.Desc.HasEdge || square.Type != tile.Type))
+                    {
+                        square.Redraw();
+                        _tilemap.RefreshTile(square.Position);
+                    }
+                }
+            }
         }
 
         public void AddObject(Entity entity, Vector2 position)

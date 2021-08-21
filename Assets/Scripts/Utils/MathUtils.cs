@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Utils
@@ -24,6 +25,11 @@ namespace Utils
         {
             float v1 = from.x - to.x, v2 = from.y - to.y;
             return v1 * v1 + v2 * v2;
+        }
+
+        public static T Random<T>(this List<T> list)
+        {
+            return list[UnityEngine.Random.Range(0, list.Count)];
         }
     }
 }

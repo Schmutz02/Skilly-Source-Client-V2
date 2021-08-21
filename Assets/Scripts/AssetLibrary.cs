@@ -101,6 +101,16 @@ public static class AssetLibrary
         }
     }
 
+    public static Sprite GetTileImage(int type)
+    {
+        return _Type2TileDesc[type].TextureData.GetTexture();
+    }
+
+    public static List<Sprite> GetImageSet(string sheetName)
+    {
+        return _Images[sheetName];
+    }
+
     public static Sprite GetImage(string sheetName, int index)
     {
         return _Images[sheetName][index];

@@ -1,16 +1,20 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Utils
 {
     public static class SpriteUtils
     {
+        public const int PIXELS_PER_UNIT = 8;
+        public static readonly Vector2 Pivot = new Vector2(0.5f, 0);
+        
         private static readonly Dictionary<Sprite, Dictionary<int, Sprite>> RedrawCache =
             new Dictionary<Sprite, Dictionary<int, Sprite>>();
 
         private static readonly Dictionary<string, Dictionary<int, Texture>> TextureCache =
             new Dictionary<string, Dictionary<int, Texture>>();
-        
+
         public static Sprite Redraw(Sprite sprite, int size, float multiplier = 5)
         {
             var hash = GetHash(size, multiplier);
@@ -38,6 +42,67 @@ namespace Utils
         private static int GetHash(int size, float multiplier)
         {
             return (int)(size * multiplier);
+        }
+
+        public static void CopyPixels(this Texture2D to, Texture2D from, RectInt rect, Sprite alpha)
+        {
+            for (var y = rect.yMin; y < rect.yMax; y++)
+            {
+                for (var x = rect.xMin; x < rect.xMax; x++)
+                {
+                    var toColor = to.GetPixel(x, y);
+                    var fromColor = from.GetPixel(x, y);
+                    var p = alpha.texture.GetPixel(x, y).a;
+                    var color = Color.Lerp(toColor, fromColor, p);
+                    to.SetPixel(x, y, color);
+                }
+            }
+            
+            to.Apply();
+        }
+
+        public static Sprite CreateSingleTextureSprite(Sprite sprite)
+        {
+            var texture = CreateTexture(sprite);
+            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Pivot, PIXELS_PER_UNIT);
+        }
+
+        public static Sprite Rotate(Sprite sprite, int clockwiseTurns)
+        {
+            var rect = sprite.textureRect;
+            var size = (int) rect.width;
+            var colors = sprite.texture.GetPixels((int) rect.x, (int) rect.y, size, size);
+            
+            while (clockwiseTurns > 0)
+            {
+                var tempColors = colors.ToArray();
+                for (var x = 0; x < size; x++) {
+                    for (var y = 0; y < size; y++) {
+                        colors[x + y * size] = tempColors[y + (size - x - 1) * size];
+                    }
+                }
+                
+                clockwiseTurns--;
+            }
+            
+            while (clockwiseTurns < 0)
+            {
+                var tempColors = colors.ToArray();
+                for (var x = 0; x < size; x++) {
+                    for (var y = 0; y < size; y++) {
+                        colors[x + y * size] = tempColors[(size - y - 1) + x * size];
+                        
+                    }
+                }
+                
+                clockwiseTurns++;
+            }
+
+            var texture = new Texture2D(size, size);
+            texture.filterMode = FilterMode.Point;
+            texture.SetPixels(colors);
+            texture.Apply();
+            return Sprite.Create(texture, new Rect(0, 0, size, size), Pivot, PIXELS_PER_UNIT);
         }
 
         public static Texture2D CreateTexture(Sprite sprite)
@@ -88,7 +153,7 @@ namespace Utils
 
             var rect = new Rect(0, 0, sprite.rect.width, sprite.rect.height);
             var pivot = Vector2.right - sprite.pivot / sprite.rect.width;
-            var mirroredSprite = Sprite.Create(mirrored, rect, pivot, 8);
+            var mirroredSprite = Sprite.Create(mirrored, rect, pivot, PIXELS_PER_UNIT);
             return mirroredSprite;
         }
         
@@ -101,7 +166,7 @@ namespace Utils
                 {
                     var rect = new Rect(x, y, imageWidth, imageHeight);
                     var pivot = new Vector2(0.5f, 0);
-                    var sprite = Sprite.Create(texture, rect, pivot, 8);
+                    var sprite = Sprite.Create(texture, rect, pivot, PIXELS_PER_UNIT);
 
                     images.Add(sprite);
                 }
@@ -115,7 +180,7 @@ namespace Utils
             var rect = first.rect;
             rect.width += second.rect.width;
             var pivot = new Vector2(0.25f, 0);
-            return Sprite.Create(first.texture, rect, pivot, 8);
+            return Sprite.Create(first.texture, rect, pivot, PIXELS_PER_UNIT);
         }
     }
     
@@ -181,7 +246,7 @@ namespace Utils
             Scale(smallTexture, w, h, FilterMode.Point);
 
             var rect = new Rect(0, 0, w, h);
-            var rescaledSprite = Sprite.Create(smallTexture, rect, pivot, 8 * 6.25f);
+            var rescaledSprite = Sprite.Create(smallTexture, rect, pivot, SpriteUtils.PIXELS_PER_UNIT * 6.25f);
             return rescaledSprite;
         }
 

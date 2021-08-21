@@ -9,9 +9,9 @@ namespace Networking.Packets.Incoming
         public override PacketId Id => PacketId.MapInfo;
         public override IncomingPacket CreateInstance() => new MapInfo();
 
-        private int _width;
-        private int _height;
-        private string _name;
+        public int Width;
+        public int Height;
+        public string Name;
         private string _displayName;
         private uint _seed;
         private int _background;
@@ -21,9 +21,9 @@ namespace Networking.Packets.Incoming
 
         public override void Read(PacketReader rdr)
         {
-            _width = rdr.ReadInt32();
-            _height = rdr.ReadInt32();
-            _name = rdr.ReadString();
+            Width = rdr.ReadInt32();
+            Height = rdr.ReadInt32();
+            Name = rdr.ReadString();
             _displayName = rdr.ReadString();
             _seed = rdr.ReadUInt32();
             _background = rdr.ReadInt32();
@@ -34,7 +34,7 @@ namespace Networking.Packets.Incoming
 
         public override void Handle(PacketHandler handler, Map map)
         {
-            map.WorldName = _name;
+            map.Initialize(this);
             handler.Random = new wRandom(_seed);
             
             if (handler.InitData.NewCharacter)
