@@ -44,6 +44,40 @@ namespace Utils
             return (int)(size * multiplier);
         }
 
+        public static Color MostCommonColor(Sprite sprite)
+        {
+            var dict = new Dictionary<Color, int>();
+            for (var x = (int) sprite.textureRect.x; x < sprite.textureRect.xMax; x++)
+            {
+                for (var y = (int) sprite.textureRect.y; y < sprite.textureRect.yMax; y++)
+                {
+                    var color = sprite.texture.GetPixel(x, y);
+                    if (color == Color.clear)
+                        continue;
+
+                    if (!dict.ContainsKey(color))
+                        dict[color] = 1;
+                    else
+                        dict[color]++;
+                }
+            }
+
+            var bestColor = Color.black;
+            var bestCount = 0;
+            foreach (var colorPair in dict)
+            {
+                var color = colorPair.Key;
+                var count = colorPair.Value;
+                if (count > bestCount)
+                {
+                    bestColor = color;
+                    bestCount = count;
+                }
+            }
+
+            return bestColor;
+        }
+
         public static void CopyPixels(this Texture2D to, Texture2D from, RectInt rect, Sprite alpha)
         {
             for (var y = rect.yMin; y < rect.yMax; y++)

@@ -15,7 +15,7 @@ namespace Game.EntityWrappers
             Renderer.sprite = entity.Desc.TopTextureData.GetTexture(entity.ObjectId);
             foreach (var side in _sides)
             {
-                side.sprite = entity.Desc.TextureData.Texture;
+                side.sprite = entity.Desc.TextureData.GetTexture(entity.ObjectId);
             }
             
             transform.position = entity.Position;

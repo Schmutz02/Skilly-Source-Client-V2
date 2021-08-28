@@ -255,6 +255,7 @@ namespace Models.Static
         public readonly WhileMovingDesc WhileMoving;
         public readonly bool Flying;
         public readonly float Z;
+        public readonly bool NoMiniMap;
 
         public readonly string Model;
 
@@ -308,6 +309,7 @@ namespace Models.Static
                 WhileMoving = new WhileMovingDesc(xml.Element("WhileMoving"));
             Flying = xml.ParseBool("Flying");
             Z = xml.ParseFloat("Z");
+            NoMiniMap = xml.ParseBool("NoMiniMap");
 
             Model = xml.ParseString("Model");
 
@@ -447,6 +449,8 @@ namespace Models.Static
     
     public class TileDesc
     {
+        public readonly XElement Xml;
+        
         public readonly string Id;
         public readonly ushort Type;
         public readonly TextureData TextureData;
@@ -472,6 +476,8 @@ namespace Models.Static
         
         public TileDesc(XElement e, string id, ushort type)
         {
+            Xml = e;
+            
             Id = id;
             Type = type;
             TextureData = new TextureData(e);

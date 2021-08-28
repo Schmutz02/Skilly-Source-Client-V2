@@ -14,6 +14,8 @@ public static class AssetLibrary
 
     private static readonly Dictionary<string, GameObject> _Models = new Dictionary<string, GameObject>();
 
+    private static readonly Dictionary<int, Color> _Type2Color = new Dictionary<int, Color>();
+
     private static readonly Dictionary<int, ObjectDesc> _Type2ObjectDesc = new Dictionary<int, ObjectDesc>();
     private static readonly Dictionary<string, ObjectDesc> _Id2ObjectDesc = new Dictionary<string, ObjectDesc>();
     private static readonly Dictionary<int, TileDesc> _Type2TileDesc = new Dictionary<int, TileDesc>();
@@ -99,6 +101,38 @@ public static class AssetLibrary
 
             _Type2TileDesc[type] = new TileDesc(groundXml, id, type);
         }
+    }
+
+    public static Color GetObjectColor(int type)
+    {
+        if (_Type2Color.ContainsKey(type))
+            return _Type2Color[type];
+
+        var desc = _Type2ObjectDesc[type];
+        var color = SpriteUtils.MostCommonColor(desc.TextureData.GetTexture());
+        
+        _Type2Color[type] = color;
+        return color;
+    }
+
+    public static Color GetTileColor(int type)
+    {
+        if (_Type2Color.ContainsKey(type))
+            return _Type2Color[type];
+        
+        var desc = _Type2TileDesc[type];
+        Color color;
+        if (desc.Xml.Element("Color") != null)
+        {
+            color = ParseUtils.ColorFromUInt(desc.Xml.ParseUInt("Color"));
+        }
+        else
+        {
+            color = SpriteUtils.MostCommonColor(desc.TextureData.GetTexture());
+        }
+
+        _Type2Color[type] = color;
+        return color;
     }
 
     public static Sprite GetTileImage(int type)

@@ -168,10 +168,6 @@ namespace Game.Entities
         {
             var desc = AssetLibrary.GetObjectDesc(type);
 
-#if UNITY_EDITOR
-            Debug.Log($"Resolving entity with class {desc.Class}");
-#endif
-
             switch (desc.Class)
             {
                 case "Player":

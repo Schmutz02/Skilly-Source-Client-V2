@@ -58,6 +58,8 @@ namespace Networking.Packets.Incoming
                 
                 entity.UpdateObjectStats(add.ObjectStatus.Stats);
             }
+            
+            map.MiniMap.Apply();
 
             foreach (var drop in _drops)
             {

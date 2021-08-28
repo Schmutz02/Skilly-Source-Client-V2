@@ -6,6 +6,7 @@ using Models;
 using Networking;
 using Networking.Packets.Incoming;
 using Networking.Packets.Outgoing;
+using UI.GameScreen;
 using UI.GameScreen.Panels;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -27,6 +28,7 @@ namespace Game
         private Transform _entityParentTransform;
 
         public MapOverlay Overlay;
+        public MiniMap MiniMap;
 
         private Dictionary<string, EntityWrapper> _wrapperPrefabs;
         public Dictionary<int, EntityWrapper> Entities;
@@ -74,6 +76,7 @@ namespace Game
         {
             WorldName = mapInfo.Name;
             _tilemap.size = new Vector3Int(mapInfo.Width, mapInfo.Height, 0);
+            MiniMap.Init(this);
         }
 
         public void Tick()
@@ -167,6 +170,7 @@ namespace Game
             var tileDesc = AssetLibrary.GetTileDesc(tileData.TileType);
             tile.Init(this, tileDesc, tileData.X, tileData.Y);
             _tilemap.SetTile(tile.Position, tile);
+            MiniMap.SetGroundTile(tileData.X, tileData.Y, tileData.TileType);
             var x = tileData.X;
             var y = tileData.Y;
             var xEnd = x < Width - 1 ? x + 1 : x;
@@ -195,6 +199,11 @@ namespace Game
             else
             {
                 InternalAddObj(entity);
+            }
+
+            if (entity.Desc.Static && entity.Desc.OccupySquare && !entity.Desc.NoMiniMap)
+            {
+                MiniMap.SetEntity((int) position.x, (int) position.y, entity.Desc.Type);
             }
         }
 
