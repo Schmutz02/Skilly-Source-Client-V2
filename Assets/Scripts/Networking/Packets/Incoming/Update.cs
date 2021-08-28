@@ -63,7 +63,8 @@ namespace Networking.Packets.Incoming
 
             foreach (var drop in _drops)
             {
-                map.RemoveObject(drop.Id);
+                var obj = map.GetEntity(drop.Id);
+                if (obj != null) map.RemoveObject(obj);
             }
         }
     }

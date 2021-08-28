@@ -9,6 +9,8 @@ namespace Game.EntityWrappers
     {
         public Entity Entity { get; private set; }
         
+        public string Type { get; set; }
+        
         [SerializeField]
         protected SpriteRenderer Renderer;
         
@@ -38,17 +40,21 @@ namespace Game.EntityWrappers
             _propertyBlock = new MaterialPropertyBlock();
         }
 
-        private void OnDisable()
+        public void OnCleanup()
         {
             if (Entity?.Model)
                 Destroy(_model);
             
             CameraManager.RemoveRotatingEntity(Entity);
+
+            Entity = null;
+            gameObject.SetActive(false);
         }
 
         public virtual void Init(Entity entity, bool rotating = true)
         {
             Entity = entity;
+            Entity.Wrapper = this;
 
             Renderer.sortingLayerName = entity.Desc.DrawUnder ? "DrawUnder" : "Visible";
             ShadowRenderer.gameObject.SetActive(!entity.Desc.DrawOnGround);
@@ -67,6 +73,8 @@ namespace Game.EntityWrappers
                 AddModel();
                 Renderer.sprite = null;
             }
+            
+            gameObject.SetActive(true);
         }
 
         public virtual bool Tick()

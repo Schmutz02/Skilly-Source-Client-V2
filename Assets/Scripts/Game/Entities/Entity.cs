@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.EntityWrappers;
 using Game.MovementControllers;
 using Models.Static;
 using UnityEngine;
@@ -22,6 +23,8 @@ namespace Game.Entities
         public int AltTextureIndex { get; private set; }
         public int SinkLevel { get; protected set; }
 
+        public EntityWrapper Wrapper;
+        
         public readonly Map Map;
         public Square Square;
         public readonly int ObjectId;
