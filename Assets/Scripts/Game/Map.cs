@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Entities;
 using Game.EntityWrappers;
 using Models;
@@ -30,7 +31,7 @@ namespace Game
 
         private Dictionary<string, EntityWrapper> _wrapperPrefabs;
         public Dictionary<int, EntityWrapper> Entities;
-        // private Dictionary<string, Queue<EntityWrapper>> _entityPool;
+        
         private HashSet<EntityWrapper> _interactiveObjects;
 
         [HideInInspector]
@@ -41,12 +42,10 @@ namespace Game
         public int Height => _tilemap.size.y;
 
         public Player MyPlayer { get; private set; }
+        
+        public EntityWrapperPool ObjectPool { get; private set; }
 
         private int _lastInteractiveUpdateTime;
-        
-        private bool _inUpdate;
-        private List<int> _idsToRemove;
-        private List<Entity> _objsToAdd;
 
         private void Awake()
         {
@@ -55,12 +54,11 @@ namespace Game
             {
                 _wrapperPrefabs[wrapper.name] = wrapper;
             }
+
+            ObjectPool = new EntityWrapperPool(_entityParentTransform, _wrapperPrefabs);
             
             Entities = new Dictionary<int, EntityWrapper>();
-            // _entityPool = new Dictionary<string, Queue<EntityWrapper>>();
             _interactiveObjects = new HashSet<EntityWrapper>();
-            _idsToRemove = new List<int>();
-            _objsToAdd = new List<Entity>();
             
             Update.OnMyPlayerJoined += OnMyPlayerJoined;
         }
@@ -78,26 +76,11 @@ namespace Game
 
         public void Tick()
         {
-            _inUpdate = true;
-            foreach (var wrapper in Entities.Values)
-            { 
+            foreach (var wrapper in Entities.Values.ToArray())
+            {
                 if (!wrapper.Tick())
-                    _idsToRemove.Add(wrapper.Entity.ObjectId);
+                    RemoveObject(wrapper.Entity);
             }
-
-            _inUpdate = false;
-
-            foreach (var obj in _objsToAdd)
-            {
-                InternalAddObj(obj);
-            }
-            _objsToAdd.Clear();
-
-            foreach (var id in _idsToRemove)
-            {
-                InternalRemoveObj(id);
-            }
-            _idsToRemove.Clear();
             
             if (GameTime.Time - _lastInteractiveUpdateTime >= _INTERACTIVE_UPDATE_INTERVAL)
             {
@@ -145,20 +128,12 @@ namespace Game
         {
             MovesRequested = 0;
             _tilemap.ClearAllTiles();
+
+            foreach (var wrp in Entities.Values.ToArray())
+                RemoveObject(wrp.Entity);
+            
             Entities.Clear();
             _interactiveObjects.Clear();
-
-            foreach (Transform child in _entityParentTransform)
-            {
-                // var wrapper = child.GetComponent<EntityWrapper>();
-                // var type = wrapper.Entity.Desc.Class;
-                // if (!_entityPool.ContainsKey(type))
-                //     _entityPool[type] = new Queue<EntityWrapper>();
-                // _entityPool[type].Enqueue(wrapper);
-
-                Destroy(child.gameObject);
-                // child.gameObject.SetActive(false);
-            }
         }
 
         public void AddTile(TileData tileData)
@@ -187,41 +162,15 @@ namespace Game
 
         public void AddObject(Entity entity, Vector2 position)
         {
+            // todo: please change this to be part of init
             entity.Position = position;
-            if (_inUpdate)
-            {
-                _objsToAdd.Add(entity);
-            }
-            else
-            {
-                InternalAddObj(entity);
-            }
-        }
-
-        private void InternalAddObj(Entity entity)
-        {
-            EntityWrapper wrapper = null;
-            try
-            {
-                var wrapperPrefab = _wrapperPrefabs[entity.Desc.Class];
-                wrapper = Instantiate(wrapperPrefab, _entityParentTransform);
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning($"No wrapper found for class {entity.Desc.Class}");
-                Debug.LogError(e.Message);
-            }
-            // if (_entityPool.ContainsKey(entity.Desc.Class) && _entityPool[entity.Desc.Class].Count > 0)
-            // {
-            //     wrapper = _entityPool[entity.Desc.Class].Dequeue();
-            //     wrapper.gameObject.SetActive(true);
-            // }
-            // else
-            // {
-            //     
-            // }
-            wrapper?.Init(entity); // always rotates unless overridden
-
+            // Fetch a valid EntityWrapper from the pool
+            var wrapper = ObjectPool.Get(entity.Desc.Class);
+            if (wrapper is null)
+                return;
+            // Assign our entity to the wrapper
+            wrapper.Init(entity);
+            // Add relevant entity data to map
             if (entity.Desc.Static)
             {
                 var tile = GetTile(entity.Position);
@@ -241,32 +190,17 @@ namespace Game
             return null;
         }
 
-        public void RemoveObject(int objectId)
+        public void RemoveObject(Entity entity)
         {
-            if (_inUpdate)
-            {
-                _idsToRemove.Add(objectId);
-            }
-            else
-            {
-                InternalRemoveObj(objectId);
-            }
-        }
-
-        private void InternalRemoveObj(int objectId)
-        {
-            var en = Entities[objectId];
-            var type = en.Entity.Desc.Class;
-            // if (!_entityPool.ContainsKey(type))
-            //     _entityPool[type] = new Queue<EntityWrapper>();
-            // _entityPool[type].Enqueue(en);
-            
-            Destroy(en.gameObject);
-            // en.gameObject.SetActive(false);
-            Entities.Remove(objectId);
-            
-            if (en is IInteractiveObject)
-                _interactiveObjects.Remove(en);
+            // Store the EntityWrapper
+            var wrp = entity.Wrapper;
+            // Return the EntityWrapper to the pool.
+            ObjectPool.Return(wrp);
+            // Remove the Entity from the list.
+            Entities.Remove(entity.ObjectId);
+            // Do any type-specific cleanup
+            if (wrp is IInteractiveObject)
+                _interactiveObjects.Remove(wrp);
         }
 
         public void MoveEntity(Entity entity, Vector2 position)
