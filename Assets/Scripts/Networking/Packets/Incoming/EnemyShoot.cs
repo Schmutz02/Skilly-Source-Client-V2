@@ -13,7 +13,7 @@ namespace Networking.Packets.Incoming
         private int _bulletId;
         private int _ownerId;
         private byte _bulletType;
-        private Vector2 _startPos;
+        private Vector3 _startPos;
         private float _angle;
         private short _damage;
         private byte _numShots;
@@ -24,7 +24,7 @@ namespace Networking.Packets.Incoming
             _bulletId = rdr.ReadInt32();
             _ownerId = rdr.ReadInt32();
             _bulletType = rdr.ReadByte();
-            _startPos = new Vector2()
+            _startPos = new Vector3()
             {
                 x = rdr.ReadSingle(),
                 y = rdr.ReadSingle()
@@ -50,7 +50,7 @@ namespace Networking.Packets.Incoming
             {
                 var projDesc = owner.Desc.Projectiles[_bulletType];
                 var angle = _angle + _angleInc * i;
-                var projectile = new Projectile(owner, projDesc, _bulletId + i, GameTime.Time, angle,
+                var projectile = Projectile.Create(owner, projDesc, _bulletId + i, GameTime.Time, angle,
                     _startPos, _damage, map);
 
                 map.AddObject(projectile, _startPos);

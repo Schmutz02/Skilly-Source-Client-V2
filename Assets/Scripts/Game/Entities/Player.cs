@@ -15,7 +15,7 @@ namespace Game.Entities
 
         public float MoveMultiplier = 1f;
 
-        public new PlayerDesc Desc { get; }
+        public new PlayerDesc Desc { get; private set; }
         public int AccountId { get; private set; }
         public int Exp { get; private set; }
         public int NextLevelExp { get; private set; }
@@ -49,16 +49,18 @@ namespace Game.Entities
         public int DexterityBoost { get; private set; }
         public int VitalityBoost { get; private set; }
         public int WisdomBoost { get; private set; }
-        public ItemType[] SlotTypes { get; }
-        public int[] Equipment { get; }
-        public int[] ItemDatas { get; }
+        public ItemType[] SlotTypes { get; private set; }
+        public int[] Equipment { get; private set; }
+        public int[] ItemDatas { get; private set; }
         public wRandom Random;
-        private readonly PlayerShootController _shootController;
+        private PlayerShootController _shootController;
         public int AttackPeriod;
 
-        public Player(PlayerDesc desc, int objectId, bool isMyPlayer, Map map) : base(desc, objectId, isMyPlayer, map)
+        protected override void Init(ObjectDesc desc, int objectId, bool isMyPlayer, Map map, bool rotating = true)
         {
-            Desc = desc;
+            base.Init(desc, objectId, isMyPlayer, map, rotating);
+            
+            Desc = (PlayerDesc) desc;
             
             if (isMyPlayer)
                 _shootController = new PlayerShootController(this);
@@ -73,11 +75,11 @@ namespace Game.Entities
             }
         }
 
-        public override bool Tick(int time, int dt, Camera camera)
+        public override bool Tick()
         {
-            base.Tick(time, dt, camera);
+            base.Tick();
             
-            _shootController?.Tick(time, camera);
+            _shootController?.Tick(GameTime.Time, CameraManager.Camera);
 
             return true;
         }

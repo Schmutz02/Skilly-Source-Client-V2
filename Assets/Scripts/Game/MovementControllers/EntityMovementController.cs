@@ -5,22 +5,22 @@ namespace Game.MovementControllers
 {
     public class EntityMovementController : IMovementController
     {
-        public Vector2 Direction { get; set; }
-        public Vector2 TargetPosition;
+        public Vector3 Direction { get; set; }
+        public Vector3 TargetPosition;
         
         private readonly Entity _entity;
         
         public EntityMovementController(Entity entity)
         {
             _entity = entity;
-            Direction = Vector2.zero;
-            TargetPosition = Vector2.zero;
+            Direction = Vector3.zero;
+            TargetPosition = Vector3.zero;
         }
 
         public void Tick(float deltaTime)
         {
             var moving = false;
-            if (Direction != Vector2.zero)
+            if (Direction != Vector3.zero)
             {
                 var direction = Direction;
                 var dx = direction.x * deltaTime;
@@ -43,7 +43,7 @@ namespace Game.MovementControllers
                 }
 
                 Direction = direction;
-                _entity.MoveTo(new Vector2(nextX, nextY));
+                _entity.MoveTo(new Vector3(nextX, nextY));
                 moving = true;
             }
 

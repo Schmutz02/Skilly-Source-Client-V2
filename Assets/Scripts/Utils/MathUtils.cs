@@ -21,7 +21,7 @@ namespace Utils
             return x;
         }
         
-        public static float DistanceSquared(Vector2 from, Vector2 to)
+        public static float DistanceSquared(Vector3 from, Vector3 to)
         {
             float v1 = from.x - to.x, v2 = from.y - to.y;
             return v1 * v1 + v2 * v2;

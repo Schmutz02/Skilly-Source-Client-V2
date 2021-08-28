@@ -150,16 +150,17 @@ namespace Models
     public struct ObjectStatus
     {
         public int Id;
-        public Vector2 Position;
+        public Vector3 Position;
         public Dictionary<StatType, object> Stats;
 
         public ObjectStatus(PacketReader rdr)
         {
             Id = rdr.ReadInt32();
-            Position = new Vector2()
+            Position = new Vector3()
             {
                 x = rdr.ReadSingle(),
-                y = rdr.ReadSingle()
+                y = rdr.ReadSingle(),
+                z = 0
             };
 
             var statsCount = rdr.ReadByte();

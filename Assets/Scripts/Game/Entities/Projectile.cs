@@ -7,33 +7,40 @@ using MathUtils = Utils.MathUtils;
 
 namespace Game.Entities
 {
-    public class Projectile : Entity
+    public partial class Projectile : Entity
     {
         public static int NextFakeBulletId;
         
-        public readonly Entity Owner;
-        public readonly ProjectileDesc ProjectileDesc;
-        public readonly int BulletId;
-        public readonly float Angle;
-        public readonly Vector2 StartPosition;
-        private readonly int _damage;
-        public readonly HashSet<int> Hit;
-        public readonly bool DamagesPlayers;
-        public readonly bool DamagesEnemies;
+        public Entity Owner { get; private set; }
+        public ProjectileDesc ProjectileDesc { get; private set; }
+        public int BulletId { get; private set; }
+        public float Angle { get; private set; }
+        public Vector3 StartPosition { get; private set; }
+        private int _damage;
+        public HashSet<int> Hit { get; private set; }
+        public bool DamagesPlayers { get; private set; }
+        public bool DamagesEnemies { get; private set; }
 
-        public readonly float StartTime;
+        public float StartTime { get; private set; }
 
-        public Projectile(Entity owner, ProjectileDesc projectileDesc, int bulletId, float startTime, float angle, 
-            Vector2 startPos, int damage, Map map) 
-            : base(AssetLibrary.GetObjectDesc(projectileDesc.ObjectId), GetNextFakeObjectId(), false, map)
+        protected override void Init(ObjectDesc desc, int objectId, bool isMyPlayer, Map map, bool rotating = true)
+        {
+            base.Init(desc, objectId, false, map, false);
+
+            Renderer.sprite = Desc.TextureData.GetTexture(ObjectId);
+            Hit = new HashSet<int>();
+        }
+
+        private void SetValues(Entity owner, ProjectileDesc projectileDesc, int bulletId, float startTime, float angle,
+            Vector3 startPos, int damage)
         {
             Owner = owner;
             ProjectileDesc = projectileDesc;
             BulletId = bulletId;
             StartTime = startTime;
             Angle = MathUtils.BoundToPI(angle);
-            StartPosition = Position = startPos;
             Z = 0.5f;
+            StartPosition = Position = startPos;
             _damage = damage;
             DamagesPlayers = owner.Desc.Enemy;
             DamagesEnemies = !DamagesPlayers;
@@ -43,7 +50,25 @@ namespace Game.Entities
                 size = Desc.Size;
             }
             Size = 8 * (size / 100);
-            Hit = new HashSet<int>();
+            Hit.Clear();
+            
+            SetRotation();
+        }
+        
+        private void SetRotation()
+        {
+            var spin = Desc.Rotation == 0 ? 0 : GameTime.Time / Desc.Rotation;
+            spin += Angle + Desc.AngleCorrection;
+            Rotation = spin;
+        }
+
+        public static Projectile Create(Entity owner, ProjectileDesc desc, int bulletId, float startTime, float angle,
+            Vector3 startPos, int damage, Map map)
+        {
+            var prj = (Projectile) map.EntityPool.Get("Projectile");
+            prj.Init(AssetLibrary.GetObjectDesc(desc.ObjectId), GetNextFakeObjectId(), false, map, false);
+            prj.SetValues(owner, desc, bulletId, startTime, angle, startPos, damage);
+            return prj;
         }
 
         public bool CanHit(Entity en)
@@ -54,11 +79,9 @@ namespace Game.Entities
             return !Hit.Contains(en.ObjectId);
         }
 
-        public override bool Tick(int time, int dt, Camera camera)
+        public override bool Tick()
         {
-            base.Tick(time, dt, camera);
-            
-            var elapsed = time - StartTime;
+            var elapsed = GameTime.Time - StartTime;
             if (elapsed > ProjectileDesc.LifetimeMS)
             {
                 return false;
@@ -125,7 +148,12 @@ namespace Game.Entities
             return true;
         }
 
-        public override bool MoveTo(Vector2 position)
+        public override void Draw()
+        {
+            
+        }
+
+        public override bool MoveTo(Vector3 position)
         {
             var square = Map.GetTile(position);
             if (square is null)
@@ -136,9 +164,9 @@ namespace Game.Entities
             return true;
         }
 
-        private Vector2 PositionAt(float elapsed)
+        private Vector3 PositionAt(float elapsed)
         {
-            var p = new Vector2(StartPosition.x, StartPosition.y);
+            var p = new Vector3(StartPosition.x, StartPosition.y);
             var speed = ProjectileDesc.Speed;
             if (ProjectileDesc.Accelerate) speed *= elapsed / ProjectileDesc.LifetimeMS;
             if (ProjectileDesc.Decelerate) speed *= 2 - elapsed / ProjectileDesc.LifetimeMS;
@@ -192,9 +220,8 @@ namespace Game.Entities
             
             if (DamagesEnemies)
             {
-                foreach (var wrapper in Map.Entities.Values)
+                foreach (var entity in Map.Entities.Values)
                 {
-                    var entity = wrapper.Entity;
                     if (!entity.Desc.Enemy || !CanHit(entity))
                         continue;
                     

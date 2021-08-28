@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5268211133420228344
+--- !u!114 &6806814364340061520
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,11 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 6742621348206007653}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74f292f5a9954091ba9c0dbcae89869a, type: 3}
+  m_Script: {fileID: 11500000, guid: eab6d9620ea04354b1239cd3e31c9a9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Renderer: {fileID: 5314456350395397206}
   ShadowRenderer: {fileID: 3335177156427275728}
+  Square: {fileID: 0}
+  Flying: 0
+  AttackStart: 0
+  AttackAngle: 0
 --- !u!1001 &5999457239250809841
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -135,6 +139,7 @@ PrefabInstance:
     - {fileID: 1730937014258634585, guid: a4fa260802ae5804f9f0e0d69d8eaf6a, type: 3}
     - {fileID: 6090188786275417466, guid: a4fa260802ae5804f9f0e0d69d8eaf6a, type: 3}
     - {fileID: 629825891436510716, guid: a4fa260802ae5804f9f0e0d69d8eaf6a, type: 3}
+    - {fileID: 983247809362931656, guid: a4fa260802ae5804f9f0e0d69d8eaf6a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a4fa260802ae5804f9f0e0d69d8eaf6a, type: 3}
 --- !u!1 &6742621348206007653 stripped
 GameObject:

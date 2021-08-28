@@ -10,7 +10,7 @@ namespace Game.MovementControllers
     {
         private const float _MOVE_THRESHOLD = 0.4f;
         
-        public Vector2 Direction { get; private set; }
+        public Vector3 Direction { get; private set; }
         
         private readonly Player _player;
 
@@ -40,7 +40,7 @@ namespace Game.MovementControllers
                 Settings.CameraAngle = cameraAngle;
             }
 
-            var direction = Vector2.zero;
+            var direction = Vector3.zero;
             if (xVelocity != 0 || yVelocity != 0)
             {
                 var moveSpeed = _player.GetMovementSpeed();
@@ -56,16 +56,16 @@ namespace Game.MovementControllers
             }
 
             Direction = direction;
-            ValidateAndMove((Vector2)_player.Position + deltaTime * direction);
+            ValidateAndMove(_player.Position + deltaTime * direction);
         }
 
-        private void ValidateAndMove(Vector2 pos)
+        private void ValidateAndMove(Vector3 pos)
         {
             pos = ResolveNewLocation(pos);
             _player.MoveTo(pos);
         }
         
-        private Vector2 ResolveNewLocation(Vector2 pos)
+        private Vector3 ResolveNewLocation(Vector3 pos)
         {
             if (_player.HasConditionEffect(ConditionEffect.Paralyzed))
                 return pos;
@@ -94,14 +94,14 @@ namespace Game.MovementControllers
                     done = true;
                 }
 
-                pos = CalcNewLocation(new Vector2(pos.x + dx * ds, pos.y + dy * ds));
+                pos = CalcNewLocation(new Vector3(pos.x + dx * ds, pos.y + dy * ds));
                 tds += ds;
             }
 
             return pos;
         }
         
-        private Vector2 CalcNewLocation(Vector2 pos)
+        private Vector3 CalcNewLocation(Vector3 pos)
         {
             var fx = 0f;
             var fy = 0f;

@@ -1,23 +1,13 @@
-using Game.Entities;
 using UI.GameScreen.Panels;
 using UnityEngine;
 
-namespace Game.EntityWrappers
+namespace Game.Entities
 {
-    public class PortalWrapper : EntityWrapper, IInteractiveObject
+    public partial class Portal
     {
-        private Portal _portal;
-        
         [SerializeField]
         private PortalPanel _portalPanel;
-
-        public override void Init(Entity entity, bool rotating = true)
-        {
-            base.Init(entity, rotating);
-            
-            _portal = entity as Portal;
-        }
-
+        
         public Panel GetPanel(InteractPanel interactPanel)
         {
             var panel = interactPanel.GetPanel<PortalPanel>();
@@ -25,7 +15,7 @@ namespace Game.EntityWrappers
             {
                 panel = Instantiate(_portalPanel, interactPanel.transform);
             }
-            panel.Init(_portal);
+            panel.Init(this);
             return panel;
         }
     }

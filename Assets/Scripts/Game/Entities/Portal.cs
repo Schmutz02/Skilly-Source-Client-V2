@@ -1,16 +1,18 @@
 using Models.Static;
+using UI.GameScreen.Panels;
 
 namespace Game.Entities
 {
-    public class Portal : Entity
+    public partial class Portal : Entity, IInteractiveObject
     {
-        public readonly bool NexusPortal;
-        public readonly bool LockedPortal;
-
+        public bool NexusPortal { get; private set; }
+        public bool LockedPortal { get; private set; }
         public bool Active { get; private set; } = true;
-        
-        public Portal(ObjectDesc desc, int objectId, Map map) : base(desc, objectId, false, map)
+
+        protected override void Init(ObjectDesc desc, int objectId, bool isMyPlayer, Map map, bool rotating = true)
         {
+            base.Init(desc, objectId, false, map, rotating);
+            
             NexusPortal = desc.NexusPortal;
             LockedPortal = desc.LockedPortal;
         }

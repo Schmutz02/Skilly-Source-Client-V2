@@ -174,7 +174,7 @@ namespace UI.GameScreen
                 {
                     var arrowPos = _map.MyPlayer.Position;
                     arrowPos *= _zoomLevels[_zoomIndex];
-                    arrowPos += new Vector2(-96, -96);
+                    arrowPos += new Vector3(-96, -96);
                     _blueArrow.rectTransform.anchoredPosition = arrowPos;
                     _chunkLayer.anchoredPosition = Vector2.zero;
                     return;
@@ -184,7 +184,7 @@ namespace UI.GameScreen
                 
                 var pos = -_map.MyPlayer.Position;
                 pos *= _zoomLevels[_zoomIndex];
-                pos += new Vector2(96, -96);
+                pos += new Vector3(96, -96);
                 _chunkLayer.localPosition = pos;
             }
         }

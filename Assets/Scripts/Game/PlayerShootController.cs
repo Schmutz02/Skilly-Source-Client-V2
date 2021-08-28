@@ -81,7 +81,7 @@ namespace Game
                 var maxDamage = weaponXml.Projectile.MaxDamage + (int)(weaponXml.Projectile.MaxDamage * damageMod);
                 var damage = (int)(_player.Random.NextIntRange((uint) minDamage, (uint) maxDamage) *
                              _player.GetAttackMultiplier());
-                var projectile = new Projectile(_player, weaponXml.Projectile, startId - i, time, angle,
+                var projectile = Projectile.Create(_player, weaponXml.Projectile, startId - i, time, angle,
                     _player.Position, damage, _player.Map);
 
                 _player.Map.AddObject(projectile, projectile.StartPosition);

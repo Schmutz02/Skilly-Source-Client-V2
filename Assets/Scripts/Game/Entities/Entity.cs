@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using Game.EntityWrappers;
 using Game.MovementControllers;
 using Models.Static;
 using UnityEngine;
@@ -8,12 +6,13 @@ using Utils;
 
 namespace Game.Entities
 {
-    public partial class Entity
+    public partial class Entity : MonoBehaviour
     {
         public const float _HITBOX_RADIUS = 0.5f;
         
         private static int _nextFakeObjectId;
         
+        [NonSerialized]
         private ConditionEffect _conditionEffects;
         public int Hp { get; private set; }
         public int MaxHp { get; private set; }
@@ -23,43 +22,55 @@ namespace Game.Entities
         public int AltTextureIndex { get; private set; }
         public int SinkLevel { get; protected set; }
 
-        public EntityWrapper Wrapper;
-        
-        public readonly Map Map;
-        public Square Square;
-        public readonly int ObjectId;
-        public readonly ObjectDesc Desc;
-        public Vector2 Position;
-        public float Z;
-        public float Rotation; // in radians
-        public bool Flying;
-        public readonly bool IsMyPlayer;
-        
-        public readonly int SizeMult = 1;
+        public Map Map { get; private set; }
+        public Square Square { get; set; }
+        public int ObjectId { get; private set; }
+        public ObjectDesc Desc { get; private set; }
 
-        public readonly GameObject Model;
+        public Vector3 Position
+        {
+            get => transform.position;
+            set
+            {
+                var yOffset = Desc.DrawOnGround ? -0.5f : 0;
+                transform.position = new Vector3(value.x, value.y + yOffset, -Z); //TODO check z value
+            }
+        }
+
+        public float Rotation // in radians
+        {
+            get => transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+            set => transform.rotation = Quaternion.Euler(0, 0, value * Mathf.Rad2Deg);
+        }
         
-        public int AttackStart;
-        public float AttackAngle;
+        public float Z { get; set; }
+        public bool Flying { get; set; }
+        public bool IsMyPlayer { get; private set; }
+
+        public int SizeMult { get; private set; } = 1; 
+
+        public int AttackStart { get; set; }
+        public float AttackAngle { get; set; }
         public Vector2 Direction => _movementController.Direction;
 
-        private readonly IMovementController _movementController;
-        public readonly ITextureProvider TextureProvider;
+        private IMovementController _movementController;
+        public ITextureProvider TextureProvider { get; private set; }
 
-        public Entity(ObjectDesc desc, int objectId, bool isMyPlayer, Map map)
+        protected virtual void Init(ObjectDesc desc, int objectId, bool isMyPlayer, Map map, bool rotating = true)
         {
             Desc = desc;
             Map = map;
             ObjectId = objectId;
-            Position = Vector3.zero;
+            Position = new Vector3(0, 0);
+            Z = desc.Z;
             IsMyPlayer = isMyPlayer;
             Defense = desc.Defense;
-            Z = desc.Z;
 
-            if (isMyPlayer)
+            if (IsMyPlayer)
             {
                 _movementController = new PlayerMovementController(this as Player);
                 TextureProvider = new PlayerTextureProvider(this as Player);
+                CameraManager.SetFocus(gameObject);
             }
             else
             {
@@ -67,13 +78,27 @@ namespace Game.Entities
                 TextureProvider = new EntityTextureProvider(this);
             }
 
+            Size = 100;
+            SizeMult = 1;
             if (Desc.TextureData.Texture)
                 SizeMult = (int) Desc.TextureData.Texture.rect.height / 8;
 
             if (Desc.Model != null)
             {
-                Model = AssetLibrary.GetModel(Desc.Model);
+                AddModel();
+                Renderer.sprite = null;
             }
+            
+            Renderer.sortingLayerName = Desc.DrawUnder ? "DrawUnder" : "Visible";
+            ShadowRenderer.gameObject.SetActive(!Desc.DrawOnGround);
+
+            SetPositionAndRotation();
+            RedrawShadow();
+
+            if (rotating && !Desc.DrawOnGround)
+                CameraManager.AddRotatingEntity(this);
+
+            gameObject.SetActive(true);
         }
 
         public static int GetNextFakeObjectId()
@@ -81,7 +106,7 @@ namespace Game.Entities
             return 2130706432 | _nextFakeObjectId++;
         }
 
-        public virtual bool MoveTo(Vector2 position)
+        public virtual bool MoveTo(Vector3 position)
         {
             Map.MoveEntity(this, position);
             return true;
@@ -93,20 +118,20 @@ namespace Game.Entities
             AttackStart = GameTime.Time;
         }
 
-        public void OnNewTick(Vector2 position)
+        // only called on things that aren't my player
+        public void OnNewTick(Vector3 position)
         {
-            // only called on things that aren't my player
             var movement = _movementController as EntityMovementController;
             if (movement!.TargetPosition == position)
                 return;
 
             movement.TargetPosition = position;
-            movement.Direction = (movement.TargetPosition - (Vector2)Position) / 127f;
+            movement.Direction = (movement.TargetPosition - Position) / 127f;
         }
-
-        public virtual bool Tick(int time, int dt, Camera camera)
+        
+        public virtual bool Tick()
         {
-            _movementController?.Tick(dt);
+            _movementController?.Tick(GameTime.DeltaTime);
             return true;
         }
 
@@ -170,16 +195,13 @@ namespace Game.Entities
         public static Entity Resolve(ushort type, int objectId, bool isMyPlayer, Map map)
         {
             var desc = AssetLibrary.GetObjectDesc(type);
-
-            switch (desc.Class)
+            var en = map.EntityPool.Get(desc.Class);
+            if (desc.Class == "Player")
             {
-                case "Player":
-                    return new Player(AssetLibrary.GetPlayerDesc(type), objectId, isMyPlayer, map);
-                case "Portal":
-                    return new Portal(AssetLibrary.GetObjectDesc(type), objectId, map);
+                desc = AssetLibrary.GetPlayerDesc(type);
             }
-
-            return new Entity(desc, objectId, isMyPlayer, map);
+            en.Init(desc, objectId, isMyPlayer, map);
+            return en;
         }
     }
 }

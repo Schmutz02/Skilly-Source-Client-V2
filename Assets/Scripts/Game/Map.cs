@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Entities;
-using Game.EntityWrappers;
 using Models;
 using Networking;
 using Networking.Packets.Incoming;
@@ -31,10 +30,10 @@ namespace Game
         public MapOverlay Overlay;
         public MiniMap MiniMap;
 
-        private Dictionary<string, EntityWrapper> _wrapperPrefabs;
-        public Dictionary<int, EntityWrapper> Entities;
+        private Dictionary<string, Entity> _entityPrefabs;
+        public Dictionary<int, Entity> Entities;
 
-        private HashSet<EntityWrapper> _interactiveObjects;
+        private HashSet<Entity> _interactiveObjects;
 
         [HideInInspector]
         public int MovesRequested;
@@ -45,22 +44,22 @@ namespace Game
 
         public Player MyPlayer { get; private set; }
 
-        public EntityWrapperPool ObjectPool { get; private set; }
+        public EntityPool EntityPool { get; private set; }
 
         private int _lastInteractiveUpdateTime;
 
         private void Awake()
         {
-            _wrapperPrefabs = new Dictionary<string, EntityWrapper>();
-            foreach (var wrapper in Resources.LoadAll<EntityWrapper>("Entities"))
+            _entityPrefabs = new Dictionary<string, Entity>();
+            foreach (var entity in Resources.LoadAll<Entity>("Entities"))
             {
-                _wrapperPrefabs[wrapper.name] = wrapper;
+                _entityPrefabs[entity.name] = entity;
             }
 
-            ObjectPool = new EntityWrapperPool(_entityParentTransform, _wrapperPrefabs);
+            EntityPool = new EntityPool(_entityPrefabs, _entityParentTransform);
 
-            Entities = new Dictionary<int, EntityWrapper>();
-            _interactiveObjects = new HashSet<EntityWrapper>();
+            Entities = new Dictionary<int, Entity>();
+            _interactiveObjects = new HashSet<Entity>();
 
             Update.OnMyPlayerJoined += OnMyPlayerJoined;
         }
@@ -79,10 +78,15 @@ namespace Game
 
         public void Tick()
         {
-            foreach (var wrapper in Entities.Values.ToArray())
+            foreach (var entity in Entities.Values.ToArray())
             {
-                if (!wrapper.Tick())
-                    RemoveObject(wrapper.Entity);
+                if (!entity.Tick())
+                    RemoveObject(entity);
+            }
+
+            foreach (var entity in Entities.Values)
+            {
+                entity.Draw();
             }
 
             if (GameTime.Time - _lastInteractiveUpdateTime >= _INTERACTIVE_UPDATE_INTERVAL)
@@ -132,8 +136,8 @@ namespace Game
             MovesRequested = 0;
             _tilemap.ClearAllTiles();
 
-            foreach (var wrp in Entities.Values.ToArray())
-                RemoveObject(wrp.Entity);
+            foreach (var entity in Entities.Values.ToArray())
+                RemoveObject(entity);
 
             Entities.Clear();
             _interactiveObjects.Clear();
@@ -164,16 +168,10 @@ namespace Game
             }
         }
 
-        public void AddObject(Entity entity, Vector2 position)
+        public void AddObject(Entity entity, Vector3 position)
         {
-            // todo: please change this to be part of init
             entity.Position = position;
-            // Fetch a valid EntityWrapper from the pool
-            var wrapper = ObjectPool.Get(entity.Desc.Class);
-            if (wrapper is null)
-                return;
-            // Assign our entity to the wrapper
-            wrapper.Init(entity);
+            
             // Add relevant entity data to map
             if (entity.Desc.Static)
             {
@@ -186,33 +184,31 @@ namespace Game
                 MiniMap.SetEntity((int) position.x, (int) position.y, entity.Desc.Type);
             }
 
-            if (wrapper is IInteractiveObject)
-                _interactiveObjects.Add(wrapper);
+            if (entity is IInteractiveObject)
+                _interactiveObjects.Add(entity);
 
-            Entities[entity.ObjectId] = wrapper;
+            Entities[entity.ObjectId] = entity;
         }
 
         public Entity GetEntity(int id)
         {
             if (Entities.ContainsKey(id))
-                return Entities[id].Entity;
+                return Entities[id];
             return null;
         }
 
         public void RemoveObject(Entity entity)
         {
-            // Store the EntityWrapper
-            var wrp = entity.Wrapper;
-            // Return the EntityWrapper to the pool.
-            ObjectPool.Return(wrp);
+            // Return the Entity to the pool.
+            EntityPool.Return(entity);
             // Remove the Entity from the list.
             Entities.Remove(entity.ObjectId);
             // Do any type-specific cleanup
-            if (wrp is IInteractiveObject)
-                _interactiveObjects.Remove(wrp);
+            if (entity is IInteractiveObject)
+                _interactiveObjects.Remove(entity);
         }
 
-        public void MoveEntity(Entity entity, Vector2 position)
+        public void MoveEntity(Entity entity, Vector3 position)
         {
             var tile = GetTile(position);
             entity.Position = position;
@@ -334,7 +330,7 @@ namespace Game
             return _tilemap.GetTile<Square>(new Vector3Int((int) x, (int) y, 0));
         }
 
-        public Square GetTile(Vector2 pos)
+        public Square GetTile(Vector3 pos)
         {
             return GetTile(pos.x, pos.y);
         }

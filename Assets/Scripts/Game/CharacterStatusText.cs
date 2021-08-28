@@ -26,7 +26,7 @@ namespace Game
             _entity = entity;
             _text.text = text;
             _text.color = color;
-            _zOffset = entity.Desc.TextureData.Texture.rect.height / 8 * (entity.Size / 100f);
+            _zOffset = entity.Desc.TextureData.Texture.rect.height / 8 * (entity.Size / 100f) * entity.SizeMult;
             _lifetime = lifetime;
 
             _startTime = GameTime.Time + offsetTime;

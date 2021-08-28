@@ -33,7 +33,7 @@ namespace Networking.Packets.Incoming
             
             for (var i = 0; i < numShots; i++)
             {
-                var projectile = new Projectile(owner, weaponXml.Projectile, startId + i, GameTime.Time, angle,
+                var projectile = Projectile.Create(owner, weaponXml.Projectile, startId + i, GameTime.Time, angle,
                     owner.Position, 0, map);
 
                 map.AddObject(projectile, projectile.StartPosition);
