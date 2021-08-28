@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Game;
 using Game.Entities;
+using Models;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils;
@@ -23,15 +24,19 @@ namespace UI.GameScreen
         [SerializeField]
         private RectTransform _chunkLayer;
 
-        private float _width;
-        private float _height;
-
         private List<float> _zoomLevels;
         private int _zoomIndex;
+
+        [SerializeField]
+        private Image _blueArrow;
+
+        [SerializeField]
+        private MainCameraManager _mainCamera;
 
         private void Awake()
         {
             _needUpdateChunks = new HashSet<MiniMapChunk>();
+            _blueArrow.sprite = AssetLibrary.GetImage("lofiInterface", 54);
         }
 
         public void Init(Map map)
@@ -41,13 +46,15 @@ namespace UI.GameScreen
                 Destroy(child.gameObject);
             }
             
+            _blueArrow.gameObject.SetActive(false);
+            
             _map = map;
-            _width = ((RectTransform) transform).sizeDelta.x;
-            _height = ((RectTransform) transform).sizeDelta.y;
+            var w = ((RectTransform) transform).sizeDelta.x;
+            var h = ((RectTransform) transform).sizeDelta.y;
 
             _zoomIndex = 0;
             _zoomLevels = new List<float>();
-            var maxZoom = Mathf.Max(_width / map.Width, _height / map.Height);
+            var maxZoom = Mathf.Max(w / map.Width, h / map.Height);
             _zoomLevels.Add(maxZoom);
             for (var zoom = 1f; zoom < 1 / maxZoom; zoom *= 2)
             {
@@ -80,8 +87,7 @@ namespace UI.GameScreen
                     var chunk = Instantiate(_miniMapChunk, _chunkLayer);
                     var sprite = Sprite.Create(texture, new Rect(0, 0, chunkWidth, chunkHeight), Vector2.zero, 1);
                     chunk.Sprite = sprite;
-                    chunk.RectTransform.localScale = new Vector3(1, 1, 1);// * (1 / maxZoom);
-                    chunk.RectTransform.anchoredPosition = new Vector2(x * _MAP_CHUNK_SIZE, y * _MAP_CHUNK_SIZE);// * (1 / maxZoom);
+                    chunk.RectTransform.anchoredPosition = new Vector2(x * _MAP_CHUNK_SIZE, y * _MAP_CHUNK_SIZE);
                     chunk.RectTransform.sizeDelta = new Vector2(chunkWidth, chunkHeight);
 
                     _chunks[x, y] = chunk;
@@ -95,6 +101,10 @@ namespace UI.GameScreen
 
         public void SetGroundTile(int x, int y, ushort tileType)
         {
+            var staticObject = _map.GetTile(x, y).StaticObject;
+            if (staticObject != null && staticObject.Desc.ShowOnMap)
+                return;
+            
             var color = AssetLibrary.GetTileColor(tileType);
             SetPixel(x, y, color);
         }
@@ -130,7 +140,7 @@ namespace UI.GameScreen
 
         private void OnZoomChange()
         {
-            _chunkLayer.localScale = new Vector3(1, 1, 1) * _zoomLevels[_zoomIndex];
+            _chunkLayer.localScale = Vector3.one * _zoomLevels[_zoomIndex];
         }
 
         private void Update()
@@ -155,48 +165,28 @@ namespace UI.GameScreen
 
             if (_map?.MyPlayer != null)
             {
-                // if (Input.GetKeyDown(KeyCode.LeftArrow))
-                // {
-                //     var pos = _chunkLayer.localPosition;
-                //     pos.x -= _zoomLevels[_zoomIndex];
-                //     _chunkLayer.localPosition = pos;
-                // }
-                // if (Input.GetKeyDown(KeyCode.RightArrow))
-                // {
-                //     var pos = _chunkLayer.localPosition;
-                //     pos.x += _zoomLevels[_zoomIndex];
-                //     _chunkLayer.localPosition = pos;
-                // }
+                if (!_blueArrow.gameObject.activeSelf)
+                    _blueArrow.gameObject.SetActive(true);
+                
+                _blueArrow.transform.rotation = _mainCamera.Camera.transform.rotation;
+                
+                if (_zoomIndex == 0)
+                {
+                    var arrowPos = _map.MyPlayer.Position;
+                    arrowPos *= _zoomLevels[_zoomIndex];
+                    arrowPos += new Vector2(-96, -96);
+                    _blueArrow.rectTransform.anchoredPosition = arrowPos;
+                    _chunkLayer.anchoredPosition = Vector2.zero;
+                    return;
+                }
+                
+                _blueArrow.rectTransform.anchoredPosition = Vector2.zero;
+                
                 var pos = -_map.MyPlayer.Position;
                 pos *= _zoomLevels[_zoomIndex];
                 pos += new Vector2(96, -96);
                 _chunkLayer.localPosition = pos;
-                
-                // var rect = ((RectTransform) transform).rect;
-                // var chunkRect = new Rect(_chunkLayer.anchoredPosition, _chunkLayer.sizeDelta);
-                // var tx = 0f;
-                // if (chunkRect.xMin > rect.xMin)
-                // {
-                //     tx = rect.xMin - chunkRect.xMin;
-                // }
-                // else if (chunkRect.xMax < rect.xMax)
-                // {
-                //     tx = rect.xMax - chunkRect.xMax;
-                // }
-                //
-                // var ty = 0f;
-                // if (chunkRect.yMin > rect.yMin)
-                // {
-                //     ty = chunkRect.yMin - rect.yMin;
-                // }
-                // else if (chunkRect.yMax < rect.yMax)
-                // {
-                //     ty = chunkRect.yMax - rect.yMax;
-                // }
-                //
-                // _chunkLayer.anchoredPosition += new Vector2(tx, ty);
             }
-                
         }
     }
 }

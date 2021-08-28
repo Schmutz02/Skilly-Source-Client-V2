@@ -256,6 +256,7 @@ namespace Models.Static
         public readonly bool Flying;
         public readonly float Z;
         public readonly bool NoMiniMap;
+        public bool ShowOnMap => Static && OccupySquare && !NoMiniMap;
 
         public readonly string Model;
 

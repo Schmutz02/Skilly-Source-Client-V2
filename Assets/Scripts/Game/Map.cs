@@ -201,7 +201,7 @@ namespace Game
                 InternalAddObj(entity);
             }
 
-            if (entity.Desc.Static && entity.Desc.OccupySquare && !entity.Desc.NoMiniMap)
+            if (entity.Desc.ShowOnMap)
             {
                 MiniMap.SetEntity((int) position.x, (int) position.y, entity.Desc.Type);
             }
