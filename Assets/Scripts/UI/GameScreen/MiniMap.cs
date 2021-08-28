@@ -145,7 +145,7 @@ namespace UI.GameScreen
 
         private void Update()
         {
-            if (Input.mouseScrollDelta.y > 0)
+            if (!Input.GetKey(KeyCode.LeftControl) && Input.mouseScrollDelta.y > 0)
             {
                 if (_zoomIndex < _zoomLevels.Count - 1)
                 {
@@ -154,7 +154,7 @@ namespace UI.GameScreen
                 }
             }
 
-            if (Input.mouseScrollDelta.y < 0)
+            if (!Input.GetKey(KeyCode.LeftControl) && Input.mouseScrollDelta.y < 0)
             {
                 if (_zoomIndex > 0)
                 {
