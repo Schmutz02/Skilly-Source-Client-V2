@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.Entities
 {
-    public class Player : Entity
+    public class Player : Character
     {
         private const float _MIN_MOVE_SPEED = 0.004f;
         private const float _MAX_MOVE_SPEED = 0.0096f;

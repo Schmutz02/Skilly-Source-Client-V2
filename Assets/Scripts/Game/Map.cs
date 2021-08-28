@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Entities;
+using Game.Overlay;
 using Models;
 using Networking;
 using Networking.Packets.Incoming;

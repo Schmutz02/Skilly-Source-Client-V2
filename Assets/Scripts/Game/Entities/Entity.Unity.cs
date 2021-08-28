@@ -35,7 +35,7 @@ namespace Game.Entities
             _propertyBlock = new MaterialPropertyBlock();
         }
         
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (_model)
                 Destroy(_model);

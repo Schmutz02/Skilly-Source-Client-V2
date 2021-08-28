@@ -1,9 +1,8 @@
-using System;
 using Game.Entities;
 using TMPro;
 using UnityEngine;
 
-namespace Game
+namespace Game.Overlay
 {
     public class CharacterStatusText : MonoBehaviour
     {
@@ -55,7 +54,7 @@ namespace Game
 
             transform.rotation = _mainCamera.Camera.transform.rotation;
             _text.enabled = true;
-            var newPos = (Vector3) _entity.Position;
+            var newPos = _entity.Position;
             var drift = (float) aliveTime / _lifetime * _MAX_DRIFT;
             newPos.z -= _zOffset + drift;
             transform.position = newPos;
