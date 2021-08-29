@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Game;
 using Models;
 using Networking;
@@ -16,8 +17,14 @@ namespace UI.GameScreen
         [SerializeField]
         private MainCameraManager _cameraManager;
 
+        [SerializeField]
+        private RectTransform _hud;
+
         private PacketHandler _packetHandler;
-        
+
+        private int _screenWidth;
+        private int _screenHeight;
+
         private void Awake()
         {
             Reconnect.OnReconnect += OnReconnect;
@@ -31,7 +38,7 @@ namespace UI.GameScreen
         public override void Reset(object data)
         {
             Camera.main.backgroundColor = Color.black;
-            Camera.main.rect = new Rect(0, 0, .75f, 1);
+            StartCoroutine(Resize());
 
             var initData = (GameInitData) data;
             _packetHandler = new PacketHandler(initData, _map);
@@ -56,8 +63,20 @@ namespace UI.GameScreen
                 TcpTicker.Send(new Escape());
             }
             
+            if (Screen.width != _screenWidth || Screen.height != _screenHeight)
+                StartCoroutine(Resize());
+
             _packetHandler.Tick();
             _map.Tick();
+        }
+
+        private IEnumerator Resize()
+        {
+            yield return new WaitForEndOfFrame();
+            var screenWidth = Screen.width;
+            Camera.main.rect = new Rect(0, 0, (screenWidth - 200 * _hud.localScale.x) / screenWidth, 1);
+            _screenWidth = screenWidth;
+            _screenHeight = Screen.height;
         }
     }
 }

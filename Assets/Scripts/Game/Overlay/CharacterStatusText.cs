@@ -1,6 +1,7 @@
 using Game.Entities;
 using TMPro;
 using UnityEngine;
+using Utils;
 
 namespace Game.Overlay
 {
@@ -25,7 +26,7 @@ namespace Game.Overlay
             _entity = entity;
             _text.text = text;
             _text.color = color;
-            _zOffset = entity.Desc.TextureData.Texture.rect.height / 8 * (entity.Size / 100f) * entity.SizeMult;
+            _zOffset = entity.Desc.TextureData.Texture.rect.height / SpriteUtils.PIXELS_PER_UNIT * (entity.Size / 100f);
             _lifetime = lifetime;
 
             _startTime = GameTime.Time + offsetTime;

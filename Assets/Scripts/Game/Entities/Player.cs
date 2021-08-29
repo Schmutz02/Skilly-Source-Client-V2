@@ -1,5 +1,7 @@
 using Models;
 using Models.Static;
+using Networking;
+using Networking.Packets.Outgoing;
 using UnityEngine;
 
 namespace Game.Entities
@@ -80,6 +82,9 @@ namespace Game.Entities
             base.Tick();
             
             _shootController?.Tick(GameTime.Time, CameraManager.Camera);
+            
+            if (Input.GetKeyDown(KeyCode.G))
+                TcpTicker.Send(new PlayerText("/god"));
 
             return true;
         }

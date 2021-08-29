@@ -1,13 +1,14 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using Game;
-using Models.Static;
 using UnityEngine;
 
 namespace Utils
 {
     public static class TileRedrawer
     {
-        private static readonly Dictionary<object[], Sprite> _Cache = new Dictionary<object[], Sprite>();
+        private static readonly Dictionary<object[], Sprite> _Cache = new Dictionary<object[], Sprite>(new CacheComparer());
 
         private static readonly Rect TextureRect = new Rect(0, 0, 8, 8);
         private static readonly RectInt Rect0 = new RectInt(0, 0, 4, 4);
@@ -30,7 +31,7 @@ namespace Utils
 
         public static Sprite Redraw(Square square, bool originalBackground)
         {
-            object[] sig = null;
+            object[] sig;
             if (square.Type == 253)
             {
                 sig = GetCompositeSig(square);
@@ -47,8 +48,8 @@ namespace Utils
             if (sig == null)
                 return null;
 
-            if (_Cache.ContainsKey(sig))
-                return _Cache[sig];
+            if (_Cache.TryGetValue(sig, out var sprite))
+                return sprite;
 
             if (square.Type == 253)
             {
@@ -149,7 +150,7 @@ namespace Utils
             }
 
             texture.Apply();
-            var sprite = Sprite.Create(texture, TextureRect, SpriteUtils.Pivot, SpriteUtils.PIXELS_PER_UNIT);
+            sprite = Sprite.Create(texture, TextureRect, SpriteUtils.Pivot, SpriteUtils.PIXELS_PER_UNIT);
             _Cache[sig] = sprite;
             return sprite;
         }
@@ -463,6 +464,19 @@ namespace Utils
             }
 
             return sig;
+        }
+        
+        private class CacheComparer : IEqualityComparer<object[]>
+        {
+            public bool Equals(object[] x, object[] y)
+            {
+                return StructuralComparisons.StructuralEqualityComparer.Equals(x, y);
+            }
+
+            public int GetHashCode(object[] obj)
+            {
+                return StructuralComparisons.StructuralEqualityComparer.GetHashCode(obj);
+            }
         }
     }
 }
