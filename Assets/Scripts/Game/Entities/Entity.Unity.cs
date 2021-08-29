@@ -42,6 +42,10 @@ namespace Game.Entities
             
             CameraManager.RemoveRotatingEntity(this);
 
+            _movementController = null;
+            TextureProvider = null;
+            Square = null;
+
             gameObject.SetActive(false);
         }
         

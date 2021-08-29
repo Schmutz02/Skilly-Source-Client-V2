@@ -39,6 +39,9 @@ namespace Game
         [HideInInspector]
         public int MovesRequested;
 
+        [HideInInspector]
+        public int GotosRequested;
+
         public string WorldName { get; private set; }
         public int Width => _tilemap.size.x;
         public int Height => _tilemap.size.y;
@@ -96,11 +99,20 @@ namespace Game
                 _lastInteractiveUpdateTime = GameTime.Time;
             }
 
-            if (MyPlayer != null && MovesRequested > 0)
+            if (MyPlayer != null)
             {
-                TcpTicker.Send(new Move(GameTime.Time, MyPlayer.Position));
-                MyPlayer.OnMove();
-                MovesRequested--;
+                if (GotosRequested > 0)
+                {
+                    TcpTicker.Send(new GotoAck(GameTime.Time));
+                    GotosRequested--;
+                }
+                
+                if (MovesRequested > 0)
+                {
+                    TcpTicker.Send(new Move(GameTime.Time, MyPlayer.Position));
+                    MyPlayer.OnMove();
+                    MovesRequested--;
+                }
             }
         }
 
@@ -135,6 +147,7 @@ namespace Game
         public void Dispose()
         {
             MovesRequested = 0;
+            GotosRequested = 0;
             _tilemap.ClearAllTiles();
 
             foreach (var entity in Entities.Values.ToArray())

@@ -197,6 +197,7 @@ namespace Networking
                             _socket.Receive(_Receive.PacketBytes, PREFIX_LENGTH, _Receive.PacketLength - PREFIX_LENGTH, SocketFlags.None);
                         var packetId = (PacketId) _Receive.GetPacketId();
                         var packetBody = _Receive.GetPacketBody();
+                        Debug.Log($"Processing packet {packetId}");
                         var packet = _IncomingPackets[packetId].CreateInstance();
                         using (var rdr = new PacketReader(new MemoryStream(packetBody)))
                         {

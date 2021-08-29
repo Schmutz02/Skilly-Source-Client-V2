@@ -81,7 +81,7 @@ namespace Game.Entities
             Size = 100;
             SizeMult = 1;
             if (Desc.TextureData.Texture)
-                SizeMult = (int) Desc.TextureData.Texture.rect.height / 8;
+                SizeMult = (int) Desc.TextureData.Texture.rect.height / SpriteUtils.PIXELS_PER_UNIT;
 
             if (Desc.Model != null)
             {
@@ -133,6 +133,17 @@ namespace Game.Entities
         {
             _movementController?.Tick(GameTime.DeltaTime);
             return true;
+        }
+
+        public void OnGoto(Vector3 pos)
+        {
+            MoveTo(pos);
+
+            if (!(_movementController is EntityMovementController movement)) 
+                return;
+            
+            movement.TargetPosition = pos;
+            movement.Direction = Vector3.zero;
         }
 
         public bool HasConditionEffect(ConditionEffect conditionEffect)

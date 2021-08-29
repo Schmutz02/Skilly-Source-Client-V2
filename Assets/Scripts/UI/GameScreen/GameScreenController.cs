@@ -63,6 +63,9 @@ namespace UI.GameScreen
                 TcpTicker.Send(new Escape());
             }
             
+            if (Input.GetKeyDown(KeyCode.G))
+                TcpTicker.Send(new PlayerText("/god"));
+            
             if (Screen.width != _screenWidth || Screen.height != _screenHeight)
                 StartCoroutine(Resize());
 

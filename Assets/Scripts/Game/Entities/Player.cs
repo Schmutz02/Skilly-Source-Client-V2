@@ -77,14 +77,19 @@ namespace Game.Entities
             }
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+            
+            _shootController = null;
+            Random = null;
+        }
+
         public override bool Tick()
         {
             base.Tick();
             
             _shootController?.Tick(GameTime.Time, CameraManager.Camera);
-            
-            if (Input.GetKeyDown(KeyCode.G))
-                TcpTicker.Send(new PlayerText("/god"));
 
             return true;
         }
