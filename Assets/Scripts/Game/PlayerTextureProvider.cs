@@ -43,7 +43,7 @@ namespace Game
             if (_portrait == null)
             {
                 var image = _player.Desc.TextureData.Animation.ImageFromDir(Facing.Right, Action.Stand, 0);
-                var size = 4 / (int)image.rect.width * 100;
+                var size = (int) (4 / image.rect.width * 100);
                 _portrait = SpriteUtils.Redraw(image, size);
             }
 
