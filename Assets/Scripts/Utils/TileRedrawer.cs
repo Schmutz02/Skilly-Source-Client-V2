@@ -171,8 +171,8 @@ namespace Utils
                 {
                     var n0Image = SpriteUtils.CreateTexture(AssetLibrary.GetTileImage(n0));
                     var n2Image = SpriteUtils.CreateTexture(AssetLibrary.GetTileImage(n2));
-                    texture.CopyPixels(n0Image, rect, masks[_INNER_P1].Random());
-                    texture.CopyPixels(n2Image, rect, masks[_INNER_P2].Random());
+                    texture.CopyPixels(n0Image, rect, masks[_INNER_P2].Random());
+                    texture.CopyPixels(n2Image, rect, masks[_INNER_P1].Random());
                     return;
                 }
 
@@ -211,7 +211,7 @@ namespace Utils
                 list.Add(new List<List<Sprite>>()
                 {
                     RotateImageSet(inner, i - 1), RotateImageSet(side, i - 1), RotateImageSet(side, i),
-                    RotateImageSet(outer, i - 1), RotateImageSet(innerP1, i), RotateImageSet(innerP2, i)
+                    RotateImageSet(outer, i - 1), RotateImageSet(innerP1, i - 1), RotateImageSet(innerP2, i - 1)
                 });
             }
         }
