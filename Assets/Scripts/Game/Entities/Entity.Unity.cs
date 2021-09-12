@@ -111,6 +111,7 @@ namespace Game.Entities
             var go = AssetLibrary.GetModel(Desc.Model);
             _model = Instantiate(go, transform);
             var renderer = _model.GetComponentInChildren<Renderer>();
+            renderer.sortingLayerName = "Visible";
             var texture = SpriteUtils.CreateTexture(Desc.TextureData.Texture);
             renderer.material.SetTexture(_MainTex, texture);
         }
