@@ -37,6 +37,17 @@ namespace Networking
             return new WebRequestResult(xml, isSuccessResponse);
         }
 
+        public static async Task<WebRequestResult> SendRegisterRequestAsync(string username, string password)
+        {
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("newUsername", username),
+                new KeyValuePair<string, string>("newPassword", password)
+            });
+
+            return await SendRequestAsync("/account/register", content);
+        }
+
         public static async Task<WebRequestResult> SendLogInRequestAsync(string username, string password)
         {
             var content = new FormUrlEncodedContent(new[]
